@@ -52,6 +52,8 @@ keywords:
   - Reproducibility
   - "Molecular Simulation"
   - "Monte Carlo"
+  - "dihedral"
+  - "torsion"
   - GOMC
   - "computational chemistry"
   - chemistry
