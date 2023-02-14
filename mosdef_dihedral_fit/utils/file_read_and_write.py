@@ -3,12 +3,14 @@ import subprocess
 import numpy as np
 import mosdef_dihedral_fit.utils.basic_operations as mdf_basic
 import mosdef_dihedral_fit.utils.math_operations as mdf_math
+import vmd
 
 from scipy.optimize import curve_fit
 from mosdef_gomc.utils.conversion import OPLS_to_periodic
 
 import warnings
 from warnings import warn
+
 
 def get_atom_names_and_elements_from_mol2(mol2_directory_and_filename):
     """Get the atom names and element names from the mol2 file.
@@ -256,8 +258,6 @@ def write_restart_coor_from_xyz_file(coor_files_directory, total_qm_scans):
                                    "}\n\n"
                                    )
 
-    output_file_restart_coor.write(f'exit\n\n')
-
     output_file_restart_coor.close()
     # *******************************************
     # write the "write_restart_files.tcl" file that will be run using VMD
@@ -268,16 +268,10 @@ def write_restart_coor_from_xyz_file(coor_files_directory, total_qm_scans):
     # change to the 'coor_files_directory' directory and write the .coor restart files via VMD
     # (START)
     # *******************************************
-    run_create_coor_file_command = \
-        f"cd {coor_files_directory} && vmd -dispdev text -e {write_coor_vmd_source_file} -command exit"
 
-    exec_create_coor_file_command = subprocess.Popen(
-        run_create_coor_file_command, shell=True, stderr=subprocess.STDOUT
-    )
-
-    os.waitpid(
-        exec_create_coor_file_command.pid, os.WSTOPPED
-    )  # pauses python until exec_gomc_run_command sim done
+    os.chdir(f'{coor_files_directory}')
+    vmd.evaltcl(f'source {write_coor_vmd_source_file}')
+    os.chdir(f'..')
 
     # *******************************************
     # change to the 'coor_files_directory' directory and write the .coor restart files via VMD

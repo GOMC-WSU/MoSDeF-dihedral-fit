@@ -678,7 +678,7 @@ def fit_dihedral_with_gomc(
             run_gomc_command, shell=True, stderr=subprocess.STDOUT
         )
 
-        os.waitpid(
+        os.wait4(
             exec_gomc_run_command.pid, os.WSTOPPED
         )  # pauses python until exec_gomc_run_command sim done
 
@@ -862,7 +862,9 @@ def fit_dihedral_with_gomc(
             == len(all_sum_opls_const_1_plus_or_minus_cos_n_list):
         raise ValueError(
             "ERROR: The GOMC and Guassian outputs do not match in length. "
-            "This could mean something is changed and wrong in the code."
+            "This could mean something is changed and wrong in the code, "
+            "or GOMC is outputting multiple Initial eneries in the log file "
+            ", in this case use a new version of GOMC."
         )
 
     # Check if all the angles match between sorted GOMC and Gaussian data
@@ -1953,7 +1955,7 @@ def fit_dihedral_with_gomc(
                 run_gomc_command, shell=True, stderr=subprocess.STDOUT
             )
 
-            os.waitpid(
+            os.wait4(
                 exec_gomc_run_command.pid, os.WSTOPPED
             )  # pauses python until exec_gomc_run_command sim done
 

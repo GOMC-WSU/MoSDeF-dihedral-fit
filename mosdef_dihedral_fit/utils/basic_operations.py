@@ -26,7 +26,7 @@ def delete_directory(directory_path_and_name):
             delete_directory_command, shell=True, stderr=subprocess.STDOUT
         )
 
-        os.waitpid(
+        os.wait4(
             exec_delete_directory_command.pid, os.WSTOPPED
         )  # pauses python until exec_delete_directory_command is done
 
@@ -54,7 +54,7 @@ def create_directory(directory_path_and_name):
             create_directory_command, shell=True, stderr=subprocess.STDOUT
         )
 
-        os.waitpid(
+        os.wait4(
             exec_create_directory_command.pid, os.WSTOPPED
         )  # pauses python until exec_create_directory_command is done
 
@@ -86,6 +86,6 @@ def delete_file(file_path_and_name):
             delete_file_command, shell=True, stderr=subprocess.STDOUT
         )
 
-        os.waitpid(
+        os.wait4(
             exec_delete_file_command.pid, os.WSTOPPED
         )  # pauses python until exec_delete_file_command is done
