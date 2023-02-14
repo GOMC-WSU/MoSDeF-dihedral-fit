@@ -3,16 +3,16 @@ FROM continuumio/miniconda3:4.10.3-alpine AS builder
 
 EXPOSE 8888
 
-LABEL maintainer.name="mosdef_gomc"\
+LABEL maintainer.name="mosdef_dihedral_fit"\
   maintainer.url="https://github.com/GOMC-WSU/mosdef_dihedral_fit"
 
 ENV PATH /opt/conda/bin:$PATH
 
 USER root
 
-ADD . /mosdef_gomc
+ADD . /mosdef_dihedral_fit
 
-WORKDIR /mosdef_gomc
+WORKDIR /mosdef_dihedral_fit
 
 # Create a group and user
 RUN addgroup -S anaconda && adduser -S anaconda -G anaconda
