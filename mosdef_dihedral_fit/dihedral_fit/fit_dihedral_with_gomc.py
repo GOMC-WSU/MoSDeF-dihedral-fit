@@ -13,9 +13,9 @@ from scipy.optimize import curve_fit
 from mbuild.utils.conversion import OPLS_to_RB
 from mosdef_gomc.utils.conversion import OPLS_to_periodic
 
-import MoSDeF_dihedral_fit.utils.basic_operations as mdf_basic
-import MoSDeF_dihedral_fit.utils.file_read_and_write as mdf_frw
-import MoSDeF_dihedral_fit.utils.math_operations as mdf_math
+import mosdef_dihedral_fit.utils.basic_operations as mdf_basic
+import mosdef_dihedral_fit.utils.file_read_and_write as mdf_frw
+import mosdef_dihedral_fit.utils.math_operations as mdf_math
 
 import warnings
 from warnings import warn
