@@ -1,4 +1,4 @@
-name: mosdef_dihedral_fit
+name: mosdef_dihedral_fit_docs
 channels:
   - conda-forge
   - defaults
