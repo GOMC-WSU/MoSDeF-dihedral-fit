@@ -1393,7 +1393,7 @@ def change_gomc_ff_file_dihedral_values(
 
             # set the fitted dihedral types to the 'fit_dihedral_opls_k_0_1_2_3_4_values'
             # in the GOMC/CHARMM style FF file
-            if str(dih_m) in list(status_written_fit_dihedral_atom_types_dict.keys()) \
+            if (str(dih_m) or str(dih_m_reverse)) in list(status_written_fit_dihedral_atom_types_dict.keys()) \
                     and status_written_fit_dihedral_atom_types_dict[str(dih_m)] is False \
                     and (dih_m == fit_dihedral_atom_types or dih_m_reverse == fit_dihedral_atom_types):
 
@@ -1461,10 +1461,10 @@ def change_gomc_ff_file_dihedral_values(
                                         sig_figs=number_sig_fig_for_ff_file
                                     )
                                 ),
-                                split_line_m[7],
                                 split_line_m[8],
                                 split_line_m[9],
                                 split_line_m[10],
+                                split_line_m[11],
                             )
                         )
 
@@ -1488,10 +1488,10 @@ def change_gomc_ff_file_dihedral_values(
                                         sig_figs=number_sig_fig_for_ff_file
                                     )
                                 ),
-                                split_line_m[7],
                                 split_line_m[8],
                                 split_line_m[9],
                                 split_line_m[10],
+                                split_line_m[11],
                             )
                         )
 
@@ -1515,10 +1515,10 @@ def change_gomc_ff_file_dihedral_values(
                                         sig_figs=number_sig_fig_for_ff_file
                                     )
                                 ),
-                                split_line_m[7],
                                 split_line_m[8],
                                 split_line_m[9],
                                 split_line_m[10],
+                                split_line_m[11],
                             )
                         )
 
@@ -1542,10 +1542,10 @@ def change_gomc_ff_file_dihedral_values(
                                         sig_figs=number_sig_fig_for_ff_file
                                     )
                                 ),
-                                split_line_m[7],
                                 split_line_m[8],
                                 split_line_m[9],
                                 split_line_m[10],
+                                split_line_m[11],
                             )
                         )
 
@@ -1569,10 +1569,10 @@ def change_gomc_ff_file_dihedral_values(
                                         sig_figs=number_sig_fig_for_ff_file
                                     )
                                 ),
-                                split_line_m[7],
                                 split_line_m[8],
                                 split_line_m[9],
                                 split_line_m[10],
+                                split_line_m[11],
                             )
                         )
 
@@ -1596,58 +1596,67 @@ def change_gomc_ff_file_dihedral_values(
                                         sig_figs=number_sig_fig_for_ff_file
                                     )
                                 ),
-                                split_line_m[7],
                                 split_line_m[8],
                                 split_line_m[9],
                                 split_line_m[10],
+                                split_line_m[11],
                             )
                         )
 
                     status_written_fit_dihedral_atom_types_dict[str(dih_m)] = True
 
-                # set the zeroed dihedral types to zero in the GOMC/CHARMM style FF file
-                if str(dih_m) in list(status_written_zeroed_dihedral_atom_types_dict.keys()) \
-                        and zeroed_dihedral_atom_types is not None \
-                        and status_written_zeroed_dihedral_atom_types_dict[str(dih_m)] is False \
-                        and (dih_m in zeroed_dihedral_atom_types \
-                             or dih_m_reverse in zeroed_dihedral_atom_types):
+            # set the zeroed dihedral types to zero in the GOMC/CHARMM style FF file
+            elif (str(dih_m) or str(dih_m_reverse)) in list(status_written_zeroed_dihedral_atom_types_dict.keys()) \
+                    and zeroed_dihedral_atom_types is not None \
+                    and status_written_zeroed_dihedral_atom_types_dict[str(dih_m)] is False \
+                    and (dih_m in zeroed_dihedral_atom_types \
+                         or dih_m_reverse in zeroed_dihedral_atom_types):
 
-                    # get the opls dihedrals and convert them to CHARMM style periodic
-                    # periodic_dihedral_k_n_d_values =
-                    #   [[K0, n0, d0],
-                    #   [K1, n1, d1],
-                    #   [K2, n2, d2],
-                    #   [K3, n3, d3],
-                    #   [K4, n4, d4],
-                    #   [K5, n5, d5]]
-                    gomc_modified_kvalues_ff_file.write(
-                        dih_spacing.format(
-                            split_line_m[0],
-                            split_line_m[1],
-                            split_line_m[2],
-                            split_line_m[3],
-                            str(
-                                mdf_math.round_to_sig_figs(
-                                    0,
-                                    sig_figs=number_sig_fig_for_ff_file
-                                )
-                            ),
-                            str(int(1)),
-                            str(
-                                mdf_math.round_to_sig_figs(180.0,
-                                    sig_figs=number_sig_fig_for_ff_file
-                                )
-                            ),
-                            split_line_m[8],
-                            split_line_m[9],
-                            split_line_m[10],
-                            split_line_m[11],
-                        )
+                # get the opls dihedrals and convert them to CHARMM style periodic
+                # periodic_dihedral_k_n_d_values =
+                #   [[K0, n0, d0],
+                #   [K1, n1, d1],
+                #   [K2, n2, d2],
+                #   [K3, n3, d3],
+                #   [K4, n4, d4],
+                #   [K5, n5, d5]]
+                gomc_modified_kvalues_ff_file.write(
+                    dih_spacing.format(
+                        split_line_m[0],
+                        split_line_m[1],
+                        split_line_m[2],
+                        split_line_m[3],
+                        str(
+                            mdf_math.round_to_sig_figs(
+                                0,
+                                sig_figs=number_sig_fig_for_ff_file
+                            )
+                        ),
+                        str(int(1)),
+                        str(
+                            mdf_math.round_to_sig_figs(180.0,
+                                sig_figs=number_sig_fig_for_ff_file
+                            )
+                        ),
+                        split_line_m[8],
+                        split_line_m[9],
+                        split_line_m[10],
+                        split_line_m[11],
                     )
+                )
 
-                    status_written_zeroed_dihedral_atom_types_dict[str(dih_m)] = True
+                status_written_zeroed_dihedral_atom_types_dict[str(dih_m)] = True
 
-            else:
+            elif (
+                    str(dih_m) not in list(status_written_fit_dihedral_atom_types_dict.keys())
+                    and
+                    str(dih_m_reverse) not in list(status_written_fit_dihedral_atom_types_dict.keys())
+            ) \
+                and (
+                    str(dih_m) not in list(status_written_zeroed_dihedral_atom_types_dict.keys())
+                    and
+                    str(dih_m_reverse) not in list(status_written_zeroed_dihedral_atom_types_dict.keys())
+            ):
                 gomc_modified_kvalues_ff_file.write(f'{line_m}')
 
         else:
