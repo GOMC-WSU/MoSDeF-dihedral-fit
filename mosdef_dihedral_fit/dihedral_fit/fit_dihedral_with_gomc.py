@@ -1939,7 +1939,7 @@ def fit_dihedral_with_gomc(
                 f'{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}_OPLS_fit_{opls_fit_q}_dihedral.inp',
                 fit_dihedral_atom_types,
                 fit_dihedral_opls_k_0_1_2_3_4_values=opls_k_constant_fitted_q_list,
-                zeroed_dihedral_atom_types=None,
+                zeroed_dihedral_atom_types=zeroed_dihedral_atom_types,
             )
 
             # **************************************************************
