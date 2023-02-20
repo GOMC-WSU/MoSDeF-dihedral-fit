@@ -43,10 +43,10 @@ Select the desired variables, file, and set the temperature
     atom_type_naming_style = 'general'
 
     # Load 1 or more Gaussian file (key), and the value ([0]) is a list of Gaussian point to remove
-    # from the fitting process.  More than 1 Gaussian file can be loaded, allowing the user
-    # to run multiple dihedral angles in separate file, minimizing the time required to run
-    # the simimulaiton (i.e., the user can split them up into many simulations to obtain
-    # the full dihedral rotation.)
+    # from the fitting process, where the is the first minimized Gaussian point is removed (i.e., ([0])).
+    # More than 1 Gaussian file can be loaded, allowing the user to run multiple dihedral angles in separate file,
+    # minimizing the time required to run the simulations
+    # (i.e., the user can split them up into many simulations to obtain the full dihedral rotation).
     log_files_and_removed_points = {
         'path_to_file/HC_CT_CT_HC_multiplicity_1.log': [0],
     }
