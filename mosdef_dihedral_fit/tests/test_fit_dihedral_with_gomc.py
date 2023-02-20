@@ -13,7 +13,7 @@ class TestFitDihedralWithGomc(BaseTest):
         fit_dihedral_with_gomc(
             ['HC', 'CT', 'CT', 'HC'],
             get_mosdef_dihedral_fit_fn('ethane_aa.mol2'),
-            get_mosdef_dihedral_fit_fn('oplsaa_ethane_CT_HC_HC_CT.xml'),
+            get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
