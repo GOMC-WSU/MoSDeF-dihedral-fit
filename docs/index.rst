@@ -49,13 +49,13 @@ allowing the flexibility that some other dihedral fitters lack.
 	:caption: Overview
     	:maxdepth: 2
 
-	overview/general_info
+    	overview/general_info
 
 .. toctree::
 	:caption: Getting Started
     	:maxdepth: 2
 
-	    getting_started/installation/installation
+	getting_started/installation/installation
         getting_started/quick_start/quick_start
 
 .. toctree::
@@ -68,7 +68,7 @@ allowing the flexibility that some other dihedral fitters lack.
     	:caption: Reference
     	:maxdepth: 2
 
-	reference/units
-	reference/user_notices
-	reference/credits
-    reference/citing_mosdef_dihedral_fit_python
+        reference/units
+        reference/user_notices
+        reference/credits
+        reference/citing_mosdef_dihedral_fit_python
