@@ -16,12 +16,12 @@ If you use this code for your research, please cite for following sources:
 
 .. code-block:: bibtex
 
-    @Inbook{MOSDEF_DIHEDRAL_FIT_PYTHON_2022,
+    @Inbook{MOSDEF_DIHEDRAL_FIT_2023_PYTHON,
 	author      = "Crawford, Brad and Quach, Co and Craven, Nicholas and Iacovella, Christopher R. and McCabe, Clare and Cummings, Peter T. and  Potoff, Jeffrey",
 	title       = "MoSDeF-dihedral-fit: A simple software package to fit dihedrals using the MoSDeF",
 	year        = "2023",
 	publisher   = "Github",
-	url         = "https://github.com/GOMC-WSU/MoSDeF-dihedral-fit"
+	url         = "https://github.com/GOMC-WSU/MoSDeF-dihedral-fit",
     }
 
 Download as :download:`BibTeX <mosdef_dihedral_fit_python.bib>` or :download:`RIS <mosdef_dihedral_fit_python.ris>`
@@ -37,16 +37,15 @@ Download as :download:`BibTeX <mosdef_dihedral_fit_python.bib>` or :download:`RI
 
 .. code-block:: bibtex
 
-    @software{MOSDEF_DIHEDRAL_FIT_2022_zenodo,
-	author      = Crawford, Brad and Quach, Co and Craven, Nicholas and Iacovella, Christopher R. and McCabe, Clare and Cummings, Peter T. and  Potoff, Jeffrey",
+    @Inbook{MOSDEF_DIHEDRAL_FIT_2023_ZENODO,
+	author      = "Crawford, Brad and Quach, Co and Craven, Nicholas and Iacovella, Christopher R. and McCabe, Clare and Cummings, Peter T. and  Potoff, Jeffrey",
 	title       = "MoSDeF-dihedral-fit: A simple software package to fit dihedrals using the MoSDeF",
 	year        = "2023",
 	publisher   = "Zenodo",
 	url         = "TBD",
-	doi	    = "TBD"
     }
 
-Download as :download:`BibTeX <mosdef_dihedral_fit_zenodo.bib>` or :download:`RIS <mosdef_dihedral_fit_zenodo.ris>`
+Download as :download:`BibTeX <mosdef_dihedral_fit_python.bib>` or :download:`RIS <mosdef_dihedral_fit_python.ris>`
 
 
 

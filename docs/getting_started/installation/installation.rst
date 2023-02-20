@@ -5,7 +5,7 @@ Installation
     :target: http://opensource.org/licenses/MIT
 
 Recommended installation is with `mamba <https://github.com/mamba-org/mamba>`_
-----------------------------------------------------------
+------------------------------------------------------------------------------
 ::
 
     $ mamba install -c conda-forge mosdef-dihedral-fit
