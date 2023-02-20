@@ -57,4 +57,4 @@ Please also cite the **MoSDeF** software:
 
 	* `GMSO <https://gmso.mosdef.org/en/stable/>`_ -- Flexible storage of chemical topology for molecular simulation
 
-    * `forcefield-utilities <https://github.com/mosdef-hub/forcefield-utilities/>`_
+	* `forcefield-utilities <https://github.com/mosdef-hub/forcefield-utilities/>`_
