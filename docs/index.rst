@@ -56,7 +56,7 @@ allowing the flexibility that some other dihedral fitters lack.
     	:maxdepth: 2
 
 	getting_started/installation/installation
-    	getting_started/quick_start/quick_start
+    getting_started/quick_start/quick_start
 
 .. toctree::
 	:caption: Topic Guides
