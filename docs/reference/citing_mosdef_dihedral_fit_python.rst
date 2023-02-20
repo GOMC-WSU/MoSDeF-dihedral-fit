@@ -46,7 +46,7 @@ Download as :download:`BibTeX <mosdef_dihedral_fit_python.bib>` or :download:`RI
 	doi	    = "TBD"
     }
 
-Download as :download:`BibTeX <mosdef_gomc_zenodo.bib>` or :download:`RIS <mosdef_gomc_zenodo.ris>`
+Download as :download:`BibTeX <mosdef_dihedral_fit_zenodo.bib>` or :download:`RIS <mosdef_dihedral_fit_zenodo.ris>`
 
 
 
