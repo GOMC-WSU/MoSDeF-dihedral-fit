@@ -9,7 +9,5 @@ Data Structures
 
 MoSDeF-dihderal-fit software functions
 --------------------------------------
-
-	.. autoclass:: mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc
-		:special-members: __init__
-		:members:
+	
+	.. autofunction:: mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc.fit_dihedral_with_gomc
