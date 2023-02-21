@@ -21,7 +21,7 @@ Select the desired variables, file, and set the temperature.
 
 .. code:: ipython3
 
-    # The MoSDeF force field (FF) XML file which will be used
+    # The MoSDeF force field (FF) XML file which will be used.
     FF_XML_file = 'path_to_file/oplsaa_ethane_HC_CT_CT_HC.xml'
 
     # The mol2 file which is used.
@@ -39,6 +39,9 @@ Select the desired variables, file, and set the temperature.
     # General is safe and recommended since we are using a single FF XML file.
     atom_type_naming_style = 'general'
 
+    # The GOMC binary path.
+    gomc_binary_directory = "path_to_GOMC_folder_GOMC_2_75/bin"
+
     # Load 1 or more Gaussian files (keys), and its value ([0]), which is a list of Gaussian points to remove
     # from the fitting process, where the first minimized Gaussian point is removed (i.e., ([0])).
     # More than 1 Gaussian file can be loaded, allowing the user to run multiple dihedral angles in separate file,
@@ -48,10 +51,10 @@ Select the desired variables, file, and set the temperature.
         'path_to_file/HC_CT_CT_HC_multiplicity_1.log': [0],
     }
 
-    # The dihedral which is being fit
+    # The dihedral which is being fit.
     fit_dihedral_atom_types = ['HC', 'CT', 'CT', 'HC']
 
-    # All the other dihedrals which can be zeroed in the fitting process, in a nexted list
+    # All the other dihedrals which can be zeroed in the fitting process, in a nested list
     zeroed_dihedrals = None
 
 Perform the dihedral fit using the Gaussian log file as the Quantum Mechanics (QM) engine
@@ -61,7 +64,7 @@ which are analytically converted from the standard OPLS dihedral fit.
 
 .. code:: ipython3
 
-    # run the "fit_dihedral_with_gomc" command
+    # Run the "fit_dihedral_with_gomc" command.
     fit_dihedral_with_gomc(
         fit_dihedral_atom_types,
         mol2_file,
