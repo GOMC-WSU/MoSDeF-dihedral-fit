@@ -10,13 +10,13 @@ MoSDeF-dihedral-fit Basics
 The **MoSDeF-dihedral-fit** program is an open-source, transparent, and lightweight Python software package capable
 of fitting dihedrals for existing forces fields.  This software fits the
 `Optimized Potentials for Liquid Simulations (OPLS) <https://pubs.acs.org/doi/10.1021/ja9621760>`_ style
-dihedrals, then also analytically converts them to the periodic/ `CHARMM <https://www.charmm.org>`_ dihedral and
+dihedrals, then also analytically converts them to the periodic/`CHARMM <https://www.charmm.org>`_ dihedral and
 Ryckaert-Bellemans (RB) torsion.
 
 The **MoSDeF-dihedral-fit** software produces dihedral fits for existing force fields, compatible with
 `GPU Optimized Monte Carlo (GOMC) <http://gomc.eng.wayne.edu>`_ and
 `Molecular Simulation Design Framework (MoSDeF) <https://mosdef.org>`_, with only tens of lines of python code,
-the `Gaussian <https://www.gaussin.com>`_ log files and a **mol2** file.
+the `Gaussian <https://www.gaussin.com>`_ log files, and a **mol2** file.
 
 .. note::
     Currently, this means that only the fourth (4th) cosine multiple or power is utilized in the dihedral fit.
@@ -28,7 +28,7 @@ the `Gaussian <https://www.gaussin.com>`_ log files and a **mol2** file.
 
 
 The `MoSDeF-GOMC <https://github.com/GOMC-WSU/MoSDeF-GOMC/tree/master/mosdef_gomc>`_ software package is used
-for the Molecular Mechanics (MM) calculation, which utilizes the
+for the Molecular Mechanics (MM) calculation, which utilizes 
 `GPU Optimized Monte Carlo (GOMC) <http://gomc.eng.wayne.edu>`_, the
 `Molecular Simulation Design Framework (MoSDeF) <https://mosdef.org>`_, and the
 `vmd-python <https://github.com/Eigenstate/vmd-python>`_ core software packages. For the Quantum Mechanics calculations,
@@ -38,7 +38,8 @@ fits the desired dihedral, accounting for multiple dihedrals simultaneously. The
 a wide range of allowable dihedral fits with different cosine term combinations, including plots for visual reference;
 from this information, the user can then select the best dihedral fit for the specific application.
 Additionally, the 1-4 interactions for the force fields can be explicitly set in the force field XML file,
-allowing the flexibility that some other dihedral fitters lack.
+allowing the flexibility that some other dihedral fitters lack. Lastly, the dihedral fits are compared by recalculating 
+the dihedral in **GOMC** and comparing it to the original **Gaussian** energies, ensuring a correct dihedral fit.  
 
 
 MoSDeF-dihedral-fit is a part of the MoSDeF ecosystem
