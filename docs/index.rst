@@ -44,7 +44,7 @@ the dihedral in **GOMC** and comparing it to the original **Gaussian** energies,
 
    #. **MoSDeF-dihedral-fit** is designed to automate the dihedral fit
 
-   #. **MoSDeF-dihedral-fit** permits a transparent dihedral fitting process, where the user can alter the input force field XML file, which is the standard input for all of the **MoSDeF** and software packages.
+   #. **MoSDeF-dihedral-fit** permits a transparent dihedral fitting process, where the user can alter the input force field XML file, which is the standard input for all of the **MoSDeF** software packages.
 
 .. toctree::
 	:caption: Overview
