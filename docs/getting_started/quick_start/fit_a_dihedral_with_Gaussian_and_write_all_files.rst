@@ -20,7 +20,7 @@ Import the required mbuild package.
     import unyt as u
     from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import fit_dihedral_with_gomc
 
-Select the desired variables, file, and set the temperature
+Select the desired variables, file, and set the temperature.
 
 .. code:: ipython3
 
