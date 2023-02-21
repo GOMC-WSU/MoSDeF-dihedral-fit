@@ -40,6 +40,7 @@ allowing the flexibility that some other dihedral fitters lack. Lastly, the dihe
 the dihedral in **GOMC** and comparing it to the original **Gaussian** energies, ensuring a correct dihedral fit.  
 
 
+
 MoSDeF-dihedral-fit is a part of the MoSDeF ecosystem
 -----------------------------------------------------
 The **MoSDeF-dihedral-fit** software acts as manager between
@@ -58,3 +59,18 @@ The **MoSDeF** software consists of the following core packages:
 	* `GMSO <https://gmso.mosdef.org/en/stable/>`_ -- Flexible storage of chemical topology for molecular simulation
 
 	* `forcefield-utilities <https://github.com/mosdef-hub/forcefield-utilities/>`_
+
+
+
+**MoSDeF-dihedral-fit License**:
+
+.. image:: https://img.shields.io/badge/license-MIT-blue.svg
+    :target: http://opensource.org/licenses/MIT
+
+**vmd-python License**:
+
+The **vmd-python** software is licensed by the Theoretical and Computational Biophysics Group at the Beckman Institute for Advanced Science and Technology at the University of Illinois at Urbana-Champaign, which is a modified version of VMD. 
+
+The vmd-python website is https://github.com/Eigenstate/vmd-python
+
+The official VMD web page is http://www.ks.uiuc.edu/Research/vmd

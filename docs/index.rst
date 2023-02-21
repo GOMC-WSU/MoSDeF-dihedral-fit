@@ -37,6 +37,14 @@ allowing the flexibility that some other dihedral fitters lack. Lastly, the dihe
 the dihedral in **GOMC** and comparing it to the original **Gaussian** energies, ensuring a correct dihedral fit.  
 
 
+**MoSDeF-dihedral-fit Highlights**:
+   #. With a **Gaussian** log file and a few user inputs, the user can easily fit a dihedral.
+
+   #. **MoSDeF-dihedral-fit** is designed to automate the dihedral fit
+
+   #. **MoSDeF-dihedral-fit** permits a transparent dihedral fitting process, where the user can alter the input force field XML file, which is the standard input for all of the **MoSDeF** software packages.
+
+
 **MoSDeF-dihedral-fit License**:
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg
@@ -51,13 +59,6 @@ The vmd-python website is https://github.com/Eigenstate/vmd-python
 The official VMD web page is http://www.ks.uiuc.edu/Research/vmd
 
 
-
-**MoSDeF-dihedral-fit Highlights**:
-   #. With a **Gaussian** log file and a few user inputs, the user can easily fit a dihedral.
-
-   #. **MoSDeF-dihedral-fit** is designed to automate the dihedral fit
-
-   #. **MoSDeF-dihedral-fit** permits a transparent dihedral fitting process, where the user can alter the input force field XML file, which is the standard input for all of the **MoSDeF** software packages.
 
 .. toctree::
 	:caption: Overview
