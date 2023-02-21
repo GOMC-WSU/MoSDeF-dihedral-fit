@@ -13,7 +13,7 @@ Ryckaert-Bellemans (RB) torsion.
 The **MoSDeF-dihedral-fit** software produces dihedral fits for existing force fields, compatible with
 `GPU Optimized Monte Carlo (GOMC) <http://gomc.eng.wayne.edu>`_ and
 `Molecular Simulation Design Framework (MoSDeF) <https://mosdef.org>`_, with only tens of lines of python code,
-the `Gaussian <https://www.gaussin.com>`_ log files and a **mol2** file.
+the `Gaussian <https://www.gaussin.com>`_ log files, and a **mol2** file.
 
 .. note::
     Currently, this means that only the fourth (4th) cosine multiple or power is utilized in the dihedral fit.
