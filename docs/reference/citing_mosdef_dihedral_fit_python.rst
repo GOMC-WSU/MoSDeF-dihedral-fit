@@ -10,7 +10,7 @@ If you use this code for your research, please cite for following sources:
 
 **ACS**
 
-    Crawford, Brad and Quach, Co and Craven, Nicholas and Iacovella, Christopher R. and McCabe, Clare and Cummings, Peter T. and  Potoff, Jeffrey.  MoSDeF-GOMC: Python software for the creation of scientific workflows for the Monte Carlo simulation engine GOMC, https://github.com/GOMC-WSU/MoSDeF-dihedral-fit, 2023.
+    Crawford, Brad and Quach, Co and Craven, Nicholas and Iacovella, Christopher R. and McCabe, Clare and Cummings, Peter T. and  Potoff, Jeffrey.  MoSDeF-dihedral-fit: A simple software package to fit dihedrals via the MoSDeF software., https://github.com/GOMC-WSU/MoSDeF-dihedral-fit, 2023.
 
 **BibTeX**
 
@@ -18,7 +18,7 @@ If you use this code for your research, please cite for following sources:
 
     @Inbook{MOSDEF_DIHEDRAL_FIT_2023_PYTHON,
 	author      = "Crawford, Brad and Quach, Co and Craven, Nicholas and Iacovella, Christopher R. and McCabe, Clare and Cummings, Peter T. and  Potoff, Jeffrey",
-	title       = "MoSDeF-dihedral-fit: A simple software package to fit dihedrals using the MoSDeF",
+	title       = "MoSDeF-dihedral-fit: A simple software package to fit dihedrals via the MoSDeF software.",
 	year        = "2023",
 	publisher   = "Github",
 	url         = "https://github.com/GOMC-WSU/MoSDeF-dihedral-fit",
@@ -31,7 +31,7 @@ Download as :download:`BibTeX <mosdef_dihedral_fit_python.bib>` or :download:`RI
 
 **ACS**
 
-    Crawford, Brad and Quach, Co and Craven, Nicholas and Iacovella, Christopher R. and McCabe, Clare and Cummings, Peter T. and  Potoff, Jeffrey.  MoSDeF-dihedral-fit: A simple software package to fit dihedrals using the MoSDeF, TBD, 2023.
+    Crawford, Brad and Quach, Co and Craven, Nicholas and Iacovella, Christopher R. and McCabe, Clare and Cummings, Peter T. and  Potoff, Jeffrey.  MoSDeF-dihedral-fit: A simple software package to fit dihedrals via the MoSDeF software., TBD, 2023.
 
 **BibTeX**
 
@@ -39,7 +39,7 @@ Download as :download:`BibTeX <mosdef_dihedral_fit_python.bib>` or :download:`RI
 
     @Inbook{MOSDEF_DIHEDRAL_FIT_2023_ZENODO,
 	author      = "Crawford, Brad and Quach, Co and Craven, Nicholas and Iacovella, Christopher R. and McCabe, Clare and Cummings, Peter T. and  Potoff, Jeffrey",
-	title       = "MoSDeF-dihedral-fit: A simple software package to fit dihedrals using the MoSDeF",
+	title       = "MoSDeF-dihedral-fit: A simple software package to fit dihedrals via the MoSDeF software.",
 	year        = "2023",
 	publisher   = "Zenodo",
 	url         = "TBD",

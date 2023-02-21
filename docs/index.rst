@@ -1,5 +1,5 @@
-MoSDeF-dihedral-fit: A simple software package to fit dihedrals using the MoSDeF
-================================================================================
+MoSDeF-dihedral-fit: A simple software package to fit dihedrals via the MoSDeF software
+=======================================================================================
 
 .. image:: https://img.shields.io/badge/license-MIT-blue.svg
     :target: http://opensource.org/licenses/MIT

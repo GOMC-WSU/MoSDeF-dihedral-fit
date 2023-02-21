@@ -19,3 +19,7 @@ Units
         * `forcefield-utilities <https://github.com/mosdef-hub/forcefield-utilities/>`_
 
         * `Gaussian <https://gaussian.com>`_
+
+	* `Visual Molecular Dynamics (VMD) <https://www.ks.uiuc.edu/Research/vmd/>`_
+
+	* `vmd-python <https://github.com/Eigenstate/vmd-python>`_
