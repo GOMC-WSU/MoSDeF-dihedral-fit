@@ -44,13 +44,12 @@ the dihedral in **GOMC** and comparing it to the original **Gaussian** energies,
 
 **vmd-python License**:
 
-This software is classified as a "derivative work" of the original Visual Molecular Dynamics software. It uses the main VMD source code and Python compilation options as well as code I have written for simple compilation and installation, as well as several patches I have applied.
+The **vmd-python** software is licensed by the Theoretical and Computational Biophysics Group at the Beckman Institute for Advanced Science and Technology at the University of Illinois at Urbana-Champaign, which is a modified version of VMD. 
 
-As such, this is a MODIFIED VERSION of VMD and is not the original software distributed by Illinois.
+The vmd-python website is https://github.com/Eigenstate/vmd-python
 
-"This software includes code developed by the Theoretical and Computational Biophysics Group at the Beckman Institute for Advanced Science and Technology at the University of Illinois at Urbana-Champaign."
+The official VMD web page is http://www.ks.uiuc.edu/Research/vmd
 
-Official VMD web page: http://www.ks.uiuc.edu/Research/vmd
 
 
 **MoSDeF-dihedral-fit Highlights**:
