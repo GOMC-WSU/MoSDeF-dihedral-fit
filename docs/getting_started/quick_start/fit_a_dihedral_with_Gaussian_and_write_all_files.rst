@@ -6,7 +6,7 @@ Select the Inputs and Fit the Dihedral
 
 Fit the dihedral for Ethane
 ---------------------------
-The ethane HC-CT-CT-HC dihedral fit, where nine (9) of the HC-CT-CT-HC dihedral are fit simultaneously.
+The ethane HC-CT-CT-HC dihedral fit example is provided below, where nine (9) of the HC-CT-CT-HC dihedral are fit simultaneously.
 
 
 .. note::
