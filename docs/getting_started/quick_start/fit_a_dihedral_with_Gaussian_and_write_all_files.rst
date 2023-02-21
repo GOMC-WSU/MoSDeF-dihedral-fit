@@ -13,7 +13,7 @@ The ethane HC-CT-CT-HC dihedral fit example is provided below, where nine (9) of
     The GOMC software need to be installed manually, outside of this Python install,
     with it's directory/path specified in the dihedral fit function.
 
-Import the required mbuild package.
+Import the required packages.
 
 .. code:: ipython3
 
@@ -33,17 +33,17 @@ Select the desired variables, file, and set the temperature.
     # The temperature of the Molecular Mechanics (MM) simulation.
     temperature_in_unyt_units = 298.15 * u.Kelvin
 
-    # Choose mixing rule (override_VDWGeometricSigma_bool) to override use the bool (True or False)
+    # Choose mixing rule (override_VDWGeometricSigma_bool) to override the value (True or False)
     # that was chosen in the force field (FF) XML file.  This variable is not required and will be
-    # selected automatically; however, you should override to the correct setting if unsure.
+    # selected automatically; however, you should override it if you are unsure of the setting.
     override_VDWGeometricSigma_bool = True
 
     # Atom type naming convention ( str, optional, default=’all_unique’, (‘general’ or ‘all_unique’) )
     # General is safe and recommended since we are using a single FF XML file.
     atom_type_naming_style = 'general'
 
-    # Load 1 or more Gaussian file (key), and the value ([0]) is a list of Gaussian point to remove
-    # from the fitting process, where the is the first minimized Gaussian point is removed (i.e., ([0])).
+    # Load 1 or more Gaussian files (keys), and its value ([0]), which is a list of Gaussian points to remove
+    # from the fitting process, where the first minimized Gaussian point is removed (i.e., ([0])).
     # More than 1 Gaussian file can be loaded, allowing the user to run multiple dihedral angles in separate file,
     # minimizing the time required to run the simulations
     # (i.e., the user can split them up into many simulations to obtain the full dihedral rotation).
@@ -58,7 +58,7 @@ Select the desired variables, file, and set the temperature.
     zeroed_dihedrals = None
 
 Perform the dihedral fit using the Gaussian log file as the Quantum Mechanics (QM) engine
-and GOMC Molecular Mechanics (MM) engine, and write out all the files fit via the standard
+and GOMC Molecular Mechanics (MM) engine, and write out all the viable dihedral fits via the standard
 OPLS equation.  It also outputs the periodic dihedral format and the RB torsions format,
 which are analytically converted from the standard OPLS dihedral fit.
 
