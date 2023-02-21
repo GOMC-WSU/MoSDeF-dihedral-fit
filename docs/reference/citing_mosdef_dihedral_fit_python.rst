@@ -57,3 +57,8 @@ Please also cite the **MoSDeF** software:
 	* `GMSO <https://gmso.mosdef.org/en/stable/>`_ -- Flexible storage of chemical topology for molecular simulation
 
 	* `forcefield-utilities <https://github.com/mosdef-hub/forcefield-utilities/>`_
+
+	* `Visual Molecular Dynamics (VMD) <https://www.ks.uiuc.edu/Research/vmd/>`_
+
+	* `vmd-python <https://github.com/Eigenstate/vmd-python>`_
+
