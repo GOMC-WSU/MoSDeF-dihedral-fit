@@ -7,7 +7,7 @@ MoSDeF-dihedral-fit: A simple software package to fit dihedrals via the MoSDeF s
 The **MoSDeF-dihedral-fit** program is an open-source, transparent, and lightweight Python software package capable
 of fitting dihedrals for existing forces fields.  This software fits the
 `Optimized Potentials for Liquid Simulations (OPLS) <https://pubs.acs.org/doi/10.1021/ja9621760>`_ style
-dihedrals, then also analytically converts them to the periodic/ `CHARMM <https://www.charmm.org>`_ dihedral and
+dihedrals, then also analytically converts them to the periodic/`CHARMM <https://www.charmm.org>`_ dihedral and
 Ryckaert-Bellemans (RB) torsion.
 
 The **MoSDeF-dihedral-fit** software produces dihedral fits for existing force fields, compatible with
