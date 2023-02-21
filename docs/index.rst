@@ -1,8 +1,6 @@
 MoSDeF-dihedral-fit: A simple software package to fit dihedrals via the MoSDeF software
 =======================================================================================
 
-.. image:: https://img.shields.io/badge/license-MIT-blue.svg
-    :target: http://opensource.org/licenses/MIT
 
 The **MoSDeF-dihedral-fit** program is an open-source, transparent, and lightweight Python software package capable
 of fitting dihedrals for existing forces fields.  This software fits the
@@ -37,6 +35,22 @@ from this information, the user can then select the best dihedral fit for the sp
 Additionally, the 1-4 interactions for the force fields can be explicitly set in the force field XML file,
 allowing the flexibility that some other dihedral fitters lack. Lastly, the dihedral fits are compared by recalculating 
 the dihedral in **GOMC** and comparing it to the original **Gaussian** energies, ensuring a correct dihedral fit.  
+
+
+**MoSDeF-dihedral-fit License**:
+
+.. image:: https://img.shields.io/badge/license-MIT-blue.svg
+    :target: http://opensource.org/licenses/MIT
+
+**vmd-python License**:
+
+This software is classified as a "derivative work" of the original Visual Molecular Dynamics software. It uses the main VMD source code and Python compilation options as well as code I have written for simple compilation and installation, as well as several patches I have applied.
+
+As such, this is a MODIFIED VERSION of VMD and is not the original software distributed by Illinois.
+
+"This software includes code developed by the Theoretical and Computational Biophysics Group at the Beckman Institute for Advanced Science and Technology at the University of Illinois at Urbana-Champaign."
+
+Official VMD web page: http://www.ks.uiuc.edu/Research/vmd
 
 
 **MoSDeF-dihedral-fit Highlights**:

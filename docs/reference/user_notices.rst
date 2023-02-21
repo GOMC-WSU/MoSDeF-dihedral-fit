@@ -1,8 +1,6 @@
 ============
 User Notices
 ============
-.. image:: https://img.shields.io/badge/license-MIT-blue.svg
-    :target: http://opensource.org/licenses/MIT
 
 There are some critical items to complete and consider when using the **MoSDeF-dihedral-fit** package:
 

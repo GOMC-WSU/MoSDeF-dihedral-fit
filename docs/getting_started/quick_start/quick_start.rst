@@ -3,9 +3,6 @@
 -----------
 Quick Start
 -----------
-.. image:: https://img.shields.io/badge/license-MIT-blue.svg
-    :target: http://opensource.org/licenses/MIT
-
 
 .. note::
     The GOMC software need to be installed manually, outside of this Python install,

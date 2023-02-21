@@ -1,7 +1,5 @@
 Examples Repositories
 =====================
-.. image:: https://img.shields.io/badge/license-MIT-blue.svg
-    :target: http://opensource.org/licenses/MIT
 
 Simple Examples
 ---------------

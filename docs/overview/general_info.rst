@@ -1,8 +1,6 @@
 
 General Information
 ===================
-.. image:: https://img.shields.io/badge/license-MIT-blue.svg
-    :target: http://opensource.org/licenses/MIT
 
 
 MoSDeF-dihedral-fit Basics

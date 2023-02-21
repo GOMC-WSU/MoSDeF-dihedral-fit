@@ -1,8 +1,6 @@
 ======
 Citing
 ======
-.. image:: https://img.shields.io/badge/license-MIT-blue.svg
-    :target: http://opensource.org/licenses/MIT
 
 If you use this code for your research, please cite for following sources:
 
@@ -45,7 +43,7 @@ Download as :download:`BibTeX <mosdef_dihedral_fit_python.bib>` or :download:`RI
 	url         = "TBD",
     }
 
-Download as :download:`BibTeX <mosdef_dihedral_fit_python.bib>` or :download:`RIS <mosdef_dihedral_fit_python.ris>`
+Download as :download:`BibTeX <mosdef_dihedral_fit_zenodo.bib>` or :download:`RIS <mosdef_dihedral_fit_zenodo.ris>`
 
 
 
