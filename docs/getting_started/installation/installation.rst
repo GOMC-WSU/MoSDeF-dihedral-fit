@@ -38,8 +38,8 @@ ensure all of the dependencies are installed::
 
 .. note::
     The installation instructions are for ``Unix`` and ``OSX``.
-    If ``Windows`` is being used, you need to use a virtual machine or the Linux subsystem,
-    since some parts of this software or its dependencies could not be compatible with Windows.
+    If ``Windows`` is being used, you need to use a virtual machine or the ``Linux`` subsystem,
+    since some parts of this software or its dependencies could not be compatible with ``Windows``.
 
 
 Install pre-commit
