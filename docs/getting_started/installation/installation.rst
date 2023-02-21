@@ -47,7 +47,7 @@ Install pre-commit
 
 To maintain uniform coding, this sofware utilizes the `pre-commit <https://pre-commit.com/>`_ package.
 
-To check all the file, you can run::
+To check all the files, you can run::
 
      $ pre-commit run --all-files
 
@@ -63,9 +63,9 @@ Testing your installation
 
 The ``MoSDeF-dihedral-fit`` sofware uses `pytest <https://docs.pytest.org/en/stable/>`_ to analyze the code for
 errors, bugs, code changes, accuracy, and to verify that the existing implementation is correct.
-This sofware auto-installs the ``pytest`` package with the mosdef_gomc environment.
+This sofware auto-installs the ``pytest`` package with the ``mosdef_gomc`` environment.
 
-To conduct these unit tests via pytest, perform the following command from the base directory::
+To conduct these unit tests via ``pytest``, perform the following command from the base directory::
 
     $ pytest -v
 
@@ -73,7 +73,7 @@ Building the documentation
 --------------------------
 
 ``MoSDeF-dihedral`` fit documentation was constructed using `sphinx <https://www.sphinx-doc.org/en/master/index.html>`_.
-This sofware auto-installs the ``sphinx`` package with the mosdef_gomc environment.
+This sofware auto-installs the ``sphinx`` package with the ``mosdef_gomc`` environment.
 
 The ``docs`` can be built locally with the following commands when in the ``docs`` directory::
 
