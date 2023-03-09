@@ -137,7 +137,6 @@ def fit_dihedral_with_gomc(
         'general' convention safely, because there is no potential of atom type/class overlap
         with another force field file.
 
-
         The 'general' convention only tests if the sigma, epsilons, mass, and Mie-n values are
         identical between the different molecules (residues in this context) and their applied
         force fields and DOES NOT check that any or all of the bonded parameters have the same
@@ -152,15 +151,14 @@ def fit_dihedral_with_gomc(
         the general method can be applied; if not, it defaults to the 'all_unique' method.
 
         Example of CHARMM style atom types in an all-atom ethane and ethanol system:
+
         * Ethane: alkane carbon = CT, alkane hydrogen = HC
         * Ethanol: alkane carbon = CT, alkane hydrogen = HC , oxygen in alcohol = OH, hydrogen in alcohol = OH
 
         This is only permitted when the following is true; otherwise it will default to the the 'all_unique':
-        * All the MoSDeF force field XML's atom classes' non-bonded parameters
-        (sigma, epsilon, mass, and Mie-n power constant) values are THE SAME.
-        * If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
-        gomc_fix_bonds, or gomc_fix_angles NOT IN any other residue/molecule, the 'all_unique' type
-        will be used.
+        * All the MoSDeF force field XML's atom classes' non-bonded parameters (sigma, epsilon, mass, and Mie-n power constant) values are THE SAME.
+
+        * If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles, gomc_fix_bonds, or gomc_fix_angles NOT IN any other residue/molecule, the 'all_unique' type will be used.
 
         'all_unique':
         The 'all_unique' convention is the SAFE way to parameterize the system.
@@ -171,15 +169,18 @@ def fit_dihedral_with_gomc(
         but have less bonded class parameters.
 
         Example of CHARMM style atom types in an all-atom ethane and ethanol system:
+
         * Ethane: alkane carbon type 0 = CT0, alkane hydrogen type 0 = HC0
+
         * Ethanol: alkane carbon type 1 = CT1, alkane carbon type 2 = CT2,
+
         alkane hydrogen type 1 = HC1 , oxygen in alcohol type 0 = OH0, hydrogen in alcohol type 0 = OH0
 
         This is selected when auto-selected when:
-        * All the MoSDeF force field XML's atom classes' non-bonded parameters
-        (sigma, epsilon, mass, and Mie-n power constant) values are NOT THE SAME.
-        * If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
-        gomc_fix_bonds, or gomc_fix_angles are IN any other residue/molecule.
+        * All the MoSDeF force field XML's atom classes' non-bonded parameters (sigma, epsilon, mass, and Mie-n power constant) values are NOT THE SAME.
+
+        * If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles, gomc_fix_bonds, or gomc_fix_angles are IN any other residue/molecule.
+
     gomc_cpu_cores: int, default=1
         The number of CPU-cores that are used to perform the GOMC simulations, required
         for the Molecular Mechanics (MM) energy calulations.
@@ -194,11 +195,13 @@ def fit_dihedral_with_gomc(
         differently as a check.  These are compared between the following calculations:
 
         * QM - MM energy data vs. the dihedral function fit:
+
         For the MM calculations, the 'fit_dihedral_atom_types' and
         'zeroed_dihedral_atom_types' are dihedral energies are set to zero, which is
         during the fitting process with 1 or more of the same dihedrals being fit simultaneously.
 
         * QM vs. the MM energy data:
+
         For the MM calculations, the 'fit_dihedral_atom_types' are set to the values which were
         fit for the specific cosine combinations during the fitting process with 1 or more of the
         same dihedrals being fit simultaneously, and the 'zeroed_dihedral_atom_types' are
@@ -208,8 +211,7 @@ def fit_dihedral_with_gomc(
         Where the QM data is defined as the actual data; this is the fractional difference
         of the dihedral's calculated R-squared values between:
         * The QM-MM fitting process, where the fit MM dihedral k-values are zero (0).
-        * The MM calculations where the fit k-value are entered in the MM data and
-        compared to the QM data.
+        * The MM calculations where the fit k-value are entered in the MM data and compared to the QM data.
 
         fit_dihedral_atom_types,
         mol2_selection,
@@ -990,7 +992,6 @@ def fit_dihedral_with_gomc(
         f"{'k3_kcal_per_mol': <25} "
         f"{'k4_kcal_per_mol': <25} "
         f"{'r_squared': <25} "
-        f" \n"
     )
 
     # **********************************
@@ -1524,14 +1525,13 @@ def fit_dihedral_with_gomc(
 
         # wrie out the k constants and R^2
         opls_dihedral_k_constants_fit_energy_kcal_mol_txt_file.write(
-            f"{k_type_i: <25} "
+            f"\n{k_type_i: <25} "
             f"{parameters[0]: <25} "
             f"{parameters[1]: <25} "
             f"{parameters[2]: <25} "
             f"{parameters[3]: <25} "
             f"{parameters[4]: <25} "
             f"{r_squared: <25} "
-            f" \n"
         )
 
     # plot the data point that it is being fit too
@@ -1617,7 +1617,6 @@ def fit_dihedral_with_gomc(
         f"{'d4_kcal_per_mol': <25} "
         f"{'d5_kcal_per_mol': <25} "
         f"{'r_squared': <25} "
-        f" \n"
     )
 
     # create the RB torsions file
@@ -1633,7 +1632,6 @@ def fit_dihedral_with_gomc(
         f"{'k4_kcal_per_mol': <25} "
         f"{'k5_kcal_per_mol': <25} "
         f"{'r_squared': <25} "
-        f" \n"
     )
 
 
@@ -1771,19 +1769,19 @@ def fit_dihedral_with_gomc(
         # Added the '0_' to the 'non_zero_k_constants' as the k0 needed
         # for the OPLS conversion to the periodic/CHARMM style.
         periodic_dihedral_k_constants_fit_energy_kcal_mol_txt_file.write(
-            f"{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
+            f"\n{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
             f"{periodic_dihedral_k_n_d_values[0][0]: <25} "
             f"{periodic_dihedral_k_n_d_values[1][0]: <25} "
             f"{periodic_dihedral_k_n_d_values[2][0]: <25} "
             f"{periodic_dihedral_k_n_d_values[3][0]: <25} "
             f"{periodic_dihedral_k_n_d_values[4][0]: <25} "
             f"{periodic_dihedral_k_n_d_values[5][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[0][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[1][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[2][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[3][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[4][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[5][1]: <25} "
+            f"{int(periodic_dihedral_k_n_d_values[0][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[1][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[2][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[3][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[4][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[5][1]): <25} "
             f"{periodic_dihedral_k_n_d_values[0][2]: <25} "
             f"{periodic_dihedral_k_n_d_values[1][2]: <25} "
             f"{periodic_dihedral_k_n_d_values[2][2]: <25} "
@@ -1791,7 +1789,6 @@ def fit_dihedral_with_gomc(
             f"{periodic_dihedral_k_n_d_values[4][2]: <25} "
             f"{periodic_dihedral_k_n_d_values[5][2]: <25} "
             f"{opls_fit_data_r_squared_list[opls_fit_i]: <25} "
-            f" \n"
         )
 
         # Write the RB torsion constants to file.
@@ -1800,7 +1797,7 @@ def fit_dihedral_with_gomc(
         # Added the '0_' to the 'non_zero_k_constants' as the k0 needed
         # for the OPLS conversion to the RB torsion style.
         RB_torsion_k_constants_fit_energy_kcal_mol_txt_file.write(
-            f"{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
+            f"\n{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
             f"{RB_torsion_k_values[0]: <25} "
             f"{RB_torsion_k_values[1]: <25} "
             f"{RB_torsion_k_values[2]: <25} "
@@ -1808,7 +1805,6 @@ def fit_dihedral_with_gomc(
             f"{RB_torsion_k_values[4]: <25} "
             f"{RB_torsion_k_values[5]: <25} "
             f"{opls_fit_data_r_squared_list[opls_fit_i]: <25} "
-            f" \n"
         )
 
         # *********************************
@@ -1939,7 +1935,7 @@ def fit_dihedral_with_gomc(
                 f'{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}_OPLS_fit_{opls_fit_q}_dihedral.inp',
                 fit_dihedral_atom_types,
                 fit_dihedral_opls_k_0_1_2_3_4_values=opls_k_constant_fitted_q_list,
-                zeroed_dihedral_atom_types=None,
+                zeroed_dihedral_atom_types=zeroed_dihedral_atom_types,
             )
 
             # **************************************************************
@@ -2084,11 +2080,10 @@ def fit_dihedral_with_gomc(
                     f"{'k2_OPLS_kcal_mol': <30} "
                     f"{'k3_OPLS_kcal_mol': <30} "
                     f"{'k4_OPLS_kcal_mol': <30} "
-                    f" \n"
                 )
 
             gomc_fitted_gaussian_kcal_mol_energy_data_txt_file.write(
-                f"{Gaussian_minus_GOMC_data_fitted_dihedral_degrees_list[q_angle]: <30} "
+                f"\n{Gaussian_minus_GOMC_data_fitted_dihedral_degrees_list[q_angle]: <30} "
                 f"{GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list[q_angle]: <30} "
                 f"{Guassian_data_total_energy_kcal_per_mol_normalize_list[q_angle]: <30} "
                 f"{Gaussian_minus_GOMC_data_fitted_total_energy_kcal_per_mol_normalized_list[q_angle]: <30} "
@@ -2097,7 +2092,6 @@ def fit_dihedral_with_gomc(
                 f"{str(opls_k_constant_fitted_q_list[2]): <30} "
                 f"{str(opls_k_constant_fitted_q_list[3]): <30} "
                 f"{str(opls_k_constant_fitted_q_list[4]): <30} "
-                f" \n"
                 )
 
         # Compare original fit vs run through GOMC as a validation test case
