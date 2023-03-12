@@ -1,9 +1,6 @@
 import numpy as np
-import unyt as u
 import math
 
-import warnings
-from warnings import warn
 
 def round_to_sig_figs(value, sig_figs=3):
     """Round a number to the selected number of significant figures.
@@ -17,13 +14,13 @@ def round_to_sig_figs(value, sig_figs=3):
             significant figures.
         sig_figs: int, default=3
             The number significant figures that the 'value' variable
-            will be rounded too.
+            will be rounded too. If sig_fig=0, it will return 0.0.
 
         Returns
         -------
         value_rounded_to_sig_figs: float
             The input 'value' variable rounded to the selected number
-            significant figures.
+            significant figures. If sig_fig=0, it will return 0.0.
     """
     if value == 0:
         value_rounded_to_sig_figs = 0
@@ -81,7 +78,7 @@ def normalize_vector(vector):
 
     Returns
     -------
-    normal_vector: np.array, or floats or integers
+    normal_vector: ndarray, or floats or integers
         The normalized vector from the provided 'vector', with the
         same dimensions.
     """
