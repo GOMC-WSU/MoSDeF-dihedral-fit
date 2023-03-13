@@ -42,33 +42,6 @@ def round_to_sig_figs(value, sig_figs=3):
 # (START)
 # **************************************************************
 
-def normalize_vector_length(vector):
-    """Generates the normalized vector constant from a given vector.
-
-        Generates the normalized vector constant from a given vector.
-
-        Parameters
-        ----------
-        vector: list or np.array, or floats or integers
-            A vector in a list of np.array of any dimension.
-
-        Returns
-        -------
-        normal_vector_length: float
-            The normalized vector length or constant from the provided 'vector'.
-        """
-    vector = np.array(vector)
-
-    for v_iter, v_value in enumerate(vector):
-        if v_iter == 0:
-            squared_iter = v_value**2
-        else:
-            squared_iter += v_value ** 2
-
-    normal_vector_length = np.sqrt(squared_iter)
-
-    return normal_vector_length
-
 def normalize_vector(vector):
     """Generates the normalized vector from a given vector.
 
@@ -86,7 +59,7 @@ def normalize_vector(vector):
         same dimensions.
     """
     vector = np.array(vector)
-    normalized_length = normalize_vector_length(vector)
+    normalized_length = np.linalg.norm(vector)
 
     if normalized_length == 0:
        raise ValueError(
@@ -123,15 +96,14 @@ def angle_between_2_vectors(vector_1, vector_2):
     normal_vector_2 = normalize_vector(vector_2)
 
     # get the required divisor 'normal_1_times_normal_2' and ensure it it not zero (0)
-    if normalize_vector_length(vector_1) == 0 or normalize_vector_length(vector_2) == 0:
+    if np.linalg.norm(vector_1) == 0 or np.linalg.norm(vector_2) == 0:
         raise ValueError(
             f"ERROR: The 'vector_1' or 'vector_2', and  |vector_1||vector_2| == 0, which means the \n"
             f"angle can not be calculated due to the divisor being zero in the formula; \n"
             f"angle = arccos[(vector_1 dot vector_2)/(|vector_1||vector_2|)]"
         )
 
-    arc_cos_value = np.dot(normal_vector_1, normal_vector_2) /\
-                    (normalize_vector_length(vector_1) * normalize_vector_length(vector_2))
+    arc_cos_value = np.dot(normal_vector_1, normal_vector_2) / (np.linalg.norm(vector_1) * np.linalg.norm(vector_2))
 
     # ensure arc_cos_value  is -1<= arc_cos_value <= 1
     # ... not 1.000000001 or -1.000000001 or it will yield 'nan'
