@@ -1,4 +1,5 @@
 import os
+import shutil
 import pandas as pd
 import numpy as np
 import mbuild as mb
@@ -406,7 +407,7 @@ def fit_dihedral_with_gomc(
     gomc_runs_folder_name = 'GOMC_simulations'
 
     if os.path.isdir(gomc_runs_folder_name):
-        os.rmdir(gomc_runs_folder_name)
+        shutil.rmtree(gomc_runs_folder_name)
     os.mkdir(gomc_runs_folder_name)
 
     # The gomc raw energy filename in Kelvin Energies
@@ -495,8 +496,8 @@ def fit_dihedral_with_gomc(
 
     # delete the 'xyz_and_coor_files' folder, if it exists, and create a new 'xyz_and_coor_files' folder
     xyz_xsc_coor_files_directory = "xyz_restart_xsc_coor_files"
-    if os.isdir(xyz_xsc_coor_files_directory):
-        os.rmdir(xyz_xsc_coor_files_directory)
+    if os.path.isdir(xyz_xsc_coor_files_directory):
+        shutil.rmtree(xyz_xsc_coor_files_directory)
     os.mkdir(xyz_xsc_coor_files_directory)
 
     # write all the xyz coordinate from the Guassian optimized coordinate file in the 'xyz_files' folder
@@ -1009,7 +1010,6 @@ def fit_dihedral_with_gomc(
         f"{'k3_kcal_per_mol': <25} "
         f"{'k4_kcal_per_mol': <25} "
         f"{'r_squared': <25} "
-        f" \n"
     )
 
     # **********************************
@@ -1579,14 +1579,13 @@ def fit_dihedral_with_gomc(
 
         # wrie out the k constants and R^2
         opls_dihedral_k_constants_fit_energy_kcal_mol_txt_file.write(
-            f"{k_type_i: <25} "
+            f"\n{k_type_i: <25} "
             f"{parameters[0]: <25} "
             f"{parameters[1]: <25} "
             f"{parameters[2]: <25} "
             f"{parameters[3]: <25} "
             f"{parameters[4]: <25} "
             f"{r_squared: <25} "
-            f" \n"
         )
 
     # plot the data point that it is being fit too
@@ -1677,7 +1676,6 @@ def fit_dihedral_with_gomc(
         f"{'d4_kcal_per_mol': <25} "
         f"{'d5_kcal_per_mol': <25} "
         f"{'r_squared': <25} "
-        f" \n"
     )
 
     # create the RB torsions file
@@ -1693,7 +1691,6 @@ def fit_dihedral_with_gomc(
         f"{'k4_kcal_per_mol': <25} "
         f"{'k5_kcal_per_mol': <25} "
         f"{'r_squared': <25} "
-        f" \n"
     )
 
     # loop thru the different 'non_zero_k_constants' for the OPLS dihedral
@@ -1830,19 +1827,19 @@ def fit_dihedral_with_gomc(
         # Added the '0_' to the 'non_zero_k_constants' as the k0 needed
         # for the OPLS conversion to the periodic/CHARMM style.
         periodic_dihedral_k_constants_fit_energy_kcal_mol_txt_file.write(
-            f"{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
+            f"\n{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
             f"{periodic_dihedral_k_n_d_values[0][0]: <25} "
             f"{periodic_dihedral_k_n_d_values[1][0]: <25} "
             f"{periodic_dihedral_k_n_d_values[2][0]: <25} "
             f"{periodic_dihedral_k_n_d_values[3][0]: <25} "
             f"{periodic_dihedral_k_n_d_values[4][0]: <25} "
             f"{periodic_dihedral_k_n_d_values[5][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[0][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[1][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[2][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[3][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[4][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[5][1]: <25} "
+            f"{int(periodic_dihedral_k_n_d_values[0][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[1][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[2][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[3][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[4][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[5][1]): <25} "
             f"{periodic_dihedral_k_n_d_values[0][2]: <25} "
             f"{periodic_dihedral_k_n_d_values[1][2]: <25} "
             f"{periodic_dihedral_k_n_d_values[2][2]: <25} "
@@ -1850,7 +1847,6 @@ def fit_dihedral_with_gomc(
             f"{periodic_dihedral_k_n_d_values[4][2]: <25} "
             f"{periodic_dihedral_k_n_d_values[5][2]: <25} "
             f"{opls_fit_data_r_squared_list[opls_fit_i]: <25} "
-            f" \n"
         )
 
         # Write the RB torsion constants to file.
@@ -1859,7 +1855,7 @@ def fit_dihedral_with_gomc(
         # Added the '0_' to the 'non_zero_k_constants' as the k0 needed
         # for the OPLS conversion to the RB torsion style.
         RB_torsion_k_constants_fit_energy_kcal_mol_txt_file.write(
-            f"{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
+            f"\n{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
             f"{RB_torsion_k_values[0]: <25} "
             f"{RB_torsion_k_values[1]: <25} "
             f"{RB_torsion_k_values[2]: <25} "
@@ -1867,7 +1863,6 @@ def fit_dihedral_with_gomc(
             f"{RB_torsion_k_values[4]: <25} "
             f"{RB_torsion_k_values[5]: <25} "
             f"{opls_fit_data_r_squared_list[opls_fit_i]: <25} "
-            f" \n"
         )
 
         # *********************************
@@ -1996,7 +1991,7 @@ def fit_dihedral_with_gomc(
                 f'{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}_OPLS_fit_{opls_fit_q}_dihedral.inp',
                 fit_dihedral_atom_types,
                 fit_dihedral_opls_k_0_1_2_3_4_values=opls_k_constant_fitted_q_list,
-                zeroed_dihedral_atom_types=None,
+                zeroed_dihedral_atom_types=zeroed_dihedral_atom_types,
             )
 
             # **************************************************************
@@ -2136,8 +2131,12 @@ def fit_dihedral_with_gomc(
         # Use R**2 (R-squared) to compare the data used to fit the dihedral(s)
         # via a single or multi-dihedral fit, to the individual fit entered in
         # GOMC and then recompared to Gaussian and write out the data to a file.
+        print(f"*****************")
+        print(f"GOMC_data_fitted_dihedral_degrees_list === {len(GOMC_data_fitted_dihedral_degrees_list)}")
+        print(f"*****************")
         for q_angle in range(0, len(GOMC_data_fitted_dihedral_degrees_list)):
             if q_angle == 0:
+                print(f"q_angle = {q_angle}")
                 # write out the GOMC and Gaussian data in a file
                 gomc_fitted_gaussian_kcal_mol_energy_data_txt_file = \
                     open(gomc_fitted_gaussian_kcal_mol_energy_filename, "w")
@@ -2151,11 +2150,10 @@ def fit_dihedral_with_gomc(
                     f"{'k2_OPLS_kcal_mol': <30} "
                     f"{'k3_OPLS_kcal_mol': <30} "
                     f"{'k4_OPLS_kcal_mol': <30} "
-                    f" \n"
                 )
 
             gomc_fitted_gaussian_kcal_mol_energy_data_txt_file.write(
-                f"{Gaussian_minus_GOMC_data_fitted_dihedral_degrees_list[q_angle]: <30} "
+                f"\n{Gaussian_minus_GOMC_data_fitted_dihedral_degrees_list[q_angle]: <30} "
                 f"{GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list[q_angle]: <30} "
                 f"{Guassian_data_total_energy_kcal_per_mol_normalize_list[q_angle]: <30} "
                 f"{Gaussian_minus_GOMC_data_fitted_total_energy_kcal_per_mol_normalized_list[q_angle]: <30} "
@@ -2164,8 +2162,7 @@ def fit_dihedral_with_gomc(
                 f"{str(opls_k_constant_fitted_q_list[2]): <30} "
                 f"{str(opls_k_constant_fitted_q_list[3]): <30} "
                 f"{str(opls_k_constant_fitted_q_list[4]): <30} "
-                f" \n"
-            )
+                )
 
         # Compare original fit vs run through GOMC as a validation test case
         if opls_fit_data_r_squared_list[opls_q] >= fit_min_validated_r_squared \
