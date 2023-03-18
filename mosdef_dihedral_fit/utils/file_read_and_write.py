@@ -1,7 +1,6 @@
 import os
 import subprocess
 import numpy as np
-import mosdef_dihedral_fit.utils.basic_operations as mdf_basic
 import mosdef_dihedral_fit.utils.math_operations as mdf_math
 import vmd
 
@@ -39,8 +38,8 @@ def get_atom_names_and_elements_from_mol2(mol2_directory_and_filename):
             split_line_m = line_m.split()
 
             if (len(split_line_m) > 0 and str(split_line_m[0]) in ["@<TRIPOS>BOND"]
-                or (get_atom_type_bool is True and len(split_line_m) in [8, 9])):
-                    get_atom_type_bool = False
+                    or (get_atom_type_bool is True and len(split_line_m) in [8, 9])):
+                get_atom_type_bool = False
 
             if len(split_line_m) in [8, 9] and get_atom_type_bool is True:
                 atom_name_list.append(split_line_m[1])
@@ -56,6 +55,7 @@ def get_atom_names_and_elements_from_mol2(mol2_directory_and_filename):
         )
 
     return [atom_name_list, element_name_list]
+
 
 def get_atom_names_and_elements_from_pdb(pdb_directory_and_filename):
     """Get the atom names and element names from the pdb file.
@@ -88,7 +88,7 @@ def get_atom_names_and_elements_from_pdb(pdb_directory_and_filename):
             split_line_m = line_m.split()
 
             if len(split_line_m) > 0 and str(split_line_m[0]) in ["END"]:
-                    get_atom_type_bool = False
+                get_atom_type_bool = False
 
             # and len(split_line_m) in [10, 11, 12]
             if split_line_m[0] in ['ATOM'] and get_atom_type_bool is True:
@@ -161,7 +161,7 @@ def write_xyz_file_from_gaussian_coordinates(atom_names_list,
     """
     # check if file extension starts with a "." or not remove for correct insertion later
     if len(qm_coordinate_file_extension) > 0 and qm_coordinate_file_extension[0] == ".":
-            qm_coordinate_file_extension = qm_coordinate_file_extension[1:]
+        qm_coordinate_file_extension = qm_coordinate_file_extension[1:]
 
     elif len(qm_coordinate_file_extension) > 0:
         qm_coordinate_file_extension = qm_coordinate_file_extension
@@ -174,7 +174,8 @@ def write_xyz_file_from_gaussian_coordinates(atom_names_list,
     # add 1 spaces infront of atom_names_list
     atom_names_with_2_spaces_in_front = []
     for j_iter in range(0, len(atom_names_list)):
-        atom_names_with_2_spaces_in_front.append(f"  {atom_names_list[j_iter]}")
+        atom_names_with_2_spaces_in_front.append(
+            f"  {atom_names_list[j_iter]}")
 
     for i_iter in range(1, total_qm_scans + 1):
         read_gausian_file_dir_name = \
@@ -191,11 +192,12 @@ def write_xyz_file_from_gaussian_coordinates(atom_names_list,
         output_file_xyz_file.write(f"{comment_1_space_in_front}\n")
 
         # The Gaussian file need to have these columns "Row	Highlight	Display	Tag	Symbol	X	Y	Z"
-        check_guassian_optimized_coordinate_file_correct(read_gausian_file_dir_name)
+        check_guassian_optimized_coordinate_file_correct(
+            read_gausian_file_dir_name)
         with open(read_gausian_file_dir_name, "r") as fp:
-            readlines_gausian_file= fp.readlines()
+            readlines_gausian_file = fp.readlines()
             for i, line in enumerate(readlines_gausian_file):
-                if i==0 and not ("Row	Highlight	Display	Tag	Symbol	X	Y	Z" in line):
+                if i == 0 and not ("Row	Highlight	Display	Tag	Symbol	X	Y	Z" in line):
                     raise ValueError(
                         "# The Gaussian file need to have these columns "
                         "'Row	Highlight	Display	Tag	Symbol	X	Y	Z'"
@@ -240,7 +242,8 @@ def write_restart_coor_from_xyz_file(coor_files_directory, total_qm_scans):
     # (START)
     # *******************************************
     write_coor_vmd_source_file = f"write_restart_files.tcl"
-    output_file_restart_coor = open(f"{coor_files_directory}/{write_coor_vmd_source_file}", "w")
+    output_file_restart_coor = open(
+        f"{coor_files_directory}/{write_coor_vmd_source_file}", "w")
 
     output_file_restart_coor.write(f"package require topotools\n\n")
     output_file_restart_coor.write(f"set NumberPositions {total_qm_scans}\n")
@@ -303,7 +306,8 @@ def check_guassian_angle_energy_file_correct(guassian_energy_file_dir_and_name):
         TypeError; if the file is not formatted correctly
     """
     with open(guassian_energy_file_dir_and_name, "r") as fp:
-        gaussian_dihedral_header_line_correct_bool_list = [False, False, False, False, False]
+        gaussian_dihedral_header_line_correct_bool_list = [
+            False, False, False, False, False]
         gaussian_dihedral_header_file = fp.readlines()
         for m, line_m in enumerate(gaussian_dihedral_header_file):
             split_line_m = line_m.split()
@@ -404,6 +408,7 @@ def check_guassian_optimized_coordinate_file_correct(gaussian_optimized_coordina
 
     return gaussian_optimized_coordinate_header_line_correct_bool
 
+
 def get_gaussian_log_file_data(
         log_files_and_entries_to_remove_dict,
 ):
@@ -483,7 +488,7 @@ def get_gaussian_log_file_data(
                 )
             if isinstance(value_j, list):
                 for r_i in value_j:
-                    if not isinstance(r_i , int) or r_i < 0 :
+                    if not isinstance(r_i, int) or r_i < 0:
                         raise TypeError(
                             f"ERROR: In the 'get_gaussian_log_file_data' function, "
                             f"the 'log_files_and_entries_to_remove_dict' values '{value_j}' "
@@ -530,13 +535,11 @@ def get_gaussian_log_file_data(
             for m, line_m in enumerate(gaussian_log_file):
                 split_line_m = line_m.split()
 
-
-
                 # **********************************
                 # get the starting dihedral scan location, elements, charge, multiplicity and number of atoms (START)
                 # **********************************
                 # get and mark the initial system setup for a dihedral scan
-                if len(split_line_m) >= 2 and split_line_m[0] == 'Dihedral'  and split_line_m[1] == 'Scan':
+                if len(split_line_m) >= 2 and split_line_m[0] == 'Dihedral' and split_line_m[1] == 'Scan':
                     dihedral_scan_line = m
 
                 # get the Guassian molecule charge and multiplicity
@@ -570,7 +573,6 @@ def get_gaussian_log_file_data(
                 if len(split_line_m) > 2 and number_of_atoms is None and split_line_m[0] == 'NAtoms=':
                     number_of_atoms = int(split_line_m[1])
 
-
                 # get the element names
                 spaces_to_element = 2
                 if len(split_line_m) == 5 \
@@ -584,7 +586,8 @@ def get_gaussian_log_file_data(
                         and len(gaussian_log_file[m + spaces_to_element].split()) > 2:
 
                     for spaces_to_element_i in range(spaces_to_element, spaces_to_element + number_of_atoms):
-                        element_names_list.append(gaussian_log_file[m + spaces_to_element_i].split()[1])
+                        element_names_list.append(
+                            gaussian_log_file[m + spaces_to_element_i].split()[1])
 
                     get_element_names_bool = False
 
@@ -611,7 +614,6 @@ def get_gaussian_log_file_data(
                             int(split_line_m[4])
                         ]
                         scan_degrees_per_scan = float(split_line_m[7])
-
 
                         # check if the all the dihedral atom numbers  are the same for all Gaussian files
                         all_dihedral_atom_numbers_list = mdf_math.check_previous_qm_values_match(
@@ -665,7 +667,8 @@ def get_gaussian_log_file_data(
                         coord_list_iter = []
                         for atom_i in range(0, number_of_atoms):
                             spaces_to_1st_atom_coord = 5
-                            coor_line_m = gaussian_log_file[m + spaces_to_1st_atom_coord + atom_i].split()
+                            coor_line_m = gaussian_log_file[m +
+                                                            spaces_to_1st_atom_coord + atom_i].split()
 
                             if len(coor_line_m) == 6:
                                 coord_list_iter.append(
@@ -679,7 +682,8 @@ def get_gaussian_log_file_data(
                         last_coordinates_ang_list = coord_list_iter
 
                 if len(optimized_dihedral_angle_degrees_list) > len(optimized_coordinates_ang_list):
-                    optimized_coordinates_ang_list.append(last_coordinates_ang_list)
+                    optimized_coordinates_ang_list.append(
+                        last_coordinates_ang_list)
 
                 # **********************************
                 # get the optimized coordinates  (END)
@@ -697,7 +701,8 @@ def get_gaussian_log_file_data(
 
                 # only collect parameters (optimized_energy_hartree_list) after the system is optimized
                 if len(optimized_dihedral_angle_degrees_list) > len(optimized_energy_hartree_list):
-                    optimized_energy_hartree_list.append(energy_hartree_list_iter[-1])
+                    optimized_energy_hartree_list.append(
+                        energy_hartree_list_iter[-1])
 
                 # **********************************
                 # get energy data in Hartree (START)
@@ -717,7 +722,8 @@ def get_gaussian_log_file_data(
                         and split_line_m[4] == '-DE/DX' \
                         and split_line_m[5] == '=' \
                         and split_line_m[7] == '!':
-                    optimized_dihedral_angle_degrees_list.append(str(np.round(float(split_line_m[3]), decimals=3)))
+                    optimized_dihedral_angle_degrees_list.append(
+                        str(np.round(float(split_line_m[3]), decimals=3)))
                 # **********************************
                 # get actual degree from optimization  rounded to 3 decimal places (End)
                 # **********************************
@@ -746,7 +752,6 @@ def get_gaussian_log_file_data(
                     f"has values greater than the number of optimized scans in the dihedral. "
                     f"The only allowed values are from 0 to {number_of_optimized_scans-1}."
                 )
-
 
         for entry_no_i in range(0, len(optimized_coordinates_ang_list)):
             if entry_no_i not in entries_to_remove_list_iter:
@@ -777,7 +782,6 @@ def get_gaussian_log_file_data(
                     log_file_iter
                 )
 
-
     return [
         all_dihedral_angle_degrees_list,
         all_energy_hartree_list,
@@ -786,6 +790,7 @@ def get_gaussian_log_file_data(
         number_of_atoms,
         dihedral_atom_numbers_list
     ]
+
 
 def write_qm_data_files(
         log_files_and_entries_to_remove,
@@ -829,8 +834,9 @@ def write_qm_data_files(
     """
     # delete any existing directories and make a new one
     guassian_directory_name = "extracted_guassian_data"
-    mdf_basic.delete_directory(guassian_directory_name)
-    mdf_basic.create_directory(guassian_directory_name)
+    if os.path.isdir(guassian_directory_name):
+        os.rmdir(guassian_directory_name)
+    os.mkdir(guassian_directory_name)
 
     if qm_engine == "gaussian":
         # extract the required data to write the Guassian style formatted output files
@@ -853,7 +859,8 @@ def write_qm_data_files(
         )
 
     # write the gaussian style formatted angle (degrees) and energy output files
-    output_file_dihedral_energy = open(f"extracted_guassian_data/dihedral.txt", "w")
+    output_file_dihedral_energy = open(
+        f"extracted_guassian_data/dihedral.txt", "w")
 
     output_file_dihedral_energy.write(
         f"# Scan of Total Energy\n"
@@ -885,7 +892,7 @@ def write_qm_data_files(
             # atom_number_i starts at 1
             atom_number_i = int(qm_k + 1)
             highlight = 'No'
-            display	= 'Show'
+            display = 'Show'
             output_file_dihedral_coordinates.write(
                 "{: <8}"
                 "{: <8}"
@@ -907,7 +914,6 @@ def write_qm_data_files(
             )
 
         output_file_dihedral_coordinates.close()
-
 
 
 def get_matching_dihedral_info_and_opls_fitting_data(
@@ -1065,7 +1071,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
 
         # get the PSF files atom number to atom type/class map dictionary
         if len(psf_splitline_iter) == 2 and psf_splitline_iter[1] == '!NATOM':
-            number_of_atoms_iter =  int(psf_splitline_iter[0])
+            number_of_atoms_iter = int(psf_splitline_iter[0])
 
             if len(read_psf_file[psf_iter + 1].split()) == 8:
                 for atom_i in range(0, number_of_atoms_iter):
@@ -1073,7 +1079,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                         {
                             int(read_psf_file[psf_iter + atom_i + 1].split()[0]):
                                 read_psf_file[psf_iter + atom_i + 1].split()[5]
-                         }
+                        }
                     )
 
         # get the PSF files dihedrals
@@ -1091,19 +1097,27 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                     # get the first dihedral in the full line
                     all_dihedral_numbers_as_read_list.append(
                         [
-                            int(read_psf_file[psf_iter + dihedral_i + 1].split()[0]),
-                            int(read_psf_file[psf_iter + dihedral_i + 1].split()[1]),
-                            int(read_psf_file[psf_iter + dihedral_i + 1].split()[2]),
-                            int(read_psf_file[psf_iter + dihedral_i + 1].split()[3]),
+                            int(read_psf_file[psf_iter +
+                                dihedral_i + 1].split()[0]),
+                            int(read_psf_file[psf_iter +
+                                dihedral_i + 1].split()[1]),
+                            int(read_psf_file[psf_iter +
+                                dihedral_i + 1].split()[2]),
+                            int(read_psf_file[psf_iter +
+                                dihedral_i + 1].split()[3]),
                         ]
                     )
                     # get the second dihedral in the full line
                     all_dihedral_numbers_as_read_list.append(
                         [
-                            int(read_psf_file[psf_iter + dihedral_i + 1].split()[4]),
-                            int(read_psf_file[psf_iter + dihedral_i + 1].split()[5]),
-                            int(read_psf_file[psf_iter + dihedral_i + 1].split()[6]),
-                            int(read_psf_file[psf_iter + dihedral_i + 1].split()[7]),
+                            int(read_psf_file[psf_iter +
+                                dihedral_i + 1].split()[4]),
+                            int(read_psf_file[psf_iter +
+                                dihedral_i + 1].split()[5]),
+                            int(read_psf_file[psf_iter +
+                                dihedral_i + 1].split()[6]),
+                            int(read_psf_file[psf_iter +
+                                dihedral_i + 1].split()[7]),
                         ]
                     )
 
@@ -1111,10 +1125,14 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                     if half_full_lines == 1 and full_lines == dihedral_i + 1:
                         all_dihedral_numbers_as_read_list.append(
                             [
-                                int(read_psf_file[psf_iter + dihedral_i + 2].split()[0]),
-                                int(read_psf_file[psf_iter + dihedral_i + 2].split()[1]),
-                                int(read_psf_file[psf_iter + dihedral_i + 2].split()[2]),
-                                int(read_psf_file[psf_iter + dihedral_i + 2].split()[3]),
+                                int(read_psf_file[psf_iter +
+                                    dihedral_i + 2].split()[0]),
+                                int(read_psf_file[psf_iter +
+                                    dihedral_i + 2].split()[1]),
+                                int(read_psf_file[psf_iter +
+                                    dihedral_i + 2].split()[2]),
+                                int(read_psf_file[psf_iter +
+                                    dihedral_i + 2].split()[3]),
                             ]
                         )
 
@@ -1135,11 +1153,13 @@ def get_matching_dihedral_info_and_opls_fitting_data(
         # convert from atom numbers to atom types/classes
         dih_atom_type_p = []
         for iter_q in range(0, len(dih_num_p)):
-            dih_atom_type_p.append(atom_number_to_atom_type_dict[dih_num_p[iter_q]])
+            dih_atom_type_p.append(
+                atom_number_to_atom_type_dict[dih_num_p[iter_q]])
 
         # check for the input dihedral fit and reversed dihedral fit
         match_dihedral_atom_types_4_bool_list = [False, False, False, False]
-        match_reverse_dihedral_atom_types_4_bool_list = [False, False, False, False]
+        match_reverse_dihedral_atom_types_4_bool_list = [
+            False, False, False, False]
         for iter_r, dih_atom_type_r in enumerate(dih_atom_type_p):
             if dih_atom_type_r in ['x', 'X', '*', '']:
                 match_dihedral_atom_types_4_bool_list[iter_r] = True
@@ -1153,8 +1173,8 @@ def get_matching_dihedral_info_and_opls_fitting_data(
 
         # check if either the forward or reversed dihedral matches the read dihedral type/class.
         # if so save the atom numbers
-        #matching_dihedral_types_by_atom_numbers_list = []
-        #matching_dihedral_types_by_atom_type_list = []
+        # matching_dihedral_types_by_atom_numbers_list = []
+        # matching_dihedral_types_by_atom_type_list = []
         if False not in match_dihedral_atom_types_4_bool_list \
                 or False not in match_reverse_dihedral_atom_types_4_bool_list:
             matching_dihedral_types_by_atom_numbers_list.append(dih_num_p)
@@ -1199,7 +1219,6 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                     f"('fit_dihedral_atom_types') = {fit_dihedral_atom_types_reversed}."
                 )
 
-
         # check the atom numbers of the PSF against QM
         if qm_atom_types_from_psf_map not in [fit_dihedral_atom_types, fit_dihedral_atom_types_reversed]:
             raise ValueError(
@@ -1222,13 +1241,13 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                 atom_coor_iter_list = []
                 for dih_atom_number_q in dih_list_4_atom_number_q:
                     # added - 1 to below because atom numbering starts at 1 and Python lists at 0.
-                    atom_coor_iter_list.append(coords_qm_scan_i[dih_atom_number_q - 1])
+                    atom_coor_iter_list.append(
+                        coords_qm_scan_i[dih_atom_number_q - 1])
 
                 # get the dihedral coordinates lists for each QM scan
                 dih_coor_iter_list.append(atom_coor_iter_list)
 
                 # get the dihedral phi agles lists for each QM scan
-
 
                 dih_phi_iter_list.append(
                     mdf_math.dihedral_angle(
@@ -1239,11 +1258,13 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                     )
                 )
 
-
-            all_matching_dihedral_coordinates_angstroms_added_to_k_values_list.append(dih_coor_iter_list)
-            all_matching_dihedral_phi_degrees_added_to_k_values_list.append(dih_phi_iter_list)
+            all_matching_dihedral_coordinates_angstroms_added_to_k_values_list.append(
+                dih_coor_iter_list)
+            all_matching_dihedral_phi_degrees_added_to_k_values_list.append(
+                dih_phi_iter_list)
             all_sum_opls_const_1_plus_or_minus_cos_n_list.append(
-                mdf_math.sum_opls_const_1_plus_or_minus_cos_n_values(dih_phi_iter_list)
+                mdf_math.sum_opls_const_1_plus_or_minus_cos_n_values(
+                    dih_phi_iter_list)
             )
 
     return [
@@ -1252,7 +1273,8 @@ def get_matching_dihedral_info_and_opls_fitting_data(
         all_matching_dihedral_coordinates_angstroms_added_to_k_values_list,
         all_matching_dihedral_phi_degrees_added_to_k_values_list,
         all_sum_opls_const_1_plus_or_minus_cos_n_list
-            ]
+    ]
+
 
 def change_gomc_ff_file_dihedral_values(
         read_gomc_ff_filename,
@@ -1331,10 +1353,10 @@ def change_gomc_ff_file_dihedral_values(
                     raise TypeError(zeroed_dihedral_atom_types_error)
 
                     if isinstance(list_i[0], str) \
-                        and isinstance(list_i[1], str) \
-                        and isinstance(list_i[2], str) \
-                        and isinstance(list_i[3], str):
-                            raise TypeError(zeroed_dihedral_atom_types_error)
+                            and isinstance(list_i[1], str) \
+                            and isinstance(list_i[2], str) \
+                            and isinstance(list_i[3], str):
+                        raise TypeError(zeroed_dihedral_atom_types_error)
 
     elif not isinstance(zeroed_dihedral_atom_types, type(None)):
         raise TypeError(zeroed_dihedral_atom_types_error)
@@ -1353,13 +1375,15 @@ def change_gomc_ff_file_dihedral_values(
             )
 
     # create dictionary for fitted dihedral types and its status of being written to the ff file
-    status_written_fit_dihedral_atom_types_dict = {str(fit_dihedral_atom_types): False}
+    status_written_fit_dihedral_atom_types_dict = {
+        str(fit_dihedral_atom_types): False}
 
-    ## create dictionary for fitted dihedral types to be zeroed and its status of being written to the ff file
+    # create dictionary for fitted dihedral types to be zeroed and its status of being written to the ff file
     status_written_zeroed_dihedral_atom_types_dict = {}
     if zeroed_dihedral_atom_types is not None:
         for other_i in zeroed_dihedral_atom_types:
-            status_written_zeroed_dihedral_atom_types_dict.update({str(other_i): False})
+            status_written_zeroed_dihedral_atom_types_dict.update(
+                {str(other_i): False})
 
     # write the new GOMC force field file with the selected dihedrals zeroed out
     gomc_modified_kvalues_ff_file = open(f'{new_gomc_ff_filename}', "w")
@@ -1388,8 +1412,10 @@ def change_gomc_ff_file_dihedral_values(
         # if the correct line(s) added the changed dihedral value to the set k-value (Kchi)
         if len(split_line_m) == 12:
             # get the forward and reversed dihedral, as it could be printed either way
-            dih_m = [split_line_m[0], split_line_m[1], split_line_m[2], split_line_m[3]]
-            dih_m_reverse = [split_line_m[3], split_line_m[2], split_line_m[1], split_line_m[0]]
+            dih_m = [split_line_m[0], split_line_m[1],
+                     split_line_m[2], split_line_m[3]]
+            dih_m_reverse = [split_line_m[3], split_line_m[2],
+                             split_line_m[1], split_line_m[0]]
 
             # set the fitted dihedral types to the 'fit_dihedral_opls_k_0_1_2_3_4_values'
             # in the GOMC/CHARMM style FF file
@@ -1603,13 +1629,14 @@ def change_gomc_ff_file_dihedral_values(
                             )
                         )
 
-                    status_written_fit_dihedral_atom_types_dict[str(dih_m)] = True
+                    status_written_fit_dihedral_atom_types_dict[str(
+                        dih_m)] = True
 
             # set the zeroed dihedral types to zero in the GOMC/CHARMM style FF file
             elif (str(dih_m) or str(dih_m_reverse)) in list(status_written_zeroed_dihedral_atom_types_dict.keys()) \
                     and zeroed_dihedral_atom_types is not None \
                     and status_written_zeroed_dihedral_atom_types_dict[str(dih_m)] is False \
-                    and (dih_m in zeroed_dihedral_atom_types \
+                    and (dih_m in zeroed_dihedral_atom_types
                          or dih_m_reverse in zeroed_dihedral_atom_types):
 
                 # get the opls dihedrals and convert them to CHARMM style periodic
@@ -1635,8 +1662,8 @@ def change_gomc_ff_file_dihedral_values(
                         str(int(1)),
                         str(
                             mdf_math.round_to_sig_figs(180.0,
-                                sig_figs=number_sig_fig_for_ff_file
-                            )
+                                                       sig_figs=number_sig_fig_for_ff_file
+                                                       )
                         ),
                         split_line_m[8],
                         split_line_m[9],
@@ -1645,17 +1672,22 @@ def change_gomc_ff_file_dihedral_values(
                     )
                 )
 
-                status_written_zeroed_dihedral_atom_types_dict[str(dih_m)] = True
+                status_written_zeroed_dihedral_atom_types_dict[str(
+                    dih_m)] = True
 
             elif (
-                    str(dih_m) not in list(status_written_fit_dihedral_atom_types_dict.keys())
+                    str(dih_m) not in list(
+                        status_written_fit_dihedral_atom_types_dict.keys())
                     and
-                    str(dih_m_reverse) not in list(status_written_fit_dihedral_atom_types_dict.keys())
+                    str(dih_m_reverse) not in list(
+                        status_written_fit_dihedral_atom_types_dict.keys())
             ) \
                 and (
-                    str(dih_m) not in list(status_written_zeroed_dihedral_atom_types_dict.keys())
+                    str(dih_m) not in list(
+                        status_written_zeroed_dihedral_atom_types_dict.keys())
                     and
-                    str(dih_m_reverse) not in list(status_written_zeroed_dihedral_atom_types_dict.keys())
+                    str(dih_m_reverse) not in list(
+                        status_written_zeroed_dihedral_atom_types_dict.keys())
             ):
                 gomc_modified_kvalues_ff_file.write(f'{line_m}')
 
