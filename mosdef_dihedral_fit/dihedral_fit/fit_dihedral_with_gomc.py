@@ -96,8 +96,7 @@ def fit_dihedral_with_gomc(
         Example: '/home/brad/Programs/GOMC/GOMC_2_76/bin'
 
     qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
-        qm_engine="gaussian"
-
+        * qm_engine="gaussian"
             This is a dictionary comprised of a key (string) of the QM log file path and name,
             and a list of integers, which are the QM optimization parameters to remove from
             the written data, in order of reading from each file. These can be seen in the
@@ -105,21 +104,20 @@ def fit_dihedral_with_gomc(
             users to remove any bad or repeated data points for the QM log file when needed.
 
             Example 1: {'path/guassian_log_file.log': []}
+
             Uses all the optimized data points from the 'path/guassian_log_file.log' file.
 
             Example 2: {'path/guassian_log_file.log': [0, 23]}
             Uses all data points from the 'path/guassian_log_file.log' file, except points
             0 and 23.  NOTE: Python counting starts at 0.
 
-        qm_engine="gaussian_style_final_files"
-
+        * qm_engine="gaussian_style_final_files"
             This is a dictionary comprised of a key (string) of the  file paths to the
             Gaussian style final formatted files, and a list of integers, which are the
             QM optimization parameters to remove from the written data, in order of reading
             from each folder. These can be seen in the order of the dictionary file name (strings).
             These removed parameters allow users to remove any bad or repeated data points
             for the QM log file when needed.
-
             NOTE: The energy and dihedral angle file in this directory need to be
             named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
 
@@ -189,12 +187,11 @@ def fit_dihedral_with_gomc(
         which uses the arithmetic mean when combining Lennard-Jones or "
         VDW sigma parameters for different atom types.
     atom_type_naming_style: str, optional, default='all_unique', ('general' or 'all_unique')
-        'general':
+        * 'general'
 
         NOTE: In this case, as long as the force field XML file is correct, we can use the
         'general' convention safely, because there is no potential of atom type/class overlap
         with another force field file.
-
 
         The 'general' convention only tests if the sigma, epsilons, mass, and Mie-n values are
         identical between the different molecules (residues in this context) and their applied
@@ -209,18 +206,23 @@ def fit_dihedral_with_gomc(
         If the sigma, epsilons, mass, and Mie-n values are the same between force fields
         the general method can be applied; if not, it defaults to the 'all_unique' method.
 
-        Example of CHARMM style atom types in an all-atom ethane and ethanol system:
-        * Ethane: alkane carbon = CT, alkane hydrogen = HC
-        * Ethanol: alkane carbon = CT, alkane hydrogen = HC , oxygen in alcohol = OH, hydrogen in alcohol = OH
+        --- Example of CHARMM style atom types in an all-atom ethane and ethanol system:
+
+        --- Ethane: alkane carbon = CT, alkane hydrogen = HC
+
+        --- Ethanol: alkane carbon = CT, alkane hydrogen = HC , oxygen in alcohol = OH, hydrogen in alcohol = OH
 
         This is only permitted when the following is true; otherwise it will default to the the 'all_unique':
-        * All the MoSDeF force field XML's atom classes' non-bonded parameters
+
+        --- All the MoSDeF force field XML's atom classes' non-bonded parameters
         (sigma, epsilon, mass, and Mie-n power constant) values are THE SAME.
-        * If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
+
+        --- If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
         gomc_fix_bonds, or gomc_fix_angles NOT IN any other residue/molecule, the 'all_unique' type
         will be used.
 
-        'all_unique':
+        * 'all_unique'
+
         The 'all_unique' convention is the SAFE way to parameterize the system.
         The MoSDeF force field XML atom names within residue/molecule are all unique,
         where each one adds an alpha numberic value after the MoSDeF force field XML atom classes to
@@ -229,15 +231,20 @@ def fit_dihedral_with_gomc(
         but have less bonded class parameters.
 
         Example of CHARMM style atom types in an all-atom ethane and ethanol system:
-        * Ethane: alkane carbon type 0 = CT0, alkane hydrogen type 0 = HC0
-        * Ethanol: alkane carbon type 1 = CT1, alkane carbon type 2 = CT2,
+
+        --- Ethane: alkane carbon type 0 = CT0, alkane hydrogen type 0 = HC0
+
+        --- Ethanol: alkane carbon type 1 = CT1, alkane carbon type 2 = CT2,
         alkane hydrogen type 1 = HC1 , oxygen in alcohol type 0 = OH0, hydrogen in alcohol type 0 = OH0
 
         This is selected when auto-selected when:
-        * All the MoSDeF force field XML's atom classes' non-bonded parameters
+
+        --- All the MoSDeF force field XML's atom classes' non-bonded parameters
         (sigma, epsilon, mass, and Mie-n power constant) values are NOT THE SAME.
-        * If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
+
+        --- If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
         gomc_fix_bonds, or gomc_fix_angles are IN any other residue/molecule.
+
     gomc_cpu_cores: int, default=1
         The number of CPU-cores that are used to perform the GOMC simulations, required
         for the Molecular Mechanics (MM) energy calulations.
@@ -251,12 +258,12 @@ def fit_dihedral_with_gomc(
         will not be check for accuracy because the  R**2 (R-squared) values are compared
         differently as a check.  These are compared between the following calculations:
 
-        * QM - MM energy data vs. the dihedral function fit:
+        QM - MM energy data vs. the dihedral function fit:
         For the MM calculations, the 'fit_dihedral_atom_types' and
         'zeroed_dihedral_atom_types' are dihedral energies are set to zero, which is
         during the fitting process with 1 or more of the same dihedrals being fit simultaneously.
 
-        * QM vs. the MM energy data:
+        QM vs. the MM energy data:
         For the MM calculations, the 'fit_dihedral_atom_types' are set to the values which were
         fit for the specific cosine combinations during the fitting process with 1 or more of the
         same dihedrals being fit simultaneously, and the 'zeroed_dihedral_atom_types' are
@@ -280,162 +287,166 @@ def fit_dihedral_with_gomc(
     Returns
     -------
     Files containing the following information in the following relative locations:
-        GOMC_simulations/GOMC_pdb_psf_ff_files.pdb
-            The PDB file used in the GOMC simulations generated via MoSDeF-GOMC.
-        GOMC_simulations/GOMC_pdb_psf_ff_files.pdf
-            The PSF file used in the GOMC simulations generated via MoSDeF-GOMC.
-        GOMC_simulations/GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp
-            The original force field file generated via MoSDeF-GOMC with the
-            force field parameters exactly as listed in the provided force field
-            XML file.
-        GOMC_simulations/GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp
-            The modified force field file with the fit and other selected dihedrals
-            zeroed out.
-        GOMC_simulations/GOMC_pdb_psf_ff_files_OPLS_fit_XXX_dihedral.inp
-            The modified force field file with the fit is set to the fitted k-values
-            ('fit_dihedral_atom_types') with all the other selected dihedrals
-            ('zeroed_dihedral_atom_types') being zeroed out, where the XXX
-            in the file name being the different  possibilities of cos power combinations
-            of the dihedral fit. These may be 1 or more of these files/cos power
-            combinations.
-        GOMC_simulations/GOMC_zeroed_dihedral_coords_XXX.conf
-            The GOMC control files for all the phi dihedral angles selected
-            from the QM simulations where the 'fit_dihedral_atom_types' and the
-            'zeroed_dihedral_atom_types' k-values are all set to zero.  The XXX is the
-            integer number of the dihedrals starting at 1, adding 1 for every
-            additional phi dihedral angles selected from the QM simulations.
 
-            These are simulations are to get the total energy difference between
-            QM and MM simulation with all the 'fit_dihedral_atom_types' and the
-            'zeroed_dihedral_atom_types' k-values are all set to zero.
-        GOMC_simulations/GOMC_OPLS_fit_YYY_dihedral_coords_XXX.conf
-            The GOMC control files for all the phi dihedral angles selected
-            from the QM simulations where the 'fit_dihedral_atom_types' are set to
-            the solved k-values for the cos power equation combination, which is listed
-            as the variable YYY, and the 'zeroed_dihedral_atom_types' k-values are all set
-            to zero.  The XXX is the integer number of the dihedrals starting at 1, adding
-            1 for every additional phi dihedral angles selected from the QM simulations.
+    GOMC_simulations/GOMC_pdb_psf_ff_files.pdb
+        The PDB file used in the GOMC simulations generated via MoSDeF-GOMC.
+    GOMC_simulations/GOMC_pdb_psf_ff_files.pdf
+        The PSF file used in the GOMC simulations generated via MoSDeF-GOMC.
+    GOMC_simulations/GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp
+        The original force field file generated via MoSDeF-GOMC with the
+        force field parameters exactly as listed in the provided force field
+        XML file.
+    GOMC_simulations/GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp
+        The modified force field file with the fit and other selected dihedrals
+        zeroed out.
+    GOMC_simulations/GOMC_pdb_psf_ff_files_OPLS_fit_XXX_dihedral.inp
+        The modified force field file with the fit is set to the fitted k-values
+        ('fit_dihedral_atom_types') with all the other selected dihedrals
+        ('zeroed_dihedral_atom_types') being zeroed out, where the XXX
+        in the file name being the different  possibilities of cos power combinations
+        of the dihedral fit. These may be 1 or more of these files/cos power
+        combinations.
+    GOMC_simulations/GOMC_zeroed_dihedral_coords_XXX.conf
+        The GOMC control files for all the phi dihedral angles selected
+        from the QM simulations where the 'fit_dihedral_atom_types' and the
+        'zeroed_dihedral_atom_types' k-values are all set to zero.  The XXX is the
+        integer number of the dihedrals starting at 1, adding 1 for every
+        additional phi dihedral angles selected from the QM simulations.
 
-            These are simulations are to get the total energy difference between
-            QM and MM simulation with the 'fit_dihedral_atom_types' set to
-            the solved k-values for each YYY combination of cos powers.  There
-            will be a set of phi angles for every YYY combination.
+        These are simulations are to get the total energy difference between
+        QM and MM simulation with all the 'fit_dihedral_atom_types' and the
+        'zeroed_dihedral_atom_types' k-values are all set to zero.
+    GOMC_simulations/GOMC_OPLS_fit_YYY_dihedral_coords_XXX.conf
+        The GOMC control files for all the phi dihedral angles selected
+        from the QM simulations where the 'fit_dihedral_atom_types' are set to
+        the solved k-values for the cos power equation combination, which is listed
+        as the variable YYY, and the 'zeroed_dihedral_atom_types' k-values are all set
+        to zero.  The XXX is the integer number of the dihedrals starting at 1, adding
+        1 for every additional phi dihedral angles selected from the QM simulations.
 
-            These GOMC simulations are used to validate the fit when the k-values
-            for each individual dihedral is automatically entered in the force
-            field file. NOTE: In the original fitting process, there can be more
-            than 1 dihedral of the same type fit simultaneously.
-        GOMC_simulations/output_GOMC_zeroed_dihedral_coords_XXX.txt
-            The log output for the 'GOMC_zeroed_dihedral_coords_XXX.conf' simulation.
-            The XXX is the integer number of the dihedrals starting at 1, adding 1 for
-            every additional phi dihedral angles selected from the QM simulations.
-        GOMC_simulations/output_GOMC_OPLS_fit_YYY_dihedral_coords_XXX.txt
-            The log output for the 'GOMC_OPLS_fit_YYY_dihedral_coords_XXX.conf' simulation.
-            The XXX is the integer number of the dihedrals starting at 1, adding 1 for
-            every additional phi dihedral angles selected from the QM simulations.
-            The variable YYY is the cos power equation combinations used for the
-            'fit_dihedral_atom_types' to fit the k-values.
-        extracted_guassian_data/dihedral.txt
-            The QM data in a Gaussian-style output file which holds the scanned
-            dihedral angles, in degrees, and the optimized energy value, in Hartree units,
-            for the molecule/fragment.
-        extracted_guassian_data/dihedral_coords_position_XXX.txt
-            The optimized QM dihedral coordinates in a Gaussian-style output file.
-            The XXX is the integer number of the dihedrals starting at 1, adding 1 for
-            every additional phi dihedral angles selected from the QM simulations.
-            The coordinates are in Angstroms.
-        xyz_restart_xsc_coor_files/dihedral_coords_position_XXX.xyz
-            The optimized QM dihedral coordinates in the '.xyz' format. This permits
-            VMD to convert the '.xyz' format to a GOMC-usable '.coor' format, which
-            contains all the coordinate precision of the QM data and allows GOMC to
-            restart the simulation with all this precision. Otherwise, GOMC would
-            need to use the 3-decimal precision of the PDB format.
-            The XXX is the integer number of the dihedrals starting at 1, adding 1 for
-            every additional phi dihedral angles selected from the QM simulations.
-            The coordinates are in Angstroms.
-        xyz_restart_xsc_coor_files/dihedral_coords_position_XXX.coor
-            The GOMC-usable '.coor' format, allowing the optimized QM dihedral coordinates
-            to be used in full percision when restarting the GOMC simulation.
-            Otherwise, GOMC would need to use the 3-decimal precision of the PDB format.
-            The XXX is the integer number of the dihedrals starting at 1, adding 1 for
-            every additional phi dihedral angles selected from the QM simulations.
-            The coordinates are in Angstroms.
-        all_normalized_energies_in_kcal_per_mol.txt
-            For each dihedral angle (degrees), the QM, MM, and difference in dihedral
-            energies (kcal/mol) when the 'fit_dihedral_atom_types' and the
-            'zeroed_dihedral_atom_types' k-values are all set to zero. This also
-            contains the sum of all the C1, C2, C3, and C4 values for every
-            'fit_dihedral_atom_types' in the system, where there may be multiple of the
-            same dihedral in the same molecule.
+        These are simulations are to get the total energy difference between
+        QM and MM simulation with the 'fit_dihedral_atom_types' set to
+        the solved k-values for each YYY combination of cos powers.  There
+        will be a set of phi angles for every YYY combination.
 
-            OPLS dihedral equation in with C1, C2, C2, and C4 instead of the cos terms:
+        These GOMC simulations are used to validate the fit when the k-values
+        for each individual dihedral is automatically entered in the force
+        field file. NOTE: In the original fitting process, there can be more
+        than 1 dihedral of the same type fit simultaneously.
+    GOMC_simulations/output_GOMC_zeroed_dihedral_coords_XXX.txt
+        The log output for the 'GOMC_zeroed_dihedral_coords_XXX.conf' simulation.
+        The XXX is the integer number of the dihedrals starting at 1, adding 1 for
+        every additional phi dihedral angles selected from the QM simulations.
+    GOMC_simulations/output_GOMC_OPLS_fit_YYY_dihedral_coords_XXX.txt
+        The log output for the 'GOMC_OPLS_fit_YYY_dihedral_coords_XXX.conf' simulation.
+        The XXX is the integer number of the dihedrals starting at 1, adding 1 for
+        every additional phi dihedral angles selected from the QM simulations.
+        The variable YYY is the cos power equation combinations used for the
+        'fit_dihedral_atom_types' to fit the k-values.
+    extracted_guassian_data/dihedral.txt
+        The QM data in a Gaussian-style output file which holds the scanned
+        dihedral angles, in degrees, and the optimized energy value, in Hartree units,
+        for the molecule/fragment.
+    extracted_guassian_data/dihedral_coords_position_XXX.txt
+        The optimized QM dihedral coordinates in a Gaussian-style output file.
+        The XXX is the integer number of the dihedrals starting at 1, adding 1 for
+        every additional phi dihedral angles selected from the QM simulations.
+        The coordinates are in Angstroms.
+    xyz_restart_xsc_coor_files/dihedral_coords_position_XXX.xyz
+        The optimized QM dihedral coordinates in the '.xyz' format. This permits
+        VMD to convert the '.xyz' format to a GOMC-usable '.coor' format, which
+        contains all the coordinate precision of the QM data and allows GOMC to
+        restart the simulation with all this precision. Otherwise, GOMC would
+        need to use the 3-decimal precision of the PDB format.
+        The XXX is the integer number of the dihedrals starting at 1, adding 1 for
+        every additional phi dihedral angles selected from the QM simulations.
+        The coordinates are in Angstroms.
+    xyz_restart_xsc_coor_files/dihedral_coords_position_XXX.coor
+        The GOMC-usable '.coor' format, allowing the optimized QM dihedral coordinates
+        to be used in full percision when restarting the GOMC simulation.
+        Otherwise, GOMC would need to use the 3-decimal precision of the PDB format.
+        The XXX is the integer number of the dihedrals starting at 1, adding 1 for
+        every additional phi dihedral angles selected from the QM simulations.
+        The coordinates are in Angstroms.
+    all_normalized_energies_in_kcal_per_mol.txt
+        For each dihedral angle (degrees), the QM, MM, and difference in dihedral
+        energies (kcal/mol) when the 'fit_dihedral_atom_types' and the
+        'zeroed_dihedral_atom_types' k-values are all set to zero. This also
+        contains the sum of all the C1, C2, C3, and C4 values for every
+        'fit_dihedral_atom_types' in the system, where there may be multiple of the
+        same dihedral in the same molecule.
 
-            OPLS_energy = k1 * C1 + k2 * C2 + k3 * C3 + k4 * C4
+        OPLS dihedral equation in with C1, C2, C2, and C4 instead of the cos terms:
 
-            C1 = (1 + cos(1 * phi))
-            C2 = (1 - cos(2 * phi))
-            C3 = (1 + cos(3 * phi))
-            C4 = (1 - cos(4 * phi))
+        OPLS_energy = k1 * C1 + k2 * C2 + k3 * C3 + k4 * C4
 
-        all_normalized_energies_OPLS_fit_YYY_in_kcal_per_mol.txt
-            For each dihedral angle (degrees), the QM, MM, and difference in dihedral
-            energies (kcal/mol) when the 'fit_dihedral_atom_types' are set to
-            the solved k-values for the cos power equation combination, which is listed
-            as the variable YYY. This also contains fit k1, k2, k3, and k4
-            values (kcal/mol), are the same in every dihedral angle row.
+        C1 = (1 + cos(1 * phi))
 
-            OPLS_energy =   k1 * (1 + cos(1 * phi))
-                          + k2 * (1 - cos(2 * phi))
-                          + k3 * (1 + cos(3 * phi))
-                          + k4 * (1 - cos(4 * phi))
+        C2 = (1 - cos(2 * phi))
 
-        gomc_raw_energies_in_Kelvin.txt
-            This is the initial raw energy, in Kelvin, extracted from all the
-            'output_GOMC_zeroed_dihedral_coord_XXX.txt' files.
-        all_normalized_energies_OPLS_fit_YYY_in_kcal_per_mol.txt
-            This is the initial raw energy, in Kelvin, extracted from all the
-            'output_GOMC_OPLS_fit_YYY_dihedral_coord_XXX.txt' files, where YYY
-            is an additional output file for each OPLS cosine combination.
-        opls_dihedral_k_constants_fit_energy.txt
-            The OPLS dihedral style k-value solutions given the 'fit_dihedral_atom_types'
-            input for each valid cosine power combination.  There could be 1 or
-            more valid cosine power combinations.
-            The k-values are in kcal/mol energy units.
-        periodic_dihedral_k_constants_fit_energy.txt
-            The periodic/CHARMM dihedral style k-value solutions given the
-            'fit_dihedral_atom_types' input for each valid cosine power combination.
-            There could be 1 or more valid cosine power combinations.
-            The periodic/CHARMM style dihedral k-value were analytically converted
-            from the OPLS dihedral form.
-            The k-values are in kcal/mol energy units.
-        RB_torsion_k_constants_fit_energy.txt
-            The RB torsion style k-value solutions given the
-            'fit_dihedral_atom_types' input for each valid cosine power combination.
-            There could be 1 or more valid cosine power combinations.
-            The RB torsion's k-value were analytically converted
-            from the OPLS dihedral form.
-            The k-values are in kcal/mol energy units.
-        opls_all_summed_dihedrals_k_constants_figure.pdf
-            For each valid cosine power combinations, the total OPLS dihedral energies
-            between QM and MM simulations are plotted, where the MM simulation's fitted
-            k-values ('fit_dihedral_atom_types') and all the other selected dihedrals
-            ('zeroed_dihedral_atom_types') are zeroed out.
-            This is the total energy difference in QM vs MM energy
-            for all the 'fit_dihedral_atom_types' summed together, as there can
-            be 1 or multiple of this dihedral type in a molecule, which were
-            all fit simultaneously.
-        opls_all_single_fit_dihedral_k_constants_figure.pdf
-            The final OPLS dihedral fit for the individual dihedrals
-            (individual dihedrals in the 'fit_dihedral_atom_types') for each
-            each valid cosine power combination. These plotted dihedral energies would be
-            the energy from a single (1) dihedral in the system, or the dihedral energy
-            (via k-values) that would be entered into the force field parameters.
-            This plot allows the users to compare the different valid cosine power
-            combinations and their R-squared values.
-            If multiple R-squared values are both nearly perfect and the plots
-            look different, this may be a sign that something is not correct with 1
-            or more of the nearly perfect R-squared fitted values, or fitting procedure
-            itself.
+        C3 = (1 + cos(3 * phi))
+
+        C4 = (1 - cos(4 * phi))
+
+    all_normalized_energies_OPLS_fit_YYY_in_kcal_per_mol.txt
+        For each dihedral angle (degrees), the QM, MM, and difference in dihedral
+        energies (kcal/mol) when the 'fit_dihedral_atom_types' are set to
+        the solved k-values for the cos power equation combination, which is listed
+        as the variable YYY. This also contains fit k1, k2, k3, and k4
+        values (kcal/mol), are the same in every dihedral angle row.
+
+        OPLS_energy =   k1 * (1 + cos(1 * phi))
+        + k2 * (1 - cos(2 * phi))
+        + k3 * (1 + cos(3 * phi))
+        + k4 * (1 - cos(4 * phi))
+
+    gomc_raw_energies_in_Kelvin.txt
+        This is the initial raw energy, in Kelvin, extracted from all the
+        'output_GOMC_zeroed_dihedral_coord_XXX.txt' files.
+    all_normalized_energies_OPLS_fit_YYY_in_kcal_per_mol.txt
+        This is the initial raw energy, in Kelvin, extracted from all the
+        'output_GOMC_OPLS_fit_YYY_dihedral_coord_XXX.txt' files, where YYY
+        is an additional output file for each OPLS cosine combination.
+    opls_dihedral_k_constants_fit_energy.txt
+        The OPLS dihedral style k-value solutions given the 'fit_dihedral_atom_types'
+        input for each valid cosine power combination.  There could be 1 or
+        more valid cosine power combinations.
+        The k-values are in kcal/mol energy units.
+    periodic_dihedral_k_constants_fit_energy.txt
+        The periodic/CHARMM dihedral style k-value solutions given the
+        'fit_dihedral_atom_types' input for each valid cosine power combination.
+        There could be 1 or more valid cosine power combinations.
+        The periodic/CHARMM style dihedral k-value were analytically converted
+        from the OPLS dihedral form.
+        The k-values are in kcal/mol energy units.
+    RB_torsion_k_constants_fit_energy.txt
+        The RB torsion style k-value solutions given the
+        'fit_dihedral_atom_types' input for each valid cosine power combination.
+        There could be 1 or more valid cosine power combinations.
+        The RB torsion's k-value were analytically converted
+        from the OPLS dihedral form.
+        The k-values are in kcal/mol energy units.
+    opls_all_summed_dihedrals_k_constants_figure.pdf
+        For each valid cosine power combinations, the total OPLS dihedral energies
+        between QM and MM simulations are plotted, where the MM simulation's fitted
+        k-values ('fit_dihedral_atom_types') and all the other selected dihedrals
+        ('zeroed_dihedral_atom_types') are zeroed out.
+        This is the total energy difference in QM vs MM energy
+        for all the 'fit_dihedral_atom_types' summed together, as there can
+        be 1 or multiple of this dihedral type in a molecule, which were
+        all fit simultaneously.
+    opls_all_single_fit_dihedral_k_constants_figure.pdf
+        The final OPLS dihedral fit for the individual dihedrals
+        (individual dihedrals in the 'fit_dihedral_atom_types') for each
+        each valid cosine power combination. These plotted dihedral energies would be
+        the energy from a single (1) dihedral in the system, or the dihedral energy
+        (via k-values) that would be entered into the force field parameters.
+        This plot allows the users to compare the different valid cosine power
+        combinations and their R-squared values.
+        If multiple R-squared values are both nearly perfect and the plots
+        look different, this may be a sign that something is not correct with 1
+        or more of the nearly perfect R-squared fitted values, or fitting procedure
+        itself.
     """
 
     if qm_engine == "gaussian" and manual_dihedral_atom_numbers_list is not None:
