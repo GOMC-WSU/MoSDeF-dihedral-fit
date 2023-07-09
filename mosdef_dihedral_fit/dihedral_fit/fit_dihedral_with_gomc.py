@@ -28,14 +28,15 @@ def fit_dihedral_with_gomc(
         forcefield_selection,
         temperature,
         gomc_binary_path,
-        qm_log_files_and_entries_to_remove,
+        qm_log_files_and_entries_to_remove_dict,
+        manual_dihedral_atom_numbers_list=None,
         zeroed_dihedral_atom_types=None,
         qm_engine="gaussian",
         override_VDWGeometricSigma=None,
         atom_type_naming_style='general',
         gomc_cpu_cores=1,
         fit_min_validated_r_squared=0.99,
-        fit_validation_r_squared_rtol=1e-03
+        fit_validation_r_squared_rtol=5e-03
 ):
     """Fit the desired dihedral to a MM force field, based on QM data.
 
@@ -95,18 +96,76 @@ def fit_dihedral_with_gomc(
         Example: '/home/brad/Programs/GOMC/GOMC_2_76/bin'
 
     qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
-        This is a dictionary comprised of a key (string) of the QM log file path and name,
-        and a list of integers, which are the QM optimization parameters to remove from
-        the written data, in order of reading from each file. These can be seen in the
-        order of the dictionary file name (strings).  These removed parameters allow
-        users to remove any bad or repeated data points for the QM log file when needed.
+        qm_engine="gaussian"
 
-        Example 1: {'path/guassian_log_file.log': []}
-        Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+            This is a dictionary comprised of a key (string) of the QM log file path and name,
+            and a list of integers, which are the QM optimization parameters to remove from
+            the written data, in order of reading from each file. These can be seen in the
+            order of the dictionary file name (strings).  These removed parameters allow
+            users to remove any bad or repeated data points for the QM log file when needed.
 
-        Example 2: {'path/guassian_log_file.log': [0, 23]}
-        Uses all data points from the 'path/guassian_log_file.log' file, except points
-        0 and 23.  NOTE: Python counting starts at 0.
+            Example 1: {'path/guassian_log_file.log': []}
+            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+
+            Example 2: {'path/guassian_log_file.log': [0, 23]}
+            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            0 and 23.  NOTE: Python counting starts at 0.
+
+        qm_engine="gaussian_style_final_files"
+
+            This is a dictionary comprised of a key (string) of the  file paths to the
+            Gaussian style final formatted files, and a list of integers, which are the
+            QM optimization parameters to remove from the written data, in order of reading
+            from each folder. These can be seen in the order of the dictionary file name (strings).
+            These removed parameters allow users to remove any bad or repeated data points
+            for the QM log file when needed.
+
+            NOTE: The energy and dihedral angle file in this directory need to be
+            named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
+
+                Example of energy and dihedral angle file ('dihedral.txt'):
+                    # Scan of Total Energy
+                    # X-Axis:  Scan Coordinate
+                    # Y-Axis:  Total Energy (Hartree)
+                    #                  X                   Y
+                                     0.0     -267.0062955742
+                                    10.0     -267.0062900424
+
+            NOTE: The coordinate files in this directory need to be
+            named 'dihedral_coords_position_XXXX.txt' for the each angles coordinate values.
+            There are as XXX file in this directory where XXX is the number of dihedral angles.
+            The file numbering starts at 1 so the files are named 'dihedral_coords_position_1.txt'
+            to 'dihedral_coords_position_XXXX.txt'
+
+                Example of coordinate file ('dihedral_coords_position_1.txt'):
+                    # Scan of Total Energy
+                    # X-Axis:  Scan Coordinate
+                    # Y-Axis:  Total Energy (Hartree)
+                    Row	Highlight	Display	Tag	Symbol	X	Y	Z
+                    1       No      Show    1       C       0.077153        -0.010211       0.106889
+                    2       No      Show    2       C       -1.455163       0.076994        0.364648
+                    3       No      Show    3       C       -2.162794       1.205823        -0.378912
+                    4       No      Show    4       O       0.614863        1.022719        -0.303596
+                    5       No      Show    5       O       0.581656        -1.105138       0.370604
+                    6       No      Show    6       H       -1.703737       2.157201        -0.140757
+                    7       No      Show    7       H       -2.079381       1.073202        -1.454515
+                    8       No      Show    8       H       -1.898266       -0.885627       0.121028
+                    9       No      Show    9       H       -1.593015       0.205080        1.439694
+                    10      No      Show    10      H       -3.224767       1.255506        -0.130085
+
+            Example 1: {'path_to_gaussian_style_final_files': []}
+            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+
+            Example 2: {'path_to_gaussian_style_final_files': [0, 23]}
+            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            0 and 23.  NOTE: Python counting starts at 0.
+
+    manual_dihedral_atom_numbers_list: list of 4 integers, default=None
+        NOTE: Only needed for qm_engine="gaussian_style_final_files"
+
+        This is a list of the dihedral atom numbers in order that were used for the dihedral
+        fit. This information needs to be correct and in order to produce correct results.
+        The values must be the same in all the combined files.
     zeroed_dihedral_atom_types: nest list with lists of four (4) strings, default=None
         The nests list(s) of the other dihedrals, that need to have their k-values zeroed to
         properly fit the the 'fit_dihedral_atom_types' dihedral.
@@ -115,7 +174,7 @@ def fit_dihedral_with_gomc(
 
     qm_engine: str (currently only 'guassian'), default='guassian'
         The Quantum Mechanics (QM) simulation engine utilized to produce the files listed
-        in the 'qm_log_files_and_entries_to_remove' variable(s).
+        in the 'qm_log_files_and_entries_to_remove_dict' variable(s).
     override_VDWGeometricSigma: boolean, default = None
         Override the VDWGeometricSigma in the foyer or GMSO XML file.
         If this is None, it will use whatever is specified in the XML file, or the
@@ -204,7 +263,7 @@ def fit_dihedral_with_gomc(
         same dihedrals being fit simultaneously, and the 'zeroed_dihedral_atom_types' are
         dihedral energies are set to zero.
 
-    fit_validation_r_squared_rtol: float, default=1e-03
+    fit_validation_r_squared_rtol: float, default=5e-03
         Where the QM data is defined as the actual data; this is the fractional difference
         of the dihedral's calculated R-squared values between:
         * The QM-MM fitting process, where the fit MM dihedral k-values are zero (0).
@@ -216,7 +275,7 @@ def fit_dihedral_with_gomc(
         forcefield_selection,
         temperature,
         gomc_binary_path,
-        qm_log_files_and_entries_to_remove,
+        qm_log_files_and_entries_to_remove_dict,
         zeroed_dihedral_atom_types=None,
 
     Returns
@@ -379,11 +438,35 @@ def fit_dihedral_with_gomc(
             or more of the nearly perfect R-squared fitted values, or fitting procedure
             itself.
     """
+
+    if qm_engine == "gaussian" and manual_dihedral_atom_numbers_list is not None:
+        warn(
+            "WARNING: The 'dihedral_atom_numbers_list' is set to None, and will not be used, "
+            "but read from the file directly."
+             )
+        manual_dihedral_atom_numbers_list = None
+
     # write the qm data files data out
-    mdf_frw.write_qm_data_files(
-        qm_log_files_and_entries_to_remove,
-        qm_engine=qm_engine
-    )
+    if qm_engine == "gaussian":
+        mdf_frw.write_qm_data_files(
+            qm_log_files_and_entries_to_remove_dict,
+            manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
+            qm_engine=qm_engine
+        )
+    elif qm_engine == "gaussian_style_final_files":
+        mdf_frw.write_qm_data_files(
+            qm_log_files_and_entries_to_remove_dict,
+            manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
+            qm_engine=qm_engine
+        )
+
+    else:
+        raise ValueError(
+            f"ERROR: In the 'write_qm_data_files' function, "
+            f"the 'qm_engine' variable = {qm_engine}, which is not "
+            f"any of the available options.  "
+            f"The options are 'gaussian' and 'gaussian_style_final_files'."
+        )
 
     # **************************************************************
     # **************************************************************
@@ -830,19 +913,39 @@ def fit_dihedral_with_gomc(
     # and all sum 1/2*(k1 * scalar_i) = sum 1/2*(k1 * (1 +/- cos(n * phi)) values
     # (START)
     # *********************************
+    # extract the data from the QM log file
+    if qm_engine == "gaussian":
+        [
+            matching_dihedral_types_by_atom_numbers_list,
+            matching_dihedral_types_by_atom_type_list,
+            all_matching_dihedral_coordinates_angstroms_added_to_k_values_list,
+            all_matching_dihedral_phi_degrees_added_to_k_values_list,
+            all_sum_opls_const_1_plus_or_minus_cos_n_list
+        ] = mdf_frw.get_matching_dihedral_info_and_opls_fitting_data(
+            fit_dihedral_atom_types,
+            f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}.psf",
+            qm_log_files_and_entries_to_remove_dict,
+            qm_engine=qm_engine,
+        )
 
-    [
-        matching_dihedral_types_by_atom_numbers_list,
-        matching_dihedral_types_by_atom_type_list,
-        all_matching_dihedral_coordinates_angstroms_added_to_k_values_list,
-        all_matching_dihedral_phi_degrees_added_to_k_values_list,
-        all_sum_opls_const_1_plus_or_minus_cos_n_list
-    ] = mdf_frw.get_matching_dihedral_info_and_opls_fitting_data(
-        fit_dihedral_atom_types,
-        f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}.psf",
-        qm_log_files_and_entries_to_remove,
-        qm_engine=qm_engine,
-    )
+    elif qm_engine == "gaussian_style_final_files":
+        [
+            matching_dihedral_types_by_atom_numbers_list,
+            matching_dihedral_types_by_atom_type_list,
+            all_matching_dihedral_coordinates_angstroms_added_to_k_values_list,
+            all_matching_dihedral_phi_degrees_added_to_k_values_list,
+            all_sum_opls_const_1_plus_or_minus_cos_n_list
+        ] = mdf_frw.get_matching_dihedral_info_and_opls_fitting_data(
+            fit_dihedral_atom_types,
+            f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}.psf",
+            qm_log_files_and_entries_to_remove_dict,
+            qm_engine=qm_engine,
+            manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
+        )
+    else:
+        raise ValueError(
+            f"ERROR: The entered qm_engine = {qm_engine} and the only valid options are {['gaussian']}"
+        )
 
     # get the individual sum_opls_const_1_plus_or_minus_cos_n_list ones for fitting and plotting
     const_1_minus_Cos_0_phi_data_lists = []
@@ -918,7 +1021,7 @@ def fit_dihedral_with_gomc(
             f"{Gaussian_minus_GOMC_data_dihedral_degrees_list[k_angle]: <30} "
             f"{GOMC_data_total_energy_kcal_per_mol_normalize_list[k_angle]: <30} "
             f"{Guassian_data_total_energy_kcal_per_mol_normalize_list[k_angle]: <30} "
-            f"{Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list[k_angle]: <30} "
+            f"{Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list[k_angle]: <40} "
             f"{const_1_minus_Cos_0_phi_data_lists[k_angle]: <30} "
             f"{const_1_plus_Cos_1_phi_data_lists[k_angle]: <30} "
             f"{const_1_minus_Cos_2_phi_data_lists[k_angle]: <30} "
@@ -979,6 +1082,10 @@ def fit_dihedral_with_gomc(
                 const_1_minus_Cos_4_phi_data_lists
             ))
         )
+
+    print(f"sorted_GOMC_data_total_energy_kcal_per_mol_normalize_list = {sorted_GOMC_data_total_energy_kcal_per_mol_normalize_list}")
+    print(f"sorted_Guassian_data_total_energy_kcal_per_mol_normalize_list = {sorted_Guassian_data_total_energy_kcal_per_mol_normalize_list}")
+    print(f"sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list = {sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list}")
 
     plot_max = int(max(
         sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list) + 1.51)
@@ -1580,12 +1687,12 @@ def fit_dihedral_with_gomc(
         # wrie out the k constants and R^2
         opls_dihedral_k_constants_fit_energy_kcal_mol_txt_file.write(
             f"\n{k_type_i: <25} "
-            f"{parameters[0]: <25} "
-            f"{parameters[1]: <25} "
-            f"{parameters[2]: <25} "
-            f"{parameters[3]: <25} "
-            f"{parameters[4]: <25} "
-            f"{r_squared: <25} "
+            f"{mdf_math.round_to_sig_figs(parameters[0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(parameters[1], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(parameters[2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(parameters[3], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(parameters[4], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(r_squared, sig_figs=12): <25} "
         )
 
     # plot the data point that it is being fit too
@@ -1828,25 +1935,25 @@ def fit_dihedral_with_gomc(
         # for the OPLS conversion to the periodic/CHARMM style.
         periodic_dihedral_k_constants_fit_energy_kcal_mol_txt_file.write(
             f"\n{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
-            f"{periodic_dihedral_k_n_d_values[0][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[1][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[2][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[3][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[4][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[5][0]: <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[0][0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[1][0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[2][0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[3][0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[4][0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[5][0], sig_figs=12): <25} "
             f"{int(periodic_dihedral_k_n_d_values[0][1]): <25} "
             f"{int(periodic_dihedral_k_n_d_values[1][1]): <25} "
             f"{int(periodic_dihedral_k_n_d_values[2][1]): <25} "
             f"{int(periodic_dihedral_k_n_d_values[3][1]): <25} "
             f"{int(periodic_dihedral_k_n_d_values[4][1]): <25} "
             f"{int(periodic_dihedral_k_n_d_values[5][1]): <25} "
-            f"{periodic_dihedral_k_n_d_values[0][2]: <25} "
-            f"{periodic_dihedral_k_n_d_values[1][2]: <25} "
-            f"{periodic_dihedral_k_n_d_values[2][2]: <25} "
-            f"{periodic_dihedral_k_n_d_values[3][2]: <25} "
-            f"{periodic_dihedral_k_n_d_values[4][2]: <25} "
-            f"{periodic_dihedral_k_n_d_values[5][2]: <25} "
-            f"{opls_fit_data_r_squared_list[opls_fit_i]: <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[0][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[1][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[2][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[3][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[4][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[5][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(opls_fit_data_r_squared_list[opls_fit_i], sig_figs=12): <25} "
         )
 
         # Write the RB torsion constants to file.
@@ -1856,13 +1963,13 @@ def fit_dihedral_with_gomc(
         # for the OPLS conversion to the RB torsion style.
         RB_torsion_k_constants_fit_energy_kcal_mol_txt_file.write(
             f"\n{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
-            f"{RB_torsion_k_values[0]: <25} "
-            f"{RB_torsion_k_values[1]: <25} "
-            f"{RB_torsion_k_values[2]: <25} "
-            f"{RB_torsion_k_values[3]: <25} "
-            f"{RB_torsion_k_values[4]: <25} "
-            f"{RB_torsion_k_values[5]: <25} "
-            f"{opls_fit_data_r_squared_list[opls_fit_i]: <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[1], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[3], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[4], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[5], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(opls_fit_data_r_squared_list[opls_fit_i], sig_figs=12): <25} "
         )
 
         # *********************************
