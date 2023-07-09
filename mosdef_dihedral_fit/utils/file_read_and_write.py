@@ -1044,9 +1044,7 @@ def write_qm_data_files(
     Parameters
     ----------
     qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
-
-        qm_engine="gaussian"
-
+        * qm_engine="gaussian"
             This is a dictionary comprised of a key (string) of the QM log file path and name,
             and a list of integers, which are the QM optimization parameters to remove from
             the written data, in order of reading from each file. These can be seen in the
@@ -1054,23 +1052,22 @@ def write_qm_data_files(
             users to remove any bad or repeated data points for the QM log file when needed.
 
             Example 1: {'path/guassian_log_file.log': []}
+
             Uses all the optimized data points from the 'path/guassian_log_file.log' file.
 
             Example 2: {'path/guassian_log_file.log': [0, 23]}
             Uses all data points from the 'path/guassian_log_file.log' file, except points
             0 and 23.  NOTE: Python counting starts at 0.
 
-        qm_engine="gaussian_style_final_files"
-
+        * qm_engine="gaussian_style_final_files"
             This is a dictionary comprised of a key (string) of the  file paths to the
             Gaussian style final formatted files, and a list of integers, which are the
             QM optimization parameters to remove from the written data, in order of reading
             from each folder. These can be seen in the order of the dictionary file name (strings).
             These removed parameters allow users to remove any bad or repeated data points
-            for the QM log file when needed.
-
+            for the QM log file when needed.  \n
             NOTE: The energy and dihedral angle file in this directory need to be
-            named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
+            named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).  \n
 
             Example of energy and dihedral angle file ('dihedral.txt'):
 
