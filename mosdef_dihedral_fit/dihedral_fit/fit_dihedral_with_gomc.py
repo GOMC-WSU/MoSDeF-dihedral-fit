@@ -117,9 +117,9 @@ def fit_dihedral_with_gomc(
             QM optimization parameters to remove from the written data, in order of reading
             from each folder. These can be seen in the order of the dictionary file name (strings).
             These removed parameters allow users to remove any bad or repeated data points
-            for the QM log file when needed.  \n
+            for the QM log file when needed.
             NOTE: The energy and dihedral angle file in this directory need to be
-            named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).  \n
+            named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
 
             Example of energy and dihedral angle file ('dihedral.txt'):
 
@@ -385,7 +385,7 @@ def fit_dihedral_with_gomc(
         C2 = (1 - cos(2 * phi))
 
         C3 = (1 + cos(3 * phi))
-        
+
         C4 = (1 - cos(4 * phi))
 
     all_normalized_energies_OPLS_fit_YYY_in_kcal_per_mol.txt

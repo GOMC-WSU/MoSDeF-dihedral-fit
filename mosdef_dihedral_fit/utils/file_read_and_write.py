@@ -1065,9 +1065,9 @@ def write_qm_data_files(
             QM optimization parameters to remove from the written data, in order of reading
             from each folder. These can be seen in the order of the dictionary file name (strings).
             These removed parameters allow users to remove any bad or repeated data points
-            for the QM log file when needed.  \n
+            for the QM log file when needed.
             NOTE: The energy and dihedral angle file in this directory need to be
-            named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).  \n
+            named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
 
             Example of energy and dihedral angle file ('dihedral.txt'):
 
