@@ -1,8 +1,8 @@
 Select the Inputs and Fit the Dihedral
 ======================================
 
-Fit the dihedral for Ethane
----------------------------
+Fit the dihedral for Ethane using a Gaussian log file
+-----------------------------------------------------
 The ethane HC-CT-CT-HC dihedral fit example is provided below, where nine (9) of the HC-CT-CT-HC dihedral are fit simultaneously.
 
 
@@ -86,6 +86,11 @@ Run the dihedral fit to fit to the MM simulations:
     )
 
 
+Fit a dihedral for propionic acid using Gaussian-style output files
+-------------------------------------------------------------------
+The propionic acid CT-CT-C-OH dihedral fit example is provided below. This is an example where the CT-CT-C-OH is fit for both 
+CT-CT-C-OH and CT-CT-C-O, by fitting the CT-CT-C-OH and zeroing the CT-CT-C-O, which makes it easier to fit.
+
 Additionally, one can perform the dihedral fit with QM calculations with any QM engine as long as they are in the 
 `Gaussian style output files format <https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/tree/main/mosdef_dihedral_fit/utils/files/gaussian_style_output_files>`_ 
 together with the GOMC Molecular Mechanics (MM) engine, and write out all the viable dihedral fits via the standard
@@ -157,7 +162,7 @@ Run the dihedral fit to fit to the MM simulations:
         log_files_and_removed_points,
 	manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
         zeroed_dihedral_atom_types=zeroed_dihedrals,
-        qm_engine="gaussian",
+        qm_engine="gaussian_style_final_files",
         override_VDWGeometricSigma=override_VDWGeometricSigma_bool,
         atom_type_naming_style='general',
         gomc_cpu_cores=1,

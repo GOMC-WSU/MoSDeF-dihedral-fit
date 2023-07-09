@@ -123,13 +123,14 @@ def fit_dihedral_with_gomc(
             NOTE: The energy and dihedral angle file in this directory need to be
             named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
 
-                Example of energy and dihedral angle file ('dihedral.txt'):
-                    # Scan of Total Energy
-                    # X-Axis:  Scan Coordinate
-                    # Y-Axis:  Total Energy (Hartree)
-                    #                  X                   Y
-                                     0.0     -267.0062955742
-                                    10.0     -267.0062900424
+            Example of energy and dihedral angle file ('dihedral.txt'):
+
+            | # Scan of Total Energy
+            | # X-Axis:  Scan Coordinate
+            | # Y-Axis:  Total Energy (Hartree)
+            | #                  X                   Y
+            |                  0.0     -267.0062955742
+            |                 10.0     -267.0062900424
 
             NOTE: The coordinate files in this directory need to be
             named 'dihedral_coords_position_XXXX.txt' for the each angles coordinate values.
@@ -137,21 +138,19 @@ def fit_dihedral_with_gomc(
             The file numbering starts at 1 so the files are named 'dihedral_coords_position_1.txt'
             to 'dihedral_coords_position_XXXX.txt'
 
-                Example of coordinate file ('dihedral_coords_position_1.txt'):
-                    # Scan of Total Energy
-                    # X-Axis:  Scan Coordinate
-                    # Y-Axis:  Total Energy (Hartree)
-                    Row	Highlight	Display	Tag	Symbol	X	Y	Z
-                    1       No      Show    1       C       0.077153        -0.010211       0.106889
-                    2       No      Show    2       C       -1.455163       0.076994        0.364648
-                    3       No      Show    3       C       -2.162794       1.205823        -0.378912
-                    4       No      Show    4       O       0.614863        1.022719        -0.303596
-                    5       No      Show    5       O       0.581656        -1.105138       0.370604
-                    6       No      Show    6       H       -1.703737       2.157201        -0.140757
-                    7       No      Show    7       H       -2.079381       1.073202        -1.454515
-                    8       No      Show    8       H       -1.898266       -0.885627       0.121028
-                    9       No      Show    9       H       -1.593015       0.205080        1.439694
-                    10      No      Show    10      H       -3.224767       1.255506        -0.130085
+            Example of coordinate file ('dihedral_coords_position_1.txt'):
+
+            | Row	Highlight	Display	Tag	Symbol	X	Y	Z
+            | 1       No      Show    1       C       0.077153        -0.010211       0.106889
+            | 2       No      Show    2       C       -1.455163       0.076994        0.364648
+            | 3       No      Show    3       C       -2.162794       1.205823        -0.378912
+            | 4       No      Show    4       O       0.614863        1.022719        -0.303596
+            | 5       No      Show    5       O       0.581656        -1.105138       0.370604
+            | 6       No      Show    6       H       -1.703737       2.157201        -0.140757
+            | 7       No      Show    7       H       -2.079381       1.073202        -1.454515
+            | 8       No      Show    8       H       -1.898266       -0.885627       0.121028
+            | 9       No      Show    9       H       -1.593015       0.205080        1.439694
+            | 10      No      Show    10      H       -3.224767       1.255506        -0.130085
 
             Example 1: {'path_to_gaussian_style_final_files': []}
             Uses all the optimized data points from the 'path/guassian_log_file.log' file.
