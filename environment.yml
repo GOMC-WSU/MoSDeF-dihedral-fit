@@ -15,8 +15,9 @@ dependencies:
   - pytest
   - pytest-cov
   - mosdef-gomc
+  - pydantic=1.10.10
   - pre-commit
-  - sphinx
+  - sphinx=6.1.1
   - pip
   - pip:
       - bump2version

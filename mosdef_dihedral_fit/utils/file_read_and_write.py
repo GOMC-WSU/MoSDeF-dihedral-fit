@@ -1,4 +1,5 @@
 import os
+import shutil
 import subprocess
 import numpy as np
 import mosdef_dihedral_fit.utils.math_operations as mdf_math
@@ -409,8 +410,247 @@ def check_guassian_optimized_coordinate_file_correct(gaussian_optimized_coordina
     return gaussian_optimized_coordinate_header_line_correct_bool
 
 
+def get_final_gaussian_output_file_data(
+        qm_log_files_and_entries_to_remove_dict,
+        manual_dihedral_atom_numbers_list
+):
+    """Get the Guassian/Gausview file data from the existing Guassian/Gausview files.
+
+    This gets the Guassian/Gausview log file data for all the optimized configurations,
+    moving it to the folder that will be analyzed.
+
+    The proper header format for the GausView/Gaussian output is as follows:
+
+    'Row	Highlight	Display	Tag	Symbol	X	Y	Z'
+
+    Parameters
+    ----------
+    qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
+        This is a dictionary comprised of a key (string) of the QM Guassian/Gausview file
+        data path and name,
+        and a list of integers, which are the QM optimization parameters to remove from
+        the written data, in order of reading from each file. These can be seen in the
+        order of the dictionary file name (strings).  These removed parameters allow
+        users to remove any bad or repeated data points for the QM log file when needed.
+
+        Example 1: {'path/guassian_log_file.log': []}
+        Uses all the optimized data points from the 'path/guassian_log_file_data_path' file.
+
+        Example 2: {'path/guassian_log_file.log': [0, 23]}
+        Uses all data points from the 'path/guassian_log_file_data_path' file, except points
+        0 and 23.  NOTE: Python counting starts at 0.
+    manual_dihedral_atom_numbers_list: list, list of four (4) int (example: [3,2,1,5])
+        This is a list of the dihedral atom numbers in order that were used for the dihedral
+        fit. This information needs to be correct and in order to produce correct results.
+        The values must be the same in all the combined files.
+
+    Returns
+    -------
+    list of:
+        all_dihedral_angle_degrees_list: list (nested list)
+            This is the list of the optimized Gaussian dihedral angles (degrees) with the
+            specific angles removed per the 'qm_log_files_and_entries_to_remove_dict' list
+            (value) input. This is a nested list, with an inner list for every
+            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
+        all_energy_hartree_list: list (nested list)
+            This is the list of the optimized Gaussian energies with the specific energies
+            (hartree) removed per the 'qm_log_files_and_entries_to_remove_dict' list
+            (value) input. This is a nested list, with an inner list for every
+            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
+        all_coordinates_ang_list: list (nested list)
+            This is the list of the optimized Gaussian energies with the specific energies
+            (hartree) removed per the 'qm_log_files_and_entries_to_remove_dict' list
+            (value) input. This is a nested list, with an inner list for every
+            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
+        element_names_list: list
+            This is the list of the Gaussian element names per the
+            'qm_log_files_and_entries_to_remove_dict' list (value) input.
+            The list length is dependant on the number of elements in the Gaussian log file
+            These values are confirmed to be the same for all entered Gaussian log files.
+        number_of_atoms: int
+            This is the number of atoms in the Gaussian
+            'qm_log_files_and_entries_to_remove_dict' list (value) input.
+            These values are confirmed to be the same for all entered Gaussian log files.
+        manual_dihedral_atom_numbers_list: list, list of four (4) int (example: [3,2,1,5])
+        This is a list of the dihedral atom numbers in order that were used for the dihedral
+        fit. This information needs to be correct and in order to produce correct results.
+        The values must be the same in all the combined files.
+    """
+    if not isinstance(qm_log_files_and_entries_to_remove_dict, dict):
+        raise TypeError(
+            f"ERROR: In the 'get_final_gaussian_output_file_data' function, "
+            f"the Gaussian 'log_files_and_entries_to_remove_dict' variable "
+            f"is a {type(qm_log_files_and_entries_to_remove_dict)} not a dict."
+        )
+
+    else:
+        for key_j, value_j in qm_log_files_and_entries_to_remove_dict.items():
+            if not isinstance(key_j, str):
+                raise ValueError(
+                    f"ERROR: In the 'get_final_gaussian_output_file_data' function, "
+                    f"the 'qm_log_files_and_entries_to_remove_dict' key "
+                    f"'{key_j}' is a {type(key_j)} not a string."
+                )
+            if isinstance(value_j, list):
+                for r_i in value_j:
+                    if not isinstance(r_i, int) or r_i < 0:
+                        raise TypeError(
+                            f"ERROR: In the 'get_final_gaussian_output_file_data' function, "
+                            f"the 'qm_log_files_and_entries_to_remove_dict' values '{value_j}' "
+                            f"are all not integers and >=0."
+                        )
+            else:
+                raise TypeError(
+                    f"ERROR: In the 'get_final_gaussian_output_file_data' function, "
+                    f"the 'qm_log_files_and_entries_to_remove_dict' "
+                    f"'{value_j}' is a {type(value_j)} not a list."
+                )
+
+    if not isinstance(manual_dihedral_atom_numbers_list, list) or len(manual_dihedral_atom_numbers_list) != 4:
+        raise TypeError("ERROR: The 'manual_dihedral_atom_numbers_list' is not a list of length 4.")
+
+    elif isinstance(manual_dihedral_atom_numbers_list, list) and len(manual_dihedral_atom_numbers_list) == 4:
+        for x_i in manual_dihedral_atom_numbers_list:
+            if not isinstance(x_i, int):
+                raise TypeError("ERROR: The 'manual_dihedral_atom_numbers_list' values are not integers.")
+
+
+    all_coordinates_ang_list = []
+    all_energy_hartree_list = []
+    all_dihedral_angle_degrees_list = []
+
+    all_dihedral_atom_numbers_list = []
+    all_number_of_atoms_list = []
+    all_element_names_list = []
+
+    dihedral_counter = 0  # start at 1 and add a +1 initially
+    for direct_gaussian_folder_iter, entries_to_remove_list_iter in qm_log_files_and_entries_to_remove_dict.items():
+        # reset the dihedral used per file
+        all_used_and_unused_dihedral_angle_degrees_list = []
+
+        # run each log file
+        # check the file is correctly formated
+        direct_gaussian_angles_energy_formated_file_name_iter = f"{direct_gaussian_folder_iter}/dihedral.txt"
+        check_guassian_angle_energy_file_correct(direct_gaussian_angles_energy_formated_file_name_iter)
+
+        with open(direct_gaussian_angles_energy_formated_file_name_iter, "r") as fp1:
+            first_enerery_dihedral_file_data_header_lines = 4
+            first_coord_file_data_header_lines = 1
+
+            # get the 1st QM Guassian/Gausview file angles and dihedrals
+            direct_gaussian_angles_energy_iter = fp1.readlines()
+            for m, line_m in enumerate(direct_gaussian_angles_energy_iter):
+                m_less_spacers = int(m - first_enerery_dihedral_file_data_header_lines - 0)
+                split_line_m = line_m.split()
+
+                # get all used and unused dihedrals for later pulling coordinates in order
+                if m_less_spacers >= 0 and len(split_line_m) == 2:
+                    all_used_and_unused_dihedral_angle_degrees_list.append(split_line_m[0])
+
+                if m_less_spacers >= 0 and len(split_line_m) == 2 \
+                        and m_less_spacers not in entries_to_remove_list_iter:
+                    all_dihedral_angle_degrees_list.append(split_line_m[0])
+                    all_energy_hartree_list.append(split_line_m[1])
+
+                elif m_less_spacers >= 0 and len(split_line_m) != 2:
+                    raise ValueError(
+                        f"ERROR: The directly input file {direct_gaussian_angles_energy_formated_file_name_iter} "
+                        f"is not in the correct Guassian sytle format."
+                    )
+
+            total_used_and_unused_dihedrals_per_file = [len(all_used_and_unused_dihedral_angle_degrees_list)]
+
+            # iterate through the coord files (added +1 as file names start with 1)
+            for dih_per_file_i in range(1, total_used_and_unused_dihedrals_per_file[-1] + 1):
+
+                direct_coordinates_ang_list_iter = []
+                direct_number_of_atoms_list_iter = []
+                direct_element_names_list_iter = []
+                direct_dihedral_atom_numbers_list_iter = []
+                if int(dih_per_file_i - 1) not in entries_to_remove_list_iter:
+                    dihedral_counter += 1
+                    direct_gaussian_coord_formated_file_name_iter = \
+                        f"{direct_gaussian_folder_iter}/dihedral_coords_position_{dih_per_file_i}.txt"
+                    check_guassian_optimized_coordinate_file_correct(direct_gaussian_coord_formated_file_name_iter)
+
+                    with open(direct_gaussian_coord_formated_file_name_iter, "r") as fp2:
+
+                        # get the 1st QM Guassian/Gausview file angles and dihedrals
+                        direct_gaussian_coord_iter = fp2.readlines()
+                        for n, line_n in enumerate(direct_gaussian_coord_iter):
+                            split_line_n = line_n.split()
+                            n_less_spacers = int(n - first_coord_file_data_header_lines - 0)
+                            if n_less_spacers >= 0 and len(split_line_n) == 8:
+
+                                direct_coordinates_ang_list_iter.append(
+                                    [float(split_line_n[5]), float(split_line_n[6]), float(split_line_n[7])]
+                                )
+                                direct_number_of_atoms_list_iter.append(float(split_line_n[3]))
+                                direct_element_names_list_iter.append(split_line_n[4])
+                                direct_dihedral_atom_numbers_list_iter.append(manual_dihedral_atom_numbers_list)
+
+                            elif n_less_spacers >= 0 and len(split_line_n) != 8:
+                                raise ValueError(
+                                    f"ERROR: The directly input file {direct_gaussian_coord_formated_file_name_iter} "
+                                    f"is not in the correct Guassian sytle format"
+                                )
+
+                        #check the values against the past ones
+                        if len(all_coordinates_ang_list) == 0 \
+                                and len(all_number_of_atoms_list) == 0 \
+                                and len(all_element_names_list) == 0:
+                            all_coordinates_ang_list.append(direct_coordinates_ang_list_iter)
+                            all_number_of_atoms_list.append(direct_number_of_atoms_list_iter)
+                            all_element_names_list.append(direct_element_names_list_iter)
+                            all_dihedral_atom_numbers_list.append(direct_dihedral_atom_numbers_list_iter)
+
+                        else:
+
+                            all_coordinates_ang_list.append(direct_coordinates_ang_list_iter)
+
+                            # check if the number_of_atoms are the same for all Gaussian files
+                            all_number_of_atoms_list = mdf_math.check_previous_qm_values_match(
+                                all_number_of_atoms_list,
+                                direct_number_of_atoms_list_iter,
+                                'number of atoms',
+                                'Direct Guassian output file',
+                                direct_gaussian_coord_formated_file_name_iter
+                            )
+
+                            # check if the nelement_names are the same for all Gaussian files
+                            all_element_names_list = mdf_math.check_previous_qm_values_match(
+                                all_element_names_list,
+                                direct_element_names_list_iter,
+                                'element names',
+                                'Direct Guassian output file',
+                                direct_gaussian_coord_formated_file_name_iter
+                            )
+
+                            # check if the nelement_names are the same for all Gaussian files
+                            all_dihedral_atom_numbers_list = mdf_math.check_previous_qm_values_match(
+                                all_dihedral_atom_numbers_list,
+                                direct_dihedral_atom_numbers_list_iter,
+                                'dihedral atom numbers',
+                                'Direct Guassian output file',
+                                direct_gaussian_coord_formated_file_name_iter
+                            )
+
+    element_names_list = all_element_names_list[0]
+    number_of_atoms = len(element_names_list)
+
+    return [
+        all_dihedral_angle_degrees_list,
+        all_energy_hartree_list,
+        all_coordinates_ang_list,
+        element_names_list,
+        number_of_atoms,
+        manual_dihedral_atom_numbers_list
+    ]
+
+
+
 def get_gaussian_log_file_data(
-        log_files_and_entries_to_remove_dict,
+        qm_log_files_and_entries_to_remove_dict,
 ):
     """Get the Guassian/Gausview file data from the log filefor all the optimized configurations.
 
@@ -423,7 +663,7 @@ def get_gaussian_log_file_data(
 
     Parameters
     ----------
-    log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
+    qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
         This is a dictionary comprised of a key (string) of the QM log file path and name,
         and a list of integers, which are the QM optimization parameters to remove from
         the written data, in order of reading from each file. These can be seen in the
@@ -442,48 +682,48 @@ def get_gaussian_log_file_data(
     list of:
         all_dihedral_angle_degrees_list: list (nested list)
             This is the list of the optimized Gaussian dihedral angles (degrees) with the
-            specific angles removed per the 'log_files_and_entries_to_remove_dict' list
+            specific angles removed per the 'qm_log_files_and_entries_to_remove_dict' list
             (value) input. This is a nested list, with an inner list for every
-            Gaussian log file or 'log_files_and_entries_to_remove_dict' (key).
+            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
         all_energy_hartree_list: list (nested list)
             This is the list of the optimized Gaussian energies with the specific energies
-            (hartree) removed per the 'log_files_and_entries_to_remove_dict' list
+            (hartree) removed per the 'qm_log_files_and_entries_to_remove_dict' list
             (value) input. This is a nested list, with an inner list for every
-            Gaussian log file or 'log_files_and_entries_to_remove_dict' (key).
+            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
         all_coordinates_ang_list: list (nested list)
             This is the list of the optimized Gaussian energies with the specific energies
-            (hartree) removed per the 'log_files_and_entries_to_remove_dict' list
+            (hartree) removed per the 'qm_log_files_and_entries_to_remove_dict' list
             (value) input. This is a nested list, with an inner list for every
-            Gaussian log file or 'log_files_and_entries_to_remove_dict' (key).
+            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
         element_names_list: list
             This is the list of the Gaussian element names per the
-            'log_files_and_entries_to_remove_dict' list (value) input.
+            'qm_log_files_and_entries_to_remove_dict' list (value) input.
             The list length is dependant on the number of elements in the Gaussian log file
             These values are confirmed to be the same for all entered Gaussian log files.
         number_of_atoms: int
             This is the number of atoms in the Gaussian
-            'log_files_and_entries_to_remove_dict' list (value) input.
+            'qm_log_files_and_entries_to_remove_dict' list (value) input.
             These values are confirmed to be the same for all entered Gaussian log files.
         dihedral_atom_numbers_list: list of 4 integers
             This is the list of the dihedral atom numbers used in the Gaussian
             dihedral scan, which are taken from the Gaussian
-            'log_files_and_entries_to_remove_dict' list (value) input.
+            'qm_log_files_and_entries_to_remove_dict' list (value) input.
             These values are confirmed to be the same for all entered Gaussian log files.
 
     """
-    if not isinstance(log_files_and_entries_to_remove_dict, dict):
+    if not isinstance(qm_log_files_and_entries_to_remove_dict, dict):
         raise TypeError(
             f"ERROR: In the 'get_gaussian_log_file_data' function, "
             f"the Gaussian 'log_files_and_entries_to_remove_dic' variable "
-            f"is a {type(log_files_and_entries_to_remove_dict)} not a dict."
+            f"is a {type(qm_log_files_and_entries_to_remove_dict)} not a dict."
         )
 
     else:
-        for key_j, value_j in log_files_and_entries_to_remove_dict.items():
+        for key_j, value_j in qm_log_files_and_entries_to_remove_dict.items():
             if not isinstance(key_j, str):
                 raise ValueError(
                     f"ERROR: In the 'get_gaussian_log_file_data' function, "
-                    f"the 'log_files_and_entries_to_remove_dict' key "
+                    f"the 'qm_log_files_and_entries_to_remove_dict' key "
                     f"'{key_j}' is a {type(key_j)} not a string."
                 )
             if isinstance(value_j, list):
@@ -491,13 +731,13 @@ def get_gaussian_log_file_data(
                     if not isinstance(r_i, int) or r_i < 0:
                         raise TypeError(
                             f"ERROR: In the 'get_gaussian_log_file_data' function, "
-                            f"the 'log_files_and_entries_to_remove_dict' values '{value_j}' "
+                            f"the 'qm_log_files_and_entries_to_remove_dict' values '{value_j}' "
                             f"are all not integers and >=0."
                         )
             else:
                 raise TypeError(
                     f"ERROR: In the 'get_gaussian_log_file_data' function, "
-                    f"the 'log_files_and_entries_to_remove_dict' "
+                    f"the 'qm_log_files_and_entries_to_remove_dict' "
                     f"'{value_j}' is a {type(value_j)} not a list."
                 )
 
@@ -511,7 +751,7 @@ def get_gaussian_log_file_data(
     all_number_of_atoms_list = []
     all_element_names_list = []
 
-    for log_file_iter, entries_to_remove_list_iter in log_files_and_entries_to_remove_dict.items():
+    for log_file_iter, entries_to_remove_list_iter in qm_log_files_and_entries_to_remove_dict.items():
         # run each log file
         with open(log_file_iter, "r") as fp:
             dihedral_scan_line = None
@@ -793,7 +1033,8 @@ def get_gaussian_log_file_data(
 
 
 def write_qm_data_files(
-        log_files_and_entries_to_remove,
+        qm_log_files_and_entries_to_remove_dict,
+        manual_dihedral_atom_numbers_list=None,
         qm_engine="gaussian"
 ):
     """Write out the optimized QM simulation data from the QM log files.
@@ -802,21 +1043,80 @@ def write_qm_data_files(
 
     Parameters
     ----------
-    log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
-        This is a dictionary comprised of a key (string) of the QM log file path and name,
-        and a list of integers, which are the QM optimization parameters to remove from
-        the written data, in order of reading from each file. These can be seen in the
-        order of the dictionary file name (strings).  These removed parameters allow
-        users to remove any bad or repeated data points for the QM log file when needed.
+    qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
 
-        Example 1: {'path/guassian_log_file.log': []}
-        Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+        qm_engine="gaussian"
 
-        Example 2: {'path/guassian_log_file.log': [0, 23]}
-        Uses all data points from the 'path/guassian_log_file.log' file, except points
-        0 and 23.  NOTE: Python counting starts at 0.
+            This is a dictionary comprised of a key (string) of the QM log file path and name,
+            and a list of integers, which are the QM optimization parameters to remove from
+            the written data, in order of reading from each file. These can be seen in the
+            order of the dictionary file name (strings).  These removed parameters allow
+            users to remove any bad or repeated data points for the QM log file when needed.
 
-    qm_engine: str default='gaussian' (options = 'gaussian')
+            Example 1: {'path/guassian_log_file.log': []}
+            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+
+            Example 2: {'path/guassian_log_file.log': [0, 23]}
+            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            0 and 23.  NOTE: Python counting starts at 0.
+
+        qm_engine="gaussian_style_final_files"
+
+            This is a dictionary comprised of a key (string) of the  file paths to the
+            Gaussian style final formatted files, and a list of integers, which are the
+            QM optimization parameters to remove from the written data, in order of reading
+            from each folder. These can be seen in the order of the dictionary file name (strings).
+            These removed parameters allow users to remove any bad or repeated data points
+            for the QM log file when needed.
+
+            NOTE: The energy and dihedral angle file in this directory need to be
+            named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
+
+                Example of energy and dihedral angle file ('dihedral.txt'):
+                    # Scan of Total Energy
+                    # X-Axis:  Scan Coordinate
+                    # Y-Axis:  Total Energy (Hartree)
+                    #                  X                   Y
+                                     0.0     -267.0062955742
+                                    10.0     -267.0062900424
+
+            NOTE: The coordinate files in this directory need to be
+            named 'dihedral_coords_position_XXXX.txt' for the each angles coordinate values.
+            There are as XXX file in this directory where XXX is the number of dihedral angles.
+            The file numbering starts at 1 so the files are named 'dihedral_coords_position_1.txt'
+            to 'dihedral_coords_position_XXXX.txt'
+
+                Example of coordinate file ('dihedral_coords_position_1.txt'):
+                    # Scan of Total Energy
+                    # X-Axis:  Scan Coordinate
+                    # Y-Axis:  Total Energy (Hartree)
+                    Row	Highlight	Display	Tag	Symbol	X	Y	Z
+                    1       No      Show    1       C       0.077153        -0.010211       0.106889
+                    2       No      Show    2       C       -1.455163       0.076994        0.364648
+                    3       No      Show    3       C       -2.162794       1.205823        -0.378912
+                    4       No      Show    4       O       0.614863        1.022719        -0.303596
+                    5       No      Show    5       O       0.581656        -1.105138       0.370604
+                    6       No      Show    6       H       -1.703737       2.157201        -0.140757
+                    7       No      Show    7       H       -2.079381       1.073202        -1.454515
+                    8       No      Show    8       H       -1.898266       -0.885627       0.121028
+                    9       No      Show    9       H       -1.593015       0.205080        1.439694
+                    10      No      Show    10      H       -3.224767       1.255506        -0.130085
+
+            Example 1: {'path_to_gaussian_style_final_files': []}
+            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+
+            Example 2: {'path_to_gaussian_style_final_files': [0, 23]}
+            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            0 and 23.  NOTE: Python counting starts at 0.
+
+    manual_dihedral_atom_numbers_list: list of 4 integers, default=None
+        NOTE: Only needed for qm_engine="gaussian_style_final_files"
+
+        This is a list of the dihedral atom numbers in order that were used for the dihedral
+        fit. This information needs to be correct and in order to produce correct results.
+        The values must be the same in all the combined files.
+
+    qm_engine: str, default='gaussian' (options = 'gaussian')
         The QM simulation engine that was utilized also tells the log file readers
         what QM log file read to use for the analysis.
 
@@ -835,7 +1135,7 @@ def write_qm_data_files(
     # delete any existing directories and make a new one
     guassian_directory_name = "extracted_guassian_data"
     if os.path.isdir(guassian_directory_name):
-        os.rmdir(guassian_directory_name)
+        shutil.rmtree(guassian_directory_name)
     os.mkdir(guassian_directory_name)
 
     if qm_engine == "gaussian":
@@ -848,8 +1148,25 @@ def write_qm_data_files(
             number_of_atoms,
             dihedral_atom_numbers_list
         ] = get_gaussian_log_file_data(
-            log_files_and_entries_to_remove
+            qm_log_files_and_entries_to_remove_dict
         )
+
+    elif qm_engine == "gaussian_style_final_files":
+        if manual_dihedral_atom_numbers_list == None:
+            raise TypeError("ERROR: The 'dihedral_atom_numbers_list' is not a list of length 4, "
+                            "and needs entered when using 'gaussian_style_final_files'.")
+        [
+            all_dihedral_angle_degrees_list,
+            all_energy_hartree_list,
+            all_coordinates_ang_list,
+            element_names_list,
+            number_of_atoms,
+            dihedral_atom_numbers_list
+        ] = get_final_gaussian_output_file_data(
+            qm_log_files_and_entries_to_remove_dict,
+            manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list
+        )
+        print(f'7373737 manual_dihedral_atom_numbers_list = {manual_dihedral_atom_numbers_list}')
 
     else:
         raise ValueError(
@@ -857,7 +1174,6 @@ def write_qm_data_files(
             f"the 'qm_engine' variable = {qm_engine}, which is not "
             f"any of the available options."
         )
-
     # write the gaussian style formatted angle (degrees) and energy output files
     output_file_dihedral_energy = open(
         f"extracted_guassian_data/dihedral.txt", "w")
@@ -919,8 +1235,9 @@ def write_qm_data_files(
 def get_matching_dihedral_info_and_opls_fitting_data(
         fit_dihedral_atom_types,
         psf_path_and_filename,
-        qm_log_files_and_entries_to_remove,
+        qm_log_files_and_entries_to_remove_dict,
         qm_engine="gaussian",
+        manual_dihedral_atom_numbers_list=None
 ):
     """Get all dihedral angles from the dihedrals which match the fitted dihedrals atom types/classes.
 
@@ -961,7 +1278,12 @@ def get_matching_dihedral_info_and_opls_fitting_data(
         Example 2: {'path/guassian_log_file.log': [0, 23]}
         Uses all data points from the 'path/guassian_log_file.log' file, except points
         0 and 23.  NOTE: Python counting starts at 0.
+    manual_dihedral_atom_numbers_list: list of 4 integers, default=None
+        NOTE: Only needed for qm_engine="gaussian_style_final_files"
 
+        This is a list of the dihedral atom numbers in order that were used for the dihedral
+        fit. This information needs to be correct and in order to produce correct results.
+        The values must be the same in all the combined files.
 
     Returns
     -------
@@ -1194,20 +1516,36 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                 number_of_atoms_list,
                 dihedral_atom_numbers_list
             ] = get_gaussian_log_file_data(
-                qm_log_files_and_entries_to_remove
+                qm_log_files_and_entries_to_remove_dict
             )
 
-            qm_atom_types_from_psf_map = [
-                atom_number_to_atom_type_dict[dihedral_atom_numbers_list[0]],
-                atom_number_to_atom_type_dict[dihedral_atom_numbers_list[1]],
-                atom_number_to_atom_type_dict[dihedral_atom_numbers_list[2]],
-                atom_number_to_atom_type_dict[dihedral_atom_numbers_list[3]],
-            ]
-
+        elif qm_engine == "gaussian_style_final_files":
+            if manual_dihedral_atom_numbers_list == None:
+                raise TypeError("ERROR: The 'manual_dihedral_atom_numbers_list' is not a list of length 4, "
+                                "and needs entered when using 'direct_gaussian_final_files'.")
+            [
+                dihedral_angle_degrees_list,
+                energy_hartree_list,
+                coordinates_ang_list,
+                all_element_names_list,
+                number_of_atoms_list,
+                dihedral_atom_numbers_list
+            ] = get_final_gaussian_output_file_data(
+                qm_log_files_and_entries_to_remove_dict,
+                manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list
+            )
         else:
             raise ValueError(
-                f"ERROR: The entered qm_engine = {qm_engine} and the only valid options are {['gaussian']}"
+                f"ERROR: The entered qm_engine = {qm_engine} and the only valid options are "
+                f"{['gaussian', 'gaussian_style_final_files']}"
             )
+
+        qm_atom_types_from_psf_map = [
+            atom_number_to_atom_type_dict[dihedral_atom_numbers_list[0]],
+            atom_number_to_atom_type_dict[dihedral_atom_numbers_list[1]],
+            atom_number_to_atom_type_dict[dihedral_atom_numbers_list[2]],
+            atom_number_to_atom_type_dict[dihedral_atom_numbers_list[3]],
+        ]
 
         for iter_u, dih_num_u in enumerate(matching_dihedral_types_by_atom_type_list):
             if dih_num_u not in [fit_dihedral_atom_types, fit_dihedral_atom_types_reversed]:
