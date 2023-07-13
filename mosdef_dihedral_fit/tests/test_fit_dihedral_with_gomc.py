@@ -1,5 +1,6 @@
 import os
 import unyt as u
+import pytest
 from mosdef_dihedral_fit.tests.base_test import BaseTest
 from mosdef_dihedral_fit.utils.io import get_mosdef_dihedral_fit_fn
 from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import fit_dihedral_with_gomc
@@ -997,7 +998,6 @@ class TestFitDihedralWithGomc(BaseTest):
                         else:
                             assert mdf_math.round_to_sig_figs(float(split_line_i[j]), number_sig_i) == \
                                    mdf_math.round_to_sig_figs(correct_line_values[i][j], number_sig_i)
-
 
     def test_gaussian_style_files_fit_oplsaa_fit_CT_CT_C_OH_in_COOH_missing_1st_point(self):
         fit_dihedral_with_gomc(
@@ -2732,3 +2732,66 @@ class TestFitDihedralWithGomc(BaseTest):
                         else:
                             assert mdf_math.round_to_sig_figs(float(split_line_i[j]), number_sig_i) == \
                                    mdf_math.round_to_sig_figs(correct_line_values[i][j], number_sig_i)
+
+    def test_gaussian_log_file_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH_bad_element_order_mol2(self):
+        mol2_elements_values = "\['C', 'C', 'O', 'C', 'O', 'H', 'H', 'H', 'H', 'H', 'H'\]"
+        qm_elements_values = "\['C', 'C', 'C', 'O', 'O', 'H', 'H', 'H', 'H', 'H', 'H'\]"
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The QM elements do not match the mol2 file elements, in order. \n"
+                f"This does not guarantee that the element postions are correct. \n"
+                f"mol2 file element names = {mol2_elements_values} \n"
+                f"QM file element names = {qm_elements_values}"
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian/CT_CT_C_OH/input/starting_coords/'
+                    'protonated_fragment_CT_CT_C_OH_in_COOH_bad_element_order.mol2'
+                ),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn(
+                        'gaussian/CT_CT_C_OH/output/CT_CT_C_OH_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3']],
+                qm_engine="gaussian",
+                override_VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_gaussian_style_files_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH_bad_element_order_mol2(self):
+        mol2_elements_values = "\['C', 'C', 'O', 'C', 'O', 'H', 'H', 'H', 'H', 'H', 'H'\]"
+        qm_elements_values = "\['C', 'C', 'C', 'O', 'O', 'H', 'H', 'H', 'H', 'H', 'H'\]"
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The QM elements do not match the mol2 file elements, in order. \n"
+                f"This does not guarantee that the element postions are correct. \n"
+                f"mol2 file element names = {mol2_elements_values} \n"
+                f"QM file element names = {qm_elements_values}"
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/'
+                    'starting_coords/CT_CT_C_3_OH_bad_element_order.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH_zeroed.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH/output'): [],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian_style_final_files",
+                override_VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=5e-03
+            )

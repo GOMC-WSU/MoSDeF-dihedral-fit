@@ -935,6 +935,7 @@ def fit_dihedral_with_gomc(
             fit_dihedral_atom_types,
             f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}.psf",
             qm_log_files_and_entries_to_remove_dict,
+            mol2_selection,
             qm_engine=qm_engine,
         )
 
@@ -949,6 +950,7 @@ def fit_dihedral_with_gomc(
             fit_dihedral_atom_types,
             f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}.psf",
             qm_log_files_and_entries_to_remove_dict,
+            mol2_selection,
             qm_engine=qm_engine,
             manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
         )
@@ -2253,7 +2255,6 @@ def fit_dihedral_with_gomc(
         print(f"*****************")
         for q_angle in range(0, len(GOMC_data_fitted_dihedral_degrees_list)):
             if q_angle == 0:
-                print(f"q_angle = {q_angle}")
                 # write out the GOMC and Gaussian data in a file
                 gomc_fitted_gaussian_kcal_mol_energy_data_txt_file = \
                     open(gomc_fitted_gaussian_kcal_mol_energy_filename, "w")
