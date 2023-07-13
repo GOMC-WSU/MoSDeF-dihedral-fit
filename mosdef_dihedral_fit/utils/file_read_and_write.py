@@ -38,8 +38,7 @@ def get_atom_names_and_elements_from_mol2(mol2_directory_and_filename):
         for m, line_m in enumerate(readlines_mol2_file):
             split_line_m = line_m.split()
 
-            if (len(split_line_m) > 0 and str(split_line_m[0]) in ["@<TRIPOS>BOND"]
-                    or (get_atom_type_bool is True and len(split_line_m) in [8, 9])):
+            if (len(split_line_m) > 0 and str(split_line_m[0]) in ["@<TRIPOS>BOND"]):
                 get_atom_type_bool = False
 
             if len(split_line_m) in [8, 9] and get_atom_type_bool is True:
@@ -1162,7 +1161,6 @@ def write_qm_data_files(
             qm_log_files_and_entries_to_remove_dict,
             manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list
         )
-        print(f'7373737 manual_dihedral_atom_numbers_list = {manual_dihedral_atom_numbers_list}')
 
     else:
         raise ValueError(
@@ -1232,6 +1230,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
         fit_dihedral_atom_types,
         psf_path_and_filename,
         qm_log_files_and_entries_to_remove_dict,
+        mol2_selection,
         qm_engine="gaussian",
         manual_dihedral_atom_numbers_list=None
 ):
@@ -1261,19 +1260,52 @@ def get_matching_dihedral_info_and_opls_fitting_data(
     psf_path_and_filename: str
         The path and filename of the PSF file, which shall be used to extract and map the
         dihedrals atom types/classes and all their associated atom number.
+    mol2_selection: str
+        The mol2 file which matches the element, atom type, bonded connnections,
+        the 'EXACT ATOM ORDER AND CONFIGURATION AS IN THE QM SIMULATION INPUT FILES'.
+        This is required to know the MM bonding in the atoms, because QM simulations
+        do not explictly specify the system bonds.
     qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
-        This is a dictionary comprised of a key (string) of the QM log file path and name,
-        and a list of integers, which are the QM optimization parameters to remove from
-        the written data, in order of reading from each file. These can be seen in the
-        order of the dictionary file name (strings).  These removed parameters allow
-        users to remove any bad or repeated data points for the QM log file when needed.
+        * qm_engine="gaussian"
+            This is a dictionary comprised of a key (string) of the QM log file path and name,
+            and a list of integers, which are the QM optimization parameters to remove from
+            the written data, in order of reading from each file. These can be seen in the
+            order of the dictionary file name (strings).  These removed parameters allow
+            users to remove any bad or repeated data points for the QM log file when needed.
 
-        Example 1: {'path/guassian_log_file.log': []}
-        Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+            Example 1: {'path/guassian_log_file.log': []}
 
-        Example 2: {'path/guassian_log_file.log': [0, 23]}
-        Uses all data points from the 'path/guassian_log_file.log' file, except points
-        0 and 23.  NOTE: Python counting starts at 0.
+            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+
+            Example 2: {'path/guassian_log_file.log': [0, 23]}
+            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            0 and 23.  NOTE: Python counting starts at 0.
+
+        * qm_engine="gaussian_style_final_files"
+            This is a dictionary comprised of a key (string) of the  file paths to the
+            Gaussian style final formatted files, and a list of integers, which are the
+            QM optimization parameters to remove from the written data, in order of reading
+            from each folder. These can be seen in the order of the dictionary file name (strings).
+            These removed parameters allow users to remove any bad or repeated data points
+            for the QM log file when needed.
+            NOTE: The energy and dihedral angle file in this directory need to be
+            named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
+
+            Example of energy and dihedral angle file ('dihedral.txt'):
+
+            | # Scan of Total Energy
+            | # X-Axis:  Scan Coordinate
+            | # Y-Axis:  Total Energy (Hartree)
+            | #                  X                   Y
+            |                  0.0     -267.0062955742
+            |                 10.0     -267.0062900424
+
+            NOTE: The coordinate files in this directory need to be
+            named 'dihedral_coords_position_XXXX.txt' for the each angles coordinate values.
+            There are as XXX file in this directory where XXX is the number of dihedral angles.
+            The file numbering starts at 1 so the files are named 'dihedral_coords_position_1.txt'
+            to 'dihedral_coords_position_XXXX.txt'
+
     manual_dihedral_atom_numbers_list: list of 4 integers, default=None
         NOTE: Only needed for qm_engine="gaussian_style_final_files"
 
@@ -1534,6 +1566,17 @@ def get_matching_dihedral_info_and_opls_fitting_data(
             raise ValueError(
                 f"ERROR: The entered qm_engine = {qm_engine} and the only valid options are "
                 f"{['gaussian', 'gaussian_style_final_files']}"
+            )
+
+        # check if QM and mol2 file elements match
+        [atom_name_mol2_list, element_name_mol2_list] = \
+            get_atom_names_and_elements_from_mol2(mol2_selection)
+        if all_element_names_list != element_name_mol2_list:
+            raise ValueError(
+                f"ERROR: The QM elements do not match the mol2 file elements, in order. \n"
+                f"This does not guarantee that the element postions are correct. \n"
+                f"mol2 file element names = {element_name_mol2_list} \n"
+                f"QM file element names = {all_element_names_list}"
             )
 
         qm_atom_types_from_psf_map = [
