@@ -66,15 +66,6 @@ def fit_dihedral_with_gomc(
     and recreated while running this function to ensure only the
     lasted data is in these folders.
 
-    NOTE: The output file 'all_normalized_energies_in_kcal_per_mol.txt'
-    contains the corrected dihedral fit between QM and MM after all the
-    additional bonded, non-bonded, and 1-4 dihedral scaling of the MM
-    force fields are taken into account.  Specifically, the
-    'Gaussian_minus_GOMC_E_kcal_per_mol' column contains these points,
-    which can be used to perform alternative dihedral fits outside of
-    this software package.  For example, higher cosine power fits or
-    the CHARMM style periodic fits with no C0/k0 term (CHARMM has the
-    C0/k0 term being a harmonic dihedral, not a periodic dihedral).
 
     Parameters
     ----------
@@ -386,6 +377,16 @@ def fit_dihedral_with_gomc(
         'fit_dihedral_atom_types' in the system, where there may be multiple of the
         same dihedral in the same molecule.
 
+        This file contains the corrected dihedral fit points between QM and MM
+        after all the non-bonded, 1-4 dihedral scaling, and
+        bonded (no MM dihedral bonded interactions) interactions of the
+        MM force fields are taken into account.  Specifically, the
+        'Gaussian_minus_GOMC_E_kcal_per_mol' column contains these points,
+        which can be used to perform alternative dihedral fits outside of
+        this software package.  For example, higher cosine power fits or
+        the CHARMM style periodic fits with no C0/k0 term (CHARMM has the
+        C0/k0 term being a harmonic dihedral, not a periodic dihedral).
+
         OPLS dihedral equation in with C1, C2, C2, and C4 instead of the cos terms:
 
         OPLS_energy = k1 * C1 + k2 * C2 + k3 * C3 + k4 * C4
@@ -404,6 +405,14 @@ def fit_dihedral_with_gomc(
         the solved k-values for the cos power equation combination, which is listed
         as the variable YYY. This also contains fit k1, k2, k3, and k4
         values (kcal/mol), are the same in every dihedral angle row.
+
+        These files contains the corrected dihedral fit points between QM and MM
+        after all the non-bonded, 1-4 dihedral scaling, and
+        bonded (including the MM fitted dihedral YYY energies interactions)
+        interactions of the MM force fields are taken into account.
+        The 'Gaussian_minus_GOMC_E_kcal_per_mol' column contains these
+        points, which can be used to determine the goodness of the fit; if all
+        these values are zero (0) or close to zero (0), it means the fit is good.
 
         OPLS_energy =   k1 * (1 + cos(1 * phi))
         + k2 * (1 - cos(2 * phi))
