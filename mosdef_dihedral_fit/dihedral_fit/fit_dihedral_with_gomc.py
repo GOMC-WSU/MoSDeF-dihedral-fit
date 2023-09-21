@@ -414,10 +414,17 @@ def fit_dihedral_with_gomc(
         points, which can be used to determine the goodness of the fit; if all
         these values are zero (0) or close to zero (0), it means the fit is good.
 
-        OPLS_energy =   k1 * (1 + cos(1 * phi))
-        + k2 * (1 - cos(2 * phi))
-        + k3 * (1 + cos(3 * phi))
-        + k4 * (1 - cos(4 * phi))
+        OPLS dihedral equation in with C1, C2, C2, and C4 instead of the cos terms:
+
+        OPLS_energy = k1 * C1 + k2 * C2 + k3 * C3 + k4 * C4
+
+        C1 = (1 + cos(1 * phi))
+
+        C2 = (1 - cos(2 * phi))
+
+        C3 = (1 + cos(3 * phi))
+
+        C4 = (1 - cos(4 * phi))
 
     gomc_raw_energies_in_Kelvin.txt
         This is the initial raw energy, in Kelvin, extracted from all the
