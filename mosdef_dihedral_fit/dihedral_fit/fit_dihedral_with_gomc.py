@@ -53,7 +53,7 @@ def fit_dihedral_with_gomc(
     not be fit properly or the user should use caution when using this
     function (GOMC) to do the dihedral fitting.
 
-    NOTE: This dihedral fitting process can accomidate fitting more
+    NOTE: This dihedral fitting process can accommodate fitting more
     than 1 dihedral fit of the same type simultaneously.
 
     NOTE: Not all cos power terms are allowed to be utilized in the
@@ -65,6 +65,16 @@ def fit_dihedral_with_gomc(
     folder are deleted at the beginning of this function,
     and recreated while running this function to ensure only the
     lasted data is in these folders.
+
+    NOTE: The output file 'all_normalized_energies_in_kcal_per_mol.txt'
+    contains the corrected dihedral fit between QM and MM after all the
+    additional bonded, non-bonded, and 1-4 dihedral scaling of the MM
+    force fields are taken into account.  Specifically, the
+    'Gaussian_minus_GOMC_E_kcal_per_mol' column contains these points,
+    which can be used to perform alternative dihedral fits outside of
+    this software package.  For example, higher cosine power fits or
+    the CHARMM style periodic fits with no C0/k0 term (CHARMM has the
+    C0/k0 term being a harmonic dihedral, not a periodic dihedral).
 
     Parameters
     ----------
