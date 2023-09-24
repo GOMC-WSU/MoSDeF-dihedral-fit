@@ -5,7 +5,7 @@ Quick Start
 -----------
 
 .. note::
-    The GOMC software need to be installed manually, outside of this Python install,
+    The GOMC >= v2.75 software need to be installed manually, outside of this Python install,
     with it's directory/path specified in the dihedral fit function.
 
 These examples are provided as a python files, which the user can run and modifiy.

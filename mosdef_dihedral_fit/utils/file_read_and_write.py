@@ -1706,8 +1706,9 @@ def change_gomc_ff_file_dihedral_values(
             or not isinstance(fit_dihedral_atom_types[2], str) \
             or not isinstance(fit_dihedral_atom_types[3], str):
         raise TypeError(
-            f"ERROR: The 'fit_dihedral_atom_types' variable need to be a list of 4 strings, "
-            f"where the strings are the atom types/classes.")
+            f"ERROR: The input 'fit_dihedral_atom_types' variable = {fit_dihedral_atom_types}, "
+            f"but it needs to be a list of 4 strings, "
+            f"where the strings are the atom types/classes. Example: ['HC', 'CT', 'CT', 'HC'].")
 
     # check if the other dihedral which need zeroed are input correctly
     zeroed_dihedral_atom_types_error = (

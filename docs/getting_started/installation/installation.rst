@@ -3,11 +3,11 @@ Installation
 ============
 
 .. note::
-    The GOMC software need to be installed manually, outside of this Python install,
+    The GOMC >= v2.75 software need to be installed manually, outside of this Python install,
     with it's directory/path specified in the dihedral fit function.
 
-Recommended installation is with `mamba <https://github.com/mamba-org/mamba>`_
-------------------------------------------------------------------------------
+Installation with `mamba <https://github.com/mamba-org/mamba>`_ (Recommended)
+-----------------------------------------------------------------------------
 ::
 
     $ mamba install -c conda-forge mosdef-dihedral-fit
@@ -18,15 +18,9 @@ Install with `conda <https://repo.anaconda.com/miniconda/>`_
 
     $ conda install -c conda-forge mosdef-dihedral-fit
 
-There is an issue building MoSDeF-GOMC version 1.0.0 with ``conda`` or ``conda-forge``
-not extracting the latest ``conda`` build version. Therefore, the user can conduct
-the additional command below or install using ``mamba`` because ``mamba`` is using the correct build.::
 
-    $ conda install -c conda-forge sympy=1.10 garnett gsd pycifrw
-
-
-Install an editable version from the source code
-------------------------------------------------
+Install an editable version via the source code
+-----------------------------------------------
 
 It is common practice to utilize a pre-packaged ``Python`` distribution like
 `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_ to
@@ -49,7 +43,7 @@ Install pre-commit
 
 To maintain uniform coding, this software utilizes the `pre-commit <https://pre-commit.com/>`_ package.
 
-To check all the files, you can run::
+To check all the files using pre-commit, run::
 
      $ pre-commit run --all-files
 
@@ -57,7 +51,7 @@ To check all the files, you can run::
 Supported Python Versions
 -------------------------
 
-``Python 3.9`` is currently the only officially supported and tested version during the
+``Python 3.9 and 3.10`` are currently the only officially supported and tested version during the
 software development. Older versions of ``Python`` may work, but they are not guaranteed to work.
 
 Testing your installation

@@ -12,9 +12,9 @@ dihedrals, then also analytically converts them to the periodic/`CHARMM <https:/
 Ryckaert-Bellemans (RB) torsion.
 
 The **MoSDeF-dihedral-fit** software produces dihedral fits for existing force fields, compatible with
-`GPU Optimized Monte Carlo (GOMC) <http://gomc.eng.wayne.edu>`_ and
+`GPU Optimized Monte Carlo (GOMC) >= v2.75 <http://gomc.eng.wayne.edu>`_ and
 `Molecular Simulation Design Framework (MoSDeF) <https://mosdef.org>`_, with only tens of lines of python code,
-the `Gaussian <https://www.gaussin.com>`_ log files, and a **mol2** file.
+the `Gaussian 16 <https://www.gaussin.com>`_ log files, and a **mol2** file.
 
 .. note::
     Currently, this means that only the fourth (4th) cosine multiple or power is utilized in the dihedral fit.
@@ -30,14 +30,14 @@ for the Molecular Mechanics (MM) calculation, which utilizes
 `GPU Optimized Monte Carlo (GOMC) <http://gomc.eng.wayne.edu>`_, the
 `Molecular Simulation Design Framework (MoSDeF) <https://mosdef.org>`_, and the
 `vmd-python <https://github.com/Eigenstate/vmd-python>`_ core software packages. For the Quantum Mechanics calculations,
-the **Gaussian** software is used, reading the **Gaussian** log files.
-From the **Gaussian** log file, a user created **mol2** file, and a few user inputs, this software automatically
+the **Gaussian 16** software is used, reading the **Gaussian 16** log files.
+From the **Gaussian 16** log file, a user created **mol2** file, and a few user inputs, this software automatically
 fits the desired dihedral, accounting for multiple dihedrals simultaneously. The software output provides
 a wide range of allowable dihedral fits with different cosine term combinations, including plots for visual reference;
 from this information, the user can then select the best dihedral fit for the specific application.
 Additionally, the 1-4 interactions for the force fields can be explicitly set in the force field XML file,
 allowing the flexibility that some other dihedral fitters lack. Lastly, the dihedral fits are compared by recalculating 
-the dihedral in **GOMC** and comparing it to the original **Gaussian** energies, ensuring a correct dihedral fit.  
+the dihedral in **GOMC >= v2.75** and comparing it to the original **Gaussian 16** energies, ensuring a correct dihedral fit.  
 
 
 
