@@ -7,7 +7,7 @@ from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import fit_dihedral
 import mosdef_dihedral_fit.utils.math_operations as mdf_math
 
 # user changable variable, as it needs to be run locally
-gomc_binary_directory = "/Users/brad/Programs/GOMC/GOMC_2_75/bin"
+gomc_binary_directory = "/home/brad/Programs/GOMC/GOMC_2_75/bin"
 
 class TestFitDihedralWithGomc(BaseTest):
     def test_gaussian_log_file_fit_oplsaa_fit_ethane_HC_CT_CT_HC(self):
@@ -22,7 +22,7 @@ class TestFitDihedralWithGomc(BaseTest):
             },
             zeroed_dihedral_atom_types=None,
             qm_engine="gaussian",
-            override_VDWGeometricSigma=True,
+            VDWGeometricSigma=False,
             atom_type_naming_style='general',
             gomc_cpu_cores=1,
             fit_min_validated_r_squared=0.99,
@@ -229,7 +229,7 @@ class TestFitDihedralWithGomc(BaseTest):
             },
             zeroed_dihedral_atom_types=None,
             qm_engine="gaussian",
-            override_VDWGeometricSigma=True,
+            VDWGeometricSigma=True,
             atom_type_naming_style='general',
             gomc_cpu_cores=1,
             fit_min_validated_r_squared=0.99,
@@ -436,7 +436,7 @@ class TestFitDihedralWithGomc(BaseTest):
             },
             zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3']],
             qm_engine="gaussian",
-            override_VDWGeometricSigma=True,
+            VDWGeometricSigma=True,
             atom_type_naming_style='general',
             gomc_cpu_cores=1,
             fit_min_validated_r_squared=0.99,
@@ -1013,7 +1013,7 @@ class TestFitDihedralWithGomc(BaseTest):
             manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
             zeroed_dihedral_atom_types=None,
             qm_engine="gaussian_style_final_files",
-            override_VDWGeometricSigma=True,
+            VDWGeometricSigma=True,
             atom_type_naming_style='general',
             gomc_cpu_cores=1,
             fit_min_validated_r_squared=0.99,
@@ -1591,7 +1591,7 @@ class TestFitDihedralWithGomc(BaseTest):
             manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
             zeroed_dihedral_atom_types=None,
             qm_engine="gaussian_style_final_files",
-            override_VDWGeometricSigma=True,
+            VDWGeometricSigma=True,
             atom_type_naming_style='general',
             gomc_cpu_cores=1,
             fit_min_validated_r_squared=0.99,
@@ -2170,7 +2170,7 @@ class TestFitDihedralWithGomc(BaseTest):
             manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
             zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3']],
             qm_engine="gaussian_style_final_files",
-            override_VDWGeometricSigma=True,
+            VDWGeometricSigma=True,
             atom_type_naming_style='general',
             gomc_cpu_cores=1,
             fit_min_validated_r_squared=0.99,
@@ -2758,7 +2758,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 },
                 zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3']],
                 qm_engine="gaussian",
-                override_VDWGeometricSigma=True,
+                VDWGeometricSigma=True,
                 atom_type_naming_style='general',
                 gomc_cpu_cores=1,
                 fit_min_validated_r_squared=0.99,
@@ -2789,9 +2789,1290 @@ class TestFitDihedralWithGomc(BaseTest):
                 manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
                 zeroed_dihedral_atom_types=None,
                 qm_engine="gaussian_style_final_files",
-                override_VDWGeometricSigma=True,
+                VDWGeometricSigma=True,
                 atom_type_naming_style='general',
                 gomc_cpu_cores=1,
                 fit_min_validated_r_squared=0.99,
                 fit_validation_r_squared_rtol=5e-03
+            )
+
+    def test_gaussian_log_file_variable_VDWGeometricSigma_default(self):
+        fit_dihedral_with_gomc(
+            ['HC', 'CT', 'CT', 'HC'],
+            get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+            get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+            298.15 * u.Kelvin,
+            gomc_binary_directory,
+            {
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+            },
+            zeroed_dihedral_atom_types=None,
+            qm_engine="gaussian",
+            VDWGeometricSigma=None,
+            atom_type_naming_style='general',
+            gomc_cpu_cores=1,
+            fit_min_validated_r_squared=0.99,
+            fit_validation_r_squared_rtol=1e-03
+        )
+
+        with open("GOMC_simulations/GOMC_OPLS_fit_3_dihedral_coords_1.conf", "r") as fp:
+            variables_read_dict = {
+                "VDWGeometricSigma": False,
+            }
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                if line.startswith("VDWGeometricSigma "):
+                    variables_read_dict["VDWGeometricSigma"] = True
+                    split_line = line.split()
+                    assert split_line[1] == "True"
+
+                    pass
+
+            assert variables_read_dict == {
+                "VDWGeometricSigma": True,
+            }
+
+    def test_gaussian_log_file_variable_VDWGeometricSigma_True(self):
+        fit_dihedral_with_gomc(
+            ['HC', 'CT', 'CT', 'HC'],
+            get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+            get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+            298.15 * u.Kelvin,
+            gomc_binary_directory,
+            {
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+            },
+            zeroed_dihedral_atom_types=None,
+            qm_engine="gaussian",
+            VDWGeometricSigma=None,
+            atom_type_naming_style='general',
+            gomc_cpu_cores=1,
+            fit_min_validated_r_squared=0.99,
+            fit_validation_r_squared_rtol=1e-03
+        )
+
+        with open("GOMC_simulations/GOMC_OPLS_fit_3_dihedral_coords_1.conf", "r") as fp:
+            variables_read_dict = {
+                "VDWGeometricSigma": False,
+            }
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                if line.startswith("VDWGeometricSigma "):
+                    variables_read_dict["VDWGeometricSigma"] = True
+                    split_line = line.split()
+                    assert split_line[1] == "True"
+
+                    pass
+
+            assert variables_read_dict == {
+                "VDWGeometricSigma": True,
+            }
+
+    def test_gaussian_log_file_variable_VDWGeometricSigma_False(self):
+        fit_dihedral_with_gomc(
+            ['HC', 'CT', 'CT', 'HC'],
+            get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+            get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+            298.15 * u.Kelvin,
+            gomc_binary_directory,
+            {
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+            },
+            zeroed_dihedral_atom_types=None,
+            qm_engine="gaussian",
+            VDWGeometricSigma=False,
+            atom_type_naming_style='general',
+            gomc_cpu_cores=1,
+            fit_min_validated_r_squared=0.99,
+            fit_validation_r_squared_rtol=1e-03
+        )
+
+        with open("GOMC_simulations/GOMC_OPLS_fit_3_dihedral_coords_1.conf", "r") as fp:
+            variables_read_dict = {
+                "VDWGeometricSigma": False,
+            }
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                if line.startswith("VDWGeometricSigma "):
+                    variables_read_dict["VDWGeometricSigma"] = True
+                    split_line = line.split()
+                    assert split_line[1] == "False"
+
+                    pass
+
+            assert variables_read_dict == {
+                "VDWGeometricSigma": True,
+            }
+
+    def test_bad_fit_dihedral_atom_types_input_list_of_3(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The input 'fit_dihedral_atom_types' variable = \['HC', 'CT', 'CT'\], "
+                      r"but it needs to be a list of 4 strings, "
+                      r"where the strings are the atom types/classes. Example: \['HC', 'CT', 'CT', 'HC'\]."
+        ):
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_bad_fit_dihedral_atom_types_input_list_of_4_with_int_at_0(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The input 'fit_dihedral_atom_types' variable = \[0, 'CT', 'CT', 'HC'\], "
+                      r"but it needs to be a list of 4 strings, "
+                      r"where the strings are the atom types/classes. Example: \['HC', 'CT', 'CT', 'HC'\]."
+        ):
+            fit_dihedral_with_gomc(
+                [0, 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_bad_fit_dihedral_atom_types_input_list_of_4_with_int_at_1(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The input 'fit_dihedral_atom_types' variable = \['HC', 1, 'CT', 'HC'\], "
+                      r"but it needs to be a list of 4 strings, "
+                      r"where the strings are the atom types/classes. Example: \['HC', 'CT', 'CT', 'HC'\]."
+        ):
+            fit_dihedral_with_gomc(
+                ['HC', 1, 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_bad_fit_dihedral_atom_types_input_list_of_4_with_int_at_2(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The input 'fit_dihedral_atom_types' variable = \['HC', 'CT', 2, 'HC'\], "
+                      r"but it needs to be a list of 4 strings, "
+                      r"where the strings are the atom types/classes. Example: \['HC', 'CT', 'CT', 'HC'\]."
+        ):
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 2, 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_bad_fit_dihedral_atom_types_input_list_of_4_with_int_at_3(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The input 'fit_dihedral_atom_types' variable = \['HC', 'CT', 'CT', 3\], "
+                      r"but it needs to be a list of 4 strings, "
+                      r"where the strings are the atom types/classes. Example: \['HC', 'CT', 'CT', 'HC'\]."
+        ):
+            fit_dihedral_with_gomc(
+                ['HC','CT', 'CT', 3],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_mol2_selection_file_does_not_exist(self):
+        value_path_mol2='bad_mol2_path.mol2'
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The {value_path_mol2} file "
+                      r"\('mol2_selection'\) does not exists."):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                value_path_mol2,
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_mol2_selection_file_no_mol2_extention(self):
+        value_path_mol2='bad_mol2_path'
+        with pytest.raises(
+                ValueError,
+                match=r"ERROR: Please enter enter mol2 file \('mol2_selection'\) name with the .mol2 extension."):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                value_path_mol2,
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_mol2_selection_file_not_a_string(self):
+        value_path_mol2=1
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: Please enter mol2 file \('mol2_selection'\) as a string."):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                value_path_mol2,
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_xml_selection_file_does_not_exist(self):
+        value_path_xml='bad_xml_path.xml'
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The {value_path_xml} file "
+                      r"\('forcefield_selection'\) does not exists."):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                value_path_xml,
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_xml_selection_file_no_xml_extention(self):
+        value_path_xml='bad_xml_path'
+        with pytest.raises(
+                ValueError,
+                match=r"ERROR: Please enter enter xml file "
+                      r"\('forcefield_selection'\) name with the .xml extension."):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                value_path_xml,
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_xml_selection_file_not_a_string(self):
+        value_path_xml=1
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: Please enter xml file \('forcefield_selection'\) as a string."):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                value_path_xml,
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_temperature_unyt_units_not_a_temperture_but_pressure(self):
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The 'temperature_unyt_units' is not temperature of type {type(u.unyt_quantity)}."):
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.bar,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_temperature_unyt_units_not_in_unyt_units(self):
+        with pytest.raises(
+                TypeError,
+                match=f"ERROR: The 'temperature_unyt_units' is not temperature of type {type(u.unyt_quantity)}."):
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_qm_log_files_and_entries_not_a_dict(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict "
+                      r"with a string keys and list of int>=0 as the values. Example: "
+                      r"\{'path/HC_CT_CT_HC_part_1.log'\): \[\], 'path/HC_CT_CT_HC_part_2.log'\): \[0, 5\]\}"
+        ):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                ['x'],
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_qm_log_files_and_entries_key_1_not_a_string(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict "
+                      r"with a string keys and list of int>=0 as the values. Example: "
+                      r"\{'path/HC_CT_CT_HC_part_1.log'\): \[\], 'path/HC_CT_CT_HC_part_2.log'\): \[0, 5\]\}"
+        ):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    1: [],
+                    get_mosdef_dihedral_fit_fn(
+                        'gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log'): [0,1],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_qm_log_files_and_entries_key_2_not_a_string(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict "
+                      r"with a string keys and list of int>=0 as the values. Example: "
+                      r"\{'path/HC_CT_CT_HC_part_1.log'\): \[\], 'path/HC_CT_CT_HC_part_2.log'\): \[0, 5\]\}"
+        ):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [],
+                    2: [0,1],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_qm_log_files_and_entries_value_1_not_a_list(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict "
+                      r"with a string keys and list of int>=0 as the values. Example: "
+                      r"\{'path/HC_CT_CT_HC_part_1.log'\): \[\], 'path/HC_CT_CT_HC_part_2.log'\): \[0, 5\]\}"
+        ):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): 's',
+                    get_mosdef_dihedral_fit_fn(
+                        'gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log'): [0,1],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_qm_log_files_and_entries_value_2_not_a_list(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict "
+                      r"with a string keys and list of int>=0 as the values. Example: "
+                      r"\{'path/HC_CT_CT_HC_part_1.log'\): \[\], 'path/HC_CT_CT_HC_part_2.log'\): \[0, 5\]\}"
+        ):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [],
+                    get_mosdef_dihedral_fit_fn(
+                        'gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log'): 'x',
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_qm_log_files_and_entries_list_1_not_all_int(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict "
+                      r"with a string keys and list of int>=0 as the values. Example: "
+                      r"\{'path/HC_CT_CT_HC_part_1.log'\): \[\], 'path/HC_CT_CT_HC_part_2.log'\): \[0, 5\]\}"
+        ):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [0, 's'],
+                    get_mosdef_dihedral_fit_fn(
+                        'gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log'): 'x',
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_qm_log_files_and_entries_list_2_not_all_int(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict "
+                      r"with a string keys and list of int>=0 as the values. Example: "
+                      r"\{'path/HC_CT_CT_HC_part_1.log'\): \[\], 'path/HC_CT_CT_HC_part_2.log'\): \[0, 5\]\}"
+        ):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [],
+                    get_mosdef_dihedral_fit_fn(
+                        'gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log'): [0, 5, 's'],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_qm_log_files_and_entries_list_1_int_less_than_0(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict "
+                      r"with a string keys and list of int>=0 as the values. Example: "
+                      r"\{'path/HC_CT_CT_HC_part_1.log'\): \[\], 'path/HC_CT_CT_HC_part_2.log'\): \[0, 5\]\}"
+        ):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [-1],
+                    get_mosdef_dihedral_fit_fn(
+                        'gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log'): [0, 5],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_qm_log_files_and_entries_list_2_int_less_than_0(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict "
+                      r"with a string keys and list of int>=0 as the values. Example: "
+                      r"\{'path/HC_CT_CT_HC_part_1.log'\): \[\], 'path/HC_CT_CT_HC_part_2.log'\): \[0, 5\]\}"
+        ):
+
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [],
+                    get_mosdef_dihedral_fit_fn(
+                        'gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log'): [0, -5],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_gomc_binary_path_not_a_string(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: Please enter the 'gomc_binary_path' file as a string."
+        ):
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                99999,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_gomc_binary_path_containing_the_GOMC_CPU_NVT_file_does_not_exist(self):
+        with pytest.raises(
+                ValueError,
+                match=r"ERROR: The 'gomc_binary_path' file does not exist or contain the GOMC 'GOMC_CPU_NVT' file."
+        ):
+            fit_dihedral_with_gomc(
+                ['HC', 'CT', 'CT', 'HC'],
+                get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_ethane_HC_CT_CT_HC.xml'),
+                298.15 * u.Kelvin,
+                f"gomc_binary_directory",
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log'): [],
+                },
+                zeroed_dihedral_atom_types=None,
+                qm_engine="gaussian",
+                VDWGeometricSigma=False,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=1e-03
+            )
+
+    def test_zeroed_dihedral_atom_types_not_list(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'zeroed_dihedral_atom_types' is not None or a list containing "
+                      r"lists with 4 strings each. Example: "
+                      r"\[\['CT', 'CT, 'CT, 'HC'\], \['NT', 'CT, 'CT, 'HC'\]\]."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types='str',
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_zeroed_dihedral_atom_types_list_1_str(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'zeroed_dihedral_atom_types' is not None or a list containing "
+                      r"lists with 4 strings each. Example: "
+                      r"\[\['CT', 'CT, 'CT, 'HC'\], \['NT', 'CT, 'CT, 'HC'\]\]."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=['str', ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_zeroed_dihedral_atom_types_list_2_str(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'zeroed_dihedral_atom_types' is not None or a list containing "
+                      r"lists with 4 strings each. Example: "
+                      r"\[\['CT', 'CT, 'CT, 'HC'\], \['NT', 'CT, 'CT, 'HC'\]\]."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], 'str'],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_zeroed_dihedral_atom_types_list_1_not_4_strings(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'zeroed_dihedral_atom_types' is not None or a list containing "
+                      r"lists with 4 strings each. Example: "
+                      r"\[\['CT', 'CT, 'CT, 'HC'\], \['NT', 'CT, 'CT, 'HC'\]\]."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 1, 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_zeroed_dihedral_atom_types_list_2_not_4_strings(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'zeroed_dihedral_atom_types' is not None or a list containing "
+                      r"lists with 4 strings each. Example: "
+                      r"\[\['CT', 'CT, 'CT, 'HC'\], \['NT', 'CT, 'CT, 'HC'\]\]."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 2, 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_zeroed_dihedral_atom_types_list_1_not_lenght_4(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'zeroed_dihedral_atom_types' is not None or a list containing "
+                      r"lists with 4 strings each. Example: "
+                      r"\[\['CT', 'CT, 'CT, 'HC'\], \['NT', 'CT, 'CT, 'HC'\]\]."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_zeroed_dihedral_atom_types_list_2_not_lenght_4(self):
+        with pytest.raises(
+                TypeError,
+                match=r"ERROR: The 'zeroed_dihedral_atom_types' is not None or a list containing "
+                      r"lists with 4 strings each. Example: "
+                      r"\[\['CT', 'CT, 'CT, 'HC'\], \['NT', 'CT, 'CT, 'HC'\]\]."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_qm_engine_not_correct_value(self):
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The 'qm_engine' = {'x'}, which is not "
+                      f"any of the available options. "
+                      f"The options are 'gaussian' or 'gaussian_style_final_files'."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="x",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_qm_engine_not_a_string(self):
+        with pytest.raises(
+                TypeError,
+                match=f"ERROR: The 'qm_engine' is a {type(['x'])}, but it needs to be a str."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine=["x"],
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_atom_type_naming_style_not_correct_value(self):
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The 'atom_type_naming_style' = {'x'}, which is not "
+                      f"any of the available options. "
+                      f"The options are 'general' or 'all_unique'."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='x',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_atom_type_naming_style_not_a_string(self):
+        with pytest.raises(
+                TypeError,
+                match=f"ERROR: The 'atom_type_naming_style' is a {type(['x'])}, but it needs to be a str."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style=["x"],
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_gomc_cpu_cores_not_correct_value(self):
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The 'gomc_cpu_cores' = {0}, and it must be an int > 0."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=0,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_gomc_cpu_cores_not_a_int(self):
+        with pytest.raises(
+                TypeError,
+                match=f"ERROR: The 'gomc_cpu_cores' is a {type(1.000)}, but it needs to be a int."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1.000,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_fit_min_validated_r_squared_not_correct_value_is_0(self):
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The 'fit_min_validated_r_squared'= {0.00}, "
+                      f"but it must be a 0<float<1."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.00,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_fit_min_validated_r_squared_not_correct_value_is_1(self):
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The 'fit_min_validated_r_squared'= {1.00}, "
+                      f"but it must be a 0<float<1."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=1.00,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_fit_min_validated_r_squared_not_a_float(self):
+        with pytest.raises(
+                TypeError,
+                match=f"ERROR: The 'fit_min_validated_r_squared' is a {type(2)}, "
+                      f"but it must be a float."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=2,
+                fit_validation_r_squared_rtol=0.02
+            )
+
+    def test_fit_validation_r_squared_rtol_not_correct_value_is_0(self):
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The 'fit_validation_r_squared_rtol' = {0.00}, "
+                      f"but it must be a float>0"
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.00
+            )
+
+    def test_fit_validation_r_squared_rtol_not_correct_value_is_1(self):
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The 'fit_validation_r_squared_rtol' = {-1.00}, "
+                      f"but it must be a float>0."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=-1.00
+            )
+
+    def test_fit_validation_r_squared_rtol_not_a_float(self):
+        with pytest.raises(
+                TypeError,
+                match=f"ERROR: The 'fit_validation_r_squared_rtol' is a {type(2)}, "
+                      f"but it must be a float."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3'], ['HC', 'CT', 'CT', 'C']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=2
+            )
+
+    def test_warning_fit_min_validated_r_squared_and_fit_validation_r_squared_rtol_need_adjusted(self):
+        with pytest.raises(
+                ValueError,
+                match=f"ERROR: The calculated R-squared energy values from the fit type "
+                      f"{'1_2_3'} "
+                      f"does not match the validated case for 'fit_min_validated_r_squared' >= " \
+                      f"{'0.99'}, "
+                      f"within the relative tolerance or 'fit_validation_r_squared_rtol' = "
+                      f"{'2e-07'}. \n"
+                      f"- Fit via the individual or multi-dihedral fit, when "
+                      f"Gaussian minus GOMC with the selected dihedral set to zero \n"
+                      f"--> R-squared = "
+                      f"{'0.99792638'} \n"
+                      f"- Fit via the validation test case, when "
+                      f"Gaussian minus GOMC with the selected individual dihedral added in GOMC \n"
+                      f"-- >R-squared = "
+                      f"{'0.98698695'} \n"
+                      f"The 'fit_min_validated_r_squared' and 'fit_validation_r_squared_rtol' "
+                      f"variables may need to be adjusted, \n"
+                      f"there is likely something wrong with the fitting procedure, the "
+                      f"software parameters need tuned, or there is a bug in the software. \n\n "
+                      f"NOTE: Since the R-squared values are calculated via different parameters, \n"
+                      f"the compared R-squared values could be very different if they are not nearly \n"
+                      r"a perfect fit \(R-squared --> ~0.98 to 0.99999999\)."
+        ):
+            fit_dihedral_with_gomc(
+                ['CT', 'CT', 'C', 'OH'],
+                get_mosdef_dihedral_fit_fn(
+                    'gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2'),
+                get_mosdef_dihedral_fit_fn('oplsaa_CT_CT_C_OH_in_COOH.xml'),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_2/output'): [],
+                    get_mosdef_dihedral_fit_fn('gaussian_style_output_files/CT_CT_C_OH_split_part_1/output'): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zeroed_dihedral_atom_types=[['CT', 'CT', 'C', 'O_3']],
+                qm_engine="gaussian_style_final_files",
+                VDWGeometricSigma=True,
+                atom_type_naming_style='general',
+                gomc_cpu_cores=1,
+                fit_min_validated_r_squared=0.99,
+                fit_validation_r_squared_rtol=0.0000002
             )

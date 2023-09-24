@@ -5,22 +5,19 @@ from pkg_resources import resource_filename
 
 
 def get_mosdef_dihedral_fit_fn(filename):
-    """Get the full path to one of the reference testing files provided with utils.
-    In this source distribution, these files are in ``mosdef_dihedral_fit/utils/files``,
-    but on installation, they're moved to somewhere in the user's python
-    site-packages directory.
+    """Get the whole path name for the file in the mosdef_dihedral_fit/utils/files directory.
     Parameters
     ----------
     filename : str
-        Name of the file to load (with respect to the files/folder).
+        The name of the file in the selected directory (mosdef_dihedral_fit/utils/files).
     Returns
     -------
-    fn : str
+    full_path_and_filename : str
         Full path to filename
     """
-    fn = resource_filename(
+    full_path_and_filename = resource_filename(
         "mosdef_dihedral_fit", os.path.join("utils", "files", filename)
     )
-    if not os.path.exists(fn):
-        raise IOError("Sorry! {} does not exists.".format(fn))
-    return fn
+    if not os.path.exists(full_path_and_filename):
+        raise ValueError(f"ERROR: The {full_path_and_filename} does not exists.")
+    return full_path_and_filename

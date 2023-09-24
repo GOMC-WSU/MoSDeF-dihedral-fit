@@ -5,6 +5,7 @@ import numpy as np
 import mbuild as mb
 import subprocess
 import unyt as u
+from unyt.dimensions import angle, energy, length, temperature
 import mosdef_gomc.formats.gmso_charmm_writer as mf_charmm
 import mosdef_gomc.formats.gmso_gomc_conf_writer as gomc_control
 import matplotlib.pyplot as plt
@@ -26,17 +27,17 @@ def fit_dihedral_with_gomc(
         fit_dihedral_atom_types,
         mol2_selection,
         forcefield_selection,
-        temperature,
+        temperature_unyt_units,
         gomc_binary_path,
         qm_log_files_and_entries_to_remove_dict,
         manual_dihedral_atom_numbers_list=None,
         zeroed_dihedral_atom_types=None,
         qm_engine="gaussian",
-        override_VDWGeometricSigma=None,
+        VDWGeometricSigma=None,
         atom_type_naming_style='general',
         gomc_cpu_cores=1,
-        fit_min_validated_r_squared=0.99,
-        fit_validation_r_squared_rtol=5e-03
+        fit_min_validated_r_squared=0.98,
+        fit_validation_r_squared_rtol=2.5e-02
 ):
     """Fit the desired dihedral to a MM force field, based on QM data.
 
@@ -72,6 +73,12 @@ def fit_dihedral_with_gomc(
     fit_dihedral_atom_types: list of four (4) strings (Example: ['HC', 'CT, 'CT, 'HC'])
         The atom types/classes (strings in the list) of the dihedral which is
         being fitted with non-zero k-values.
+
+        NOTE: The extracted atom types/classes can be determined also by
+        looking at the 'GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp' and
+        'GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp' files in the
+        'GOMC_simulations' folder. These files can also be checked to
+        confirm it is zeroing the correct dihedrals.
     mol2_selection: str
         The mol2 file which matches the element, atom type, bonded connnections,
         the 'EXACT ATOM ORDER AND CONFIGURATION AS IN THE QM SIMULATION INPUT FILES'.
@@ -86,23 +93,24 @@ def fit_dihedral_with_gomc(
 
         * Example str for FF file: 'path_to file/trappe-ua.xml'
 
-    temperature: unyt.unyt_quantity
+    temperature_unyt_units: unyt.unyt_quantity
         The temperature of the system that was performed for the Quantum Mechanics
         (QM) simulation.
     gomc_binary_path: str
-        The path or directory of the GOMC binary file "GOMC_CPU_NVT", which is used to
-        perform the Molecular Mechanics (MM) energy calculations. This does not include
-        the "GOMC_CPU_NVT" in this variable.
+        The path or directory of the GOMC binary file "GOMC_CPU_NVT" (GOMC >= v2.75),
+        which is used to perform the Molecular Mechanics (MM) energy calculations.
+        This does not include the "GOMC_CPU_NVT" in this variable.
 
         Example: '/home/brad/Programs/GOMC/GOMC_2_76/bin'
 
-    qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
+    qm_log_files_and_entries_to_remove_dict: dict, {str: [int>=0, ..., int>=0]}
         * qm_engine="gaussian"
-            This is a dictionary comprised of a key (string) of the QM log file path and name,
-            and a list of integers, which are the QM optimization parameters to remove from
-            the written data, in order of reading from each file. These can be seen in the
-            order of the dictionary file name (strings).  These removed parameters allow
-            users to remove any bad or repeated data points for the QM log file when needed.
+            This is a dictionary comprised of a key (string) of the QM log file path and name
+            (Gaussian 16 log file only), and a list of integers, which are the QM optimization
+            parameters to remove from the written data, in order of reading from each file.
+            These can be seen in the order of the dictionary file name (strings).
+            These removed parameters allow users to remove any bad or repeated data
+            points for the QM log file when needed.
 
             Example 1: {'path/guassian_log_file.log': []}
 
@@ -114,7 +122,7 @@ def fit_dihedral_with_gomc(
 
         * qm_engine="gaussian_style_final_files"
             This is a dictionary comprised of a key (string) of the  file paths to the
-            Gaussian style final formatted files, and a list of integers, which are the
+            Gaussian 16 style final formatted files, and a list of integers, which are the
             QM optimization parameters to remove from the written data, in order of reading
             from each folder. These can be seen in the order of the dictionary file name (strings).
             These removed parameters allow users to remove any bad or repeated data points
@@ -170,10 +178,16 @@ def fit_dihedral_with_gomc(
 
         Example: [['CT', 'CT, 'CT, 'HC'], ['NT', 'CT, 'CT, 'HC']]
 
+        NOTE: The extracted atom types/classes can be determined also by
+        looking at the 'GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp' and
+        'GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp' files in the
+        'GOMC_simulations' folder. These files can also be checked to
+        confirm it is zeroing the correct dihedrals.
+
     qm_engine: str (currently only 'guassian'), default='guassian'
         The Quantum Mechanics (QM) simulation engine utilized to produce the files listed
         in the 'qm_log_files_and_entries_to_remove_dict' variable(s).
-    override_VDWGeometricSigma: boolean, default = None
+    VDWGeometricSigma: boolean, default = None
         Override the VDWGeometricSigma in the foyer or GMSO XML file.
         If this is None, it will use whatever is specified in the XML file, or the
         default foyer or GMSO values. BEWARE, if it is not specified XML file, it has a default.
@@ -246,10 +260,10 @@ def fit_dihedral_with_gomc(
         --- If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
         gomc_fix_bonds, or gomc_fix_angles are IN any other residue/molecule.
 
-    gomc_cpu_cores: int, default=1
+    gomc_cpu_cores: int>0, default=1
         The number of CPU-cores that are used to perform the GOMC simulations, required
         for the Molecular Mechanics (MM) energy calulations.
-    fit_min_validated_r_squared: float (0 <= fit_min_validated_r_squared <= 1), default=0.99
+    fit_min_validated_r_squared: float (0 < fit_min_validated_r_squared < 1), default=0.98
         The minimum R**2 (R-squared) value to test the validity of the fit with the
         new dihedral fitted constants, as fitted in the
         QM - MM energy data vs. the dihedral function fit, mentioned below.
@@ -270,8 +284,10 @@ def fit_dihedral_with_gomc(
         same dihedrals being fit simultaneously, and the 'zeroed_dihedral_atom_types' are
         dihedral energies are set to zero.
 
-    fit_validation_r_squared_rtol: float, default=5e-03
-        Where the QM data is defined as the actual data; this is the fractional difference
+        NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
+
+    fit_validation_r_squared_rtol: float>0, default=2.5e-02
+        Where the QM data is defined as the actual data; this is the difference
         of the dihedral's calculated R-squared values between:
         * The QM-MM fitting process, where the fit MM dihedral k-values are zero (0).
         * The MM calculations where the fit k-value are entered in the MM data and
@@ -280,10 +296,12 @@ def fit_dihedral_with_gomc(
         fit_dihedral_atom_types,
         mol2_selection,
         forcefield_selection,
-        temperature,
+        temperature_unyt_units,
         gomc_binary_path,
         qm_log_files_and_entries_to_remove_dict,
         zeroed_dihedral_atom_types=None,
+
+        NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
 
     Returns
     -------
@@ -474,34 +492,189 @@ def fit_dihedral_with_gomc(
         or more of the nearly perfect R-squared fitted values, or fitting procedure
         itself.
     """
+    # check if 'mol2_selection' file is correct format
+    if not isinstance(mol2_selection, str):
+        raise TypeError("ERROR: Please enter mol2 file ('mol2_selection') as a string.")
+
+    extension_ff_name = os.path.splitext(mol2_selection)[-1]
+    if extension_ff_name != ".mol2":
+        raise ValueError(
+            "ERROR: Please enter enter mol2 file ('mol2_selection') name with the .mol2 extension.")
+
+    if not os.path.exists(mol2_selection):
+        raise ValueError(f"ERROR: The {mol2_selection} file ('mol2_selection') does not exists.")
+
+    # check if 'forcefield_selection' file is correct format
+    if not isinstance(forcefield_selection, str):
+        raise TypeError("ERROR: Please enter xml file ('forcefield_selection') as a string.")
+
+    extension_ff_name = os.path.splitext(forcefield_selection)[-1]
+    if extension_ff_name != ".xml":
+        raise ValueError(
+            "ERROR: Please enter enter xml file ('forcefield_selection') name with the .xml extension.")
+
+    if not os.path.exists(forcefield_selection):
+        raise ValueError(f"ERROR: The {forcefield_selection} file ('forcefield_selection') does not exists.")
+
 
     if qm_engine == "gaussian" and manual_dihedral_atom_numbers_list is not None:
         warn(
-            "WARNING: The 'dihedral_atom_numbers_list' is set to None, and will not be used, "
-            "but read from the file directly."
+            "WARNING: When reading the qm_engine = 'gaussian' files, the "
+            "'manual_dihedral_atom_numbers_list' is set to None, and will not be used, "
+            "because the the gaussian log files already contain this information."
              )
         manual_dihedral_atom_numbers_list = None
 
-    # write the qm data files data out
-    if qm_engine == "gaussian":
-        mdf_frw.write_qm_data_files(
-            qm_log_files_and_entries_to_remove_dict,
-            manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
-            qm_engine=qm_engine
-        )
-    elif qm_engine == "gaussian_style_final_files":
-        mdf_frw.write_qm_data_files(
-            qm_log_files_and_entries_to_remove_dict,
-            manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
-            qm_engine=qm_engine
-        )
+    # test the temperature_unyt_units input
+    print_error_value = f"ERROR: The 'temperature_unyt_units' is not temperature of type {type(u.unyt_quantity)}."
+    if isinstance(temperature_unyt_units, u.unyt_quantity):
+        if temperature == temperature_unyt_units.units.dimensions:
+            temperature_unyt_units =temperature_unyt_units.to("K")
+
+        else:
+            raise ValueError(print_error_value)
 
     else:
+        raise TypeError(print_error_value)
+
+    # test the qm_log_files_and_entries_to_remove_dict input
+    print_error_value = (
+        "ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict " 
+        "with a string keys and list of int>=0 as the values. Example: " 
+        "{'path/HC_CT_CT_HC_part_1.log'): [], 'path/HC_CT_CT_HC_part_2.log'): [0, 5]}"
+    )
+    if isinstance(qm_log_files_and_entries_to_remove_dict, dict):
+        for key_j, value_j in qm_log_files_and_entries_to_remove_dict.items():
+
+            if isinstance(key_j, str):
+                if not os.path.exists(key_j):
+                    raise ValueError(
+                        f"ERROR: The {key_j} file ('qm_log_files_and_entries_to_remove_dict') does not exists."
+                    )
+
+            else:
+                raise TypeError(print_error_value)
+
+            print('*****************')
+            print(f'value_j = {str(value_j)}')
+            if isinstance(value_j, list):
+                for int_j in value_j:
+                    if not isinstance(int_j, int) or int_j < 0:
+                        raise TypeError(print_error_value)
+
+            else:
+                raise TypeError(print_error_value)
+
+    else:
+        raise TypeError(print_error_value)
+
+    # check if 'gomc_binary_path' leads to the file is correct format GOMC_CPU_NVT
+    if not isinstance(gomc_binary_path, str):
+        raise TypeError("ERROR: Please enter the 'gomc_binary_path' file as a string.")
+
+    if not os.path.exists(f"{gomc_binary_path}/{'GOMC_CPU_NVT'}"):
         raise ValueError(
-            f"ERROR: In the 'write_qm_data_files' function, "
-            f"the 'qm_engine' variable = {qm_engine}, which is not "
-            f"any of the available options.  "
-            f"The options are 'gaussian' and 'gaussian_style_final_files'."
+            f"ERROR: The 'gomc_binary_path' file does not exist or contain the GOMC 'GOMC_CPU_NVT' file."
+        )
+
+    # test the 'zeroed_dihedral_atom_types' input
+    print_error_value = (
+        "ERROR: The 'zeroed_dihedral_atom_types' is not None or a list containing "
+        "lists with 4 strings each. Example: "
+        "[['CT', 'CT, 'CT, 'HC'], ['NT', 'CT, 'CT, 'HC']]."
+    )
+    if isinstance(zeroed_dihedral_atom_types, (list, type(None))):
+        if isinstance(zeroed_dihedral_atom_types, list):
+            for list_j in zeroed_dihedral_atom_types:
+                if isinstance(list_j, list) and len(list_j)==4:
+                    for str_j in list_j:
+                        if not isinstance(str_j, str):
+                            raise TypeError(print_error_value)
+
+                else:
+                    raise TypeError(print_error_value)
+
+    else:
+        raise TypeError(print_error_value)
+
+    # test the 'atom_type_naming_style' input
+    if isinstance(atom_type_naming_style, str):
+        if not atom_type_naming_style in ["general", "all_unique"]:
+            raise ValueError(
+                f"ERROR: The 'atom_type_naming_style' = {atom_type_naming_style}, which is not "
+                f"any of the available options. "
+                f"The options are 'general' or 'all_unique'."
+            )
+
+    else:
+        raise TypeError(
+            f"ERROR: The 'atom_type_naming_style' is a {type(atom_type_naming_style)}, but it needs to be a str."
+        )
+
+    # test the 'fit_min_validated_r_squared' input
+    if isinstance(fit_min_validated_r_squared, float):
+        if not (fit_min_validated_r_squared>0 and fit_min_validated_r_squared<1):
+            raise ValueError(
+                f"ERROR: The 'fit_min_validated_r_squared'= {fit_min_validated_r_squared}, "
+                f"but it must be a 0<float<1."
+                             )
+
+    else:
+        raise TypeError(
+            f"ERROR: The 'fit_min_validated_r_squared' is a {type(fit_min_validated_r_squared)}, "
+            f"but it must be a float."
+        )
+
+    # test the 'fit_validation_r_squared_rtol' input
+    if isinstance(fit_validation_r_squared_rtol, float):
+        if not fit_validation_r_squared_rtol > 0 :
+            raise ValueError(
+                f"ERROR: The 'fit_validation_r_squared_rtol' = {fit_validation_r_squared_rtol}, "
+                f"but it must be a float>0.")
+
+    else:
+        raise TypeError(
+            f"ERROR: The 'fit_validation_r_squared_rtol' is a {type( fit_validation_r_squared_rtol)}, "
+            f"but it must be a float."
+        )
+
+    # test the 'gomc_cpu_cores' input
+    if isinstance(gomc_cpu_cores, int):
+        if gomc_cpu_cores<=0:
+            raise ValueError(
+                f"ERROR: The 'gomc_cpu_cores' = {gomc_cpu_cores}, and it must be an int > 0."
+            )
+
+    else:
+        raise TypeError(
+            f"ERROR: The 'gomc_cpu_cores' is a {type(gomc_cpu_cores)}, but it needs to be a int."
+        )
+
+    # check values write the qm data files data out
+    if isinstance(qm_engine , str):
+        if qm_engine == "gaussian":
+            mdf_frw.write_qm_data_files(
+                qm_log_files_and_entries_to_remove_dict,
+                manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
+                qm_engine=qm_engine
+            )
+        elif qm_engine == "gaussian_style_final_files":
+            mdf_frw.write_qm_data_files(
+                qm_log_files_and_entries_to_remove_dict,
+                manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
+                qm_engine=qm_engine
+            )
+
+        else:
+            raise ValueError(
+                f"ERROR: The 'qm_engine' = {qm_engine}, which is not "
+                f"any of the available options. "
+                f"The options are 'gaussian' or 'gaussian_style_final_files'."
+            )
+
+    else:
+        raise TypeError(
+            f"ERROR: The 'qm_engine' is a {type(qm_engine)}, but it needs to be a str."
         )
 
     # **************************************************************
@@ -703,7 +876,7 @@ def fit_dihedral_with_gomc(
             f'{gomc_runs_folder_name}/{control_file_name_str}',
             'NVT',
             MC_steps,
-            temperature,
+            temperature_unyt_units,
             ff_psf_pdb_file_directory=None,
             check_input_files_exist=False,
             Parameters=f"{output_gomc_pdb_psf_ff_file_name_str}_dihedrals_zeroed.inp",
@@ -725,7 +898,7 @@ def fit_dihedral_with_gomc(
                 "Pressure": None,
                 "Ewald": True,
                 "ElectroStatic": True,
-                "VDWGeometricSigma": override_VDWGeometricSigma,
+                "VDWGeometricSigma": VDWGeometricSigma,
                 "Rcut": Rcut,
                 "RcutLow": RcutLow,
                 "LRC": LRC,
@@ -2062,7 +2235,7 @@ def fit_dihedral_with_gomc(
                 f'{gomc_runs_folder_name}/{control_file_name_fitted_str}',
                 'NVT',
                 MC_steps,
-                temperature,
+                temperature_unyt_units,
                 ff_psf_pdb_file_directory=None,
                 check_input_files_exist=False,
                 Parameters=f"{output_gomc_pdb_psf_ff_file_name_str}_OPLS_fit_{opls_fit_q}_dihedral.inp",
@@ -2084,7 +2257,7 @@ def fit_dihedral_with_gomc(
                     "Pressure": None,
                     "Ewald": True,
                     "ElectroStatic": True,
-                    "VDWGeometricSigma": override_VDWGeometricSigma,
+                    "VDWGeometricSigma": VDWGeometricSigma,
                     "Rcut": Rcut,
                     "RcutLow": RcutLow,
                     "LRC": LRC,
@@ -2317,25 +2490,26 @@ def fit_dihedral_with_gomc(
         ):
             raise ValueError(
                 f"ERROR: The calculated R-squared energy values from the fit type "
-                f"{opls_fit_data_non_zero_k_constants_list[opls_q]} does not match "
-                f"the validated case for "
-                f"'fit_min_validated_r_squared' >= {fit_min_validated_r_squared}, "
-                f"within the relative tolerance or "
-                f"'fit_validation_r_squared_rtol' = {fit_validation_r_squared_rtol}. \n"
+                f"{opls_fit_data_non_zero_k_constants_list[opls_q]} "
+                f"does not match the validated case for 'fit_min_validated_r_squared' >= " \
+                f"{mdf_math.round_to_sig_figs(fit_min_validated_r_squared,sig_figs=8)}, "
+                f"within the relative tolerance or 'fit_validation_r_squared_rtol' = "
+                f"{mdf_math.round_to_sig_figs(fit_validation_r_squared_rtol,sig_figs=8)}. \n"
                 f"- Fit via the individual or multi-dihedral fit, when "
                 f"Gaussian minus GOMC with the selected dihedral set to zero \n"
-                f"--> R-squared = {opls_fit_data_r_squared_list[opls_q]} \n"
+                f"--> R-squared = "
+                f"{mdf_math.round_to_sig_figs(opls_fit_data_r_squared_list[opls_q],sig_figs=8)} \n"
                 f"- Fit via the validation test case, when "
                 f"Gaussian minus GOMC with the selected individual dihedral added in GOMC \n"
-                f"-- >R-squared = {opls_r_squared_fitted_data_via_gomc_list[opls_q]} \n"
+                f"-- >R-squared = "
+                f"{mdf_math.round_to_sig_figs(opls_r_squared_fitted_data_via_gomc_list[opls_q],sig_figs=8)} \n"
                 f"The 'fit_min_validated_r_squared' and 'fit_validation_r_squared_rtol' "
                 f"variables may need to be adjusted, \n"
                 f"there is likely something wrong with the fitting procedure, the "
                 f"software parameters need tuned, or there is a bug in the software. \n\n "
                 f"NOTE: Since the R-squared values are calculated via different parameters, \n"
                 f"the compared R-squared values could be very different if they are not nearly \n"
-                f"a perfect fit (R-squared --> 0.98 to 1)."
-                f""
+                f"a perfect fit (R-squared --> ~0.98 to 0.99999999)."
             )
 
     gomc_fitted_gaussian_kcal_mol_energy_data_txt_file.close()

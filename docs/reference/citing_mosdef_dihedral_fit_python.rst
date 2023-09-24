@@ -47,7 +47,7 @@ Download as :download:`BibTeX <mosdef_dihedral_fit_zenodo.bib>` or :download:`RI
 
 
 
-Please also cite the **MoSDeF** software:
+Please also cite the following software:
 	* `mBuild <https://mbuild.mosdef.org/en/stable/>`_ -- A hierarchical, component based molecule builder
 
 	* `foyer <https://foyer.mosdef.org/en/stable/>`_ -- A package for atom-typing as well as applying and disseminating forcefields
