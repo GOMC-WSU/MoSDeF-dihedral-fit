@@ -286,7 +286,7 @@ def fit_dihedral_with_gomc(
 
         NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
 
-    fit_validation_r_squared_rtol: float>0, default=2.5e-02
+    fit_validation_r_squared_rtol: float (0 < fit_min_validated_r_squared < 1), default=2.5e-02
         Where the QM data is defined as the actual data; this is the difference
         of the dihedral's calculated R-squared values between:
         * The QM-MM fitting process, where the fit MM dihedral k-values are zero (0).
@@ -622,20 +622,20 @@ def fit_dihedral_with_gomc(
     else:
         raise TypeError(
             f"ERROR: The 'fit_min_validated_r_squared' is a {type(fit_min_validated_r_squared)}, "
-            f"but it must be a float."
+            f"but it must be a 0<float<1."
         )
 
     # test the 'fit_validation_r_squared_rtol' input
     if isinstance(fit_validation_r_squared_rtol, float):
-        if not fit_validation_r_squared_rtol > 0 :
+        if not (fit_validation_r_squared_rtol>0 and fit_validation_r_squared_rtol<1):
             raise ValueError(
                 f"ERROR: The 'fit_validation_r_squared_rtol' = {fit_validation_r_squared_rtol}, "
-                f"but it must be a float>0.")
+                f"but it must be a 0<float<1.")
 
     else:
         raise TypeError(
             f"ERROR: The 'fit_validation_r_squared_rtol' is a {type( fit_validation_r_squared_rtol)}, "
-            f"but it must be a float."
+            f"but it must be a 0<float<1."
         )
 
     # test the 'gomc_cpu_cores' input
