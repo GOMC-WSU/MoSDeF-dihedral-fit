@@ -3927,7 +3927,7 @@ class TestFitDihedralWithGomc(BaseTest):
         with pytest.raises(
                 TypeError,
                 match=f"ERROR: The 'fit_min_validated_r_squared' is a {type(2)}, "
-                      f"but it must be a float."
+                      f"but it must be a 0<float<1."
         ):
             fit_dihedral_with_gomc(
                 ['CT', 'CT', 'C', 'OH'],
@@ -3954,7 +3954,7 @@ class TestFitDihedralWithGomc(BaseTest):
         with pytest.raises(
                 ValueError,
                 match=f"ERROR: The 'fit_validation_r_squared_rtol' = {0.00}, "
-                      f"but it must be a float>0"
+                      f"but it must be a 0<float<1."
         ):
             fit_dihedral_with_gomc(
                 ['CT', 'CT', 'C', 'OH'],
@@ -3980,8 +3980,8 @@ class TestFitDihedralWithGomc(BaseTest):
     def test_fit_validation_r_squared_rtol_not_correct_value_is_1(self):
         with pytest.raises(
                 ValueError,
-                match=f"ERROR: The 'fit_validation_r_squared_rtol' = {-1.00}, "
-                      f"but it must be a float>0."
+                match=f"ERROR: The 'fit_validation_r_squared_rtol' = {1.00}, "
+                      f"but it must be a 0<float<1."
         ):
             fit_dihedral_with_gomc(
                 ['CT', 'CT', 'C', 'OH'],
@@ -4001,14 +4001,14 @@ class TestFitDihedralWithGomc(BaseTest):
                 atom_type_naming_style='general',
                 gomc_cpu_cores=1,
                 fit_min_validated_r_squared=0.99,
-                fit_validation_r_squared_rtol=-1.00
+                fit_validation_r_squared_rtol=1.00
             )
 
     def test_fit_validation_r_squared_rtol_not_a_float(self):
         with pytest.raises(
                 TypeError,
                 match=f"ERROR: The 'fit_validation_r_squared_rtol' is a {type(2)}, "
-                      f"but it must be a float."
+                      f"but it must be a 0<float<1."
         ):
             fit_dihedral_with_gomc(
                 ['CT', 'CT', 'C', 'OH'],
