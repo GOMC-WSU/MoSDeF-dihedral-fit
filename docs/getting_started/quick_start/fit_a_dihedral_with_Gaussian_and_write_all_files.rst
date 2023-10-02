@@ -169,4 +169,3 @@ Run the dihedral fit to fit to the MM simulations:
     	fit_min_validated_r_squared=0.99,
     	fit_validation_r_squared_rtol=5e-03
     )
-

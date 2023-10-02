@@ -1,26 +1,27 @@
-import numpy as np
 import math
+
+import numpy as np
 
 
 def round_to_sig_figs(value, sig_figs=3):
     """Round a number to the selected number of significant figures.
 
-        Round a number to the selected number of significant figures.
+    Round a number to the selected number of significant figures.
 
-        Parameters
-        ----------
-        value: int or float
-            The number that will be rounded to the selected number of
-            significant figures.
-        sig_figs: int, default=3
-            The number significant figures that the 'value' variable
-            will be rounded too. If sig_fig=0, it will return 0.0.
+    Parameters
+    ----------
+    value: int or float
+        The number that will be rounded to the selected number of
+        significant figures.
+    sig_figs: int, default=3
+        The number significant figures that the 'value' variable
+        will be rounded too. If sig_fig=0, it will return 0.0.
 
-        Returns
-        -------
-        value_rounded_to_sig_figs: float
-            The input 'value' variable rounded to the selected number
-            significant figures. If sig_fig=0, it will return 0.0.
+    Returns
+    -------
+    value_rounded_to_sig_figs: float
+        The input 'value' variable rounded to the selected number
+        significant figures. If sig_fig=0, it will return 0.0.
     """
     if value == 0:
         value_rounded_to_sig_figs = 0
@@ -37,6 +38,7 @@ def round_to_sig_figs(value, sig_figs=3):
 # dihedral angles calculations
 # (START)
 # **************************************************************
+
 
 def normalize_vector(vector):
     """Generates the normalized vector from a given vector.
@@ -100,8 +102,9 @@ def angle_between_2_vectors(vector_1, vector_2):
             f"angle = arccos[(vector_1 dot vector_2)/(|vector_1||vector_2|)]"
         )
 
-    arc_cos_value = np.dot(normal_vector_1, normal_vector_2) / \
-        (np.linalg.norm(vector_1) * np.linalg.norm(vector_2))
+    arc_cos_value = np.dot(normal_vector_1, normal_vector_2) / (
+        np.linalg.norm(vector_1) * np.linalg.norm(vector_2)
+    )
 
     # ensure arc_cos_value  is -1<= arc_cos_value <= 1
     # ... not 1.000000001 or -1.000000001 or it will yield 'nan'
@@ -117,10 +120,10 @@ def angle_between_2_vectors(vector_1, vector_2):
 
 
 def dihedral_angle(
-        atom_xyz_coord_1,
-        atom_xyz_coord_2,
-        atom_xyz_coord_3,
-        atom_xyz_coord_4,
+    atom_xyz_coord_1,
+    atom_xyz_coord_2,
+    atom_xyz_coord_3,
+    atom_xyz_coord_4,
 ):
     """Gets the dihedral angle between the four (4) atom coordinates given in cartesian coordinates.
 
@@ -147,12 +150,14 @@ def dihedral_angle(
         The dihedral angle, in degrees, between the four (4) atoms.
     """
     # check if any atom coordinates are the same
-    if list(atom_xyz_coord_1) == list(atom_xyz_coord_2) \
-            or list(atom_xyz_coord_1) == list(atom_xyz_coord_3) \
-            or list(atom_xyz_coord_1) == list(atom_xyz_coord_4) \
-            or list(atom_xyz_coord_2) == list(atom_xyz_coord_3) \
-            or list(atom_xyz_coord_2) == list(atom_xyz_coord_4) \
-            or list(atom_xyz_coord_3) == list(atom_xyz_coord_4):
+    if (
+        list(atom_xyz_coord_1) == list(atom_xyz_coord_2)
+        or list(atom_xyz_coord_1) == list(atom_xyz_coord_3)
+        or list(atom_xyz_coord_1) == list(atom_xyz_coord_4)
+        or list(atom_xyz_coord_2) == list(atom_xyz_coord_3)
+        or list(atom_xyz_coord_2) == list(atom_xyz_coord_4)
+        or list(atom_xyz_coord_3) == list(atom_xyz_coord_4)
+    ):
         raise ValueError(
             f"ERROR: The one or more of the atom coordinates are the same when entered into \n"
             f"the 'get_dihedral_angle' functions.  In order, the entered atom coordinates: \n"
@@ -178,29 +183,37 @@ def dihedral_angle(
     normal_vector_for_atoms_1_2_3_plane = (
         # np.cross(vector_between_atoms_1_2, vector_between_atoms_2_3) /
         normalize_vector(
-            np.cross(vector_between_atoms_1_2, vector_between_atoms_2_3))
+            np.cross(vector_between_atoms_1_2, vector_between_atoms_2_3)
+        )
     )
     normal_vector_for_atoms_2_3_4_plane = (
         # np.cross(vector_between_atoms_2_3, vector_between_atoms_3_4) /
         normalize_vector(
-            np.cross(vector_between_atoms_2_3, vector_between_atoms_3_4))
+            np.cross(vector_between_atoms_2_3, vector_between_atoms_3_4)
+        )
     )
 
     dihedral_angle_degrees = float(
         angle_between_2_vectors(
             normal_vector_for_atoms_1_2_3_plane,
-            normal_vector_for_atoms_2_3_4_plane
+            normal_vector_for_atoms_2_3_4_plane,
         )
     )
 
     # correct the dihedral angle ('dihedral_angle_degrees') for location, rotation direction
-    if not np.dot(normal_vector_for_atoms_1_2_3_plane, vector_between_atoms_3_4) >= 0:
+    if (
+        not np.dot(
+            normal_vector_for_atoms_1_2_3_plane, vector_between_atoms_3_4
+        )
+        >= 0
+    ):
         dihedral_angle_degrees = -dihedral_angle_degrees
 
     if dihedral_angle_degrees == 180:
         dihedral_angle_degrees == -180
 
     return dihedral_angle_degrees
+
 
 # **************************************************************
 # dihedral angles calculations
@@ -209,11 +222,7 @@ def dihedral_angle(
 
 
 def check_previous_qm_values_match(
-        all_value_list,
-        current_value,
-        value_name,
-        qm_engine,
-        log_file_name
+    all_value_list, current_value, value_name, qm_engine, log_file_name
 ):
     """Checks if the QM log file read values match the last value in the appended list.
 
@@ -327,20 +336,21 @@ def sum_opls_const_1_plus_or_minus_cos_n_values(phi_list):
     const_1_minus_Cos_4_phi = 0
 
     for phi_i, phi_value_i in enumerate(phi_list):
-        const_1_plus_Cos_1_phi += (1 + np.cos(1 * phi_value_i * np.pi / 180))
-        const_1_minus_Cos_2_phi += (1 - np.cos(2 * phi_value_i * np.pi / 180))
-        const_1_plus_Cos_3_phi += (1 + np.cos(3 * phi_value_i * np.pi / 180))
-        const_1_minus_Cos_4_phi += (1 - np.cos(4 * phi_value_i * np.pi / 180))
+        const_1_plus_Cos_1_phi += 1 + np.cos(1 * phi_value_i * np.pi / 180)
+        const_1_minus_Cos_2_phi += 1 - np.cos(2 * phi_value_i * np.pi / 180)
+        const_1_plus_Cos_3_phi += 1 + np.cos(3 * phi_value_i * np.pi / 180)
+        const_1_minus_Cos_4_phi += 1 - np.cos(4 * phi_value_i * np.pi / 180)
 
     const_1_plus_or_minus_Cos_n_phi = [
         const_1_minus_Cos_0_phi,
         const_1_plus_Cos_1_phi,
         const_1_minus_Cos_2_phi,
         const_1_plus_Cos_3_phi,
-        const_1_minus_Cos_4_phi
+        const_1_minus_Cos_4_phi,
     ]
 
     return const_1_plus_or_minus_Cos_n_phi
+
 
 # opls dihedral function using for all combinations
 
@@ -472,22 +482,43 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
         The OPLS dihedral energy from the valid phi_data and k-values
         (i.e., k1 in this case).
     """
-    cos_powers, \
-        scanned_phi,\
-        const_1_minus_Cos_0_phi_data, \
-        const_1_plus_Cos_1_phi_data, \
-        const_1_minus_Cos_2_phi_data, \
-        const_1_plus_Cos_3_phi_data, \
-        const_1_minus_Cos_4_phi_data = cos_powers_phi_and_constants_data
+    (
+        cos_powers,
+        scanned_phi,
+        const_1_minus_Cos_0_phi_data,
+        const_1_plus_Cos_1_phi_data,
+        const_1_minus_Cos_2_phi_data,
+        const_1_plus_Cos_3_phi_data,
+        const_1_minus_Cos_4_phi_data,
+    ) = cos_powers_phi_and_constants_data
 
     # check if all_sum_opls_const_1_plus_or_minus_cos_n_list is correct size:
-    if not isinstance(const_1_minus_Cos_0_phi_data, (list, np.ndarray, int, float, type(None))) \
-            or not isinstance(const_1_minus_Cos_0_phi_data, (list, np.ndarray, int, float, type(None))) \
-            or not isinstance(const_1_plus_Cos_1_phi_data, (list, np.ndarray, int, float, type(None))) \
-            or not isinstance(const_1_minus_Cos_2_phi_data, (list, np.ndarray, int, float, type(None))) \
-            or not isinstance(const_1_plus_Cos_3_phi_data, (list, np.ndarray, int, float, type(None))) \
-            or not isinstance(const_1_minus_Cos_4_phi_data, (list, np.ndarray, int, float, type(None))):
-
+    if (
+        not isinstance(
+            const_1_minus_Cos_0_phi_data,
+            (list, np.ndarray, int, float, type(None)),
+        )
+        or not isinstance(
+            const_1_minus_Cos_0_phi_data,
+            (list, np.ndarray, int, float, type(None)),
+        )
+        or not isinstance(
+            const_1_plus_Cos_1_phi_data,
+            (list, np.ndarray, int, float, type(None)),
+        )
+        or not isinstance(
+            const_1_minus_Cos_2_phi_data,
+            (list, np.ndarray, int, float, type(None)),
+        )
+        or not isinstance(
+            const_1_plus_Cos_3_phi_data,
+            (list, np.ndarray, int, float, type(None)),
+        )
+        or not isinstance(
+            const_1_minus_Cos_4_phi_data,
+            (list, np.ndarray, int, float, type(None)),
+        )
+    ):
         raise TypeError(
             "ERROR: the 'cos_powers_phi_and_constants_data' values ("
             "const_1_minus_Cos_0_phi_data,"
@@ -501,16 +532,15 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
             f"const_1_minus_Cos_2_phi_data = {const_1_minus_Cos_2_phi_data}, \n"
             f"const_1_plus_Cos_3_phi_data = {const_1_plus_Cos_3_phi_data}, \n"
             f"const_1_minus_Cos_4_phi_data = {const_1_minus_Cos_4_phi_data}."
-
         )
 
     if (
-            const_1_minus_Cos_0_phi_data is None
-            or const_1_minus_Cos_0_phi_data is None
-            or const_1_plus_Cos_1_phi_data is None
-            or const_1_minus_Cos_2_phi_data is None
-            or const_1_plus_Cos_3_phi_data is None
-            or const_1_minus_Cos_4_phi_data is None
+        const_1_minus_Cos_0_phi_data is None
+        or const_1_minus_Cos_0_phi_data is None
+        or const_1_plus_Cos_1_phi_data is None
+        or const_1_minus_Cos_2_phi_data is None
+        or const_1_plus_Cos_3_phi_data is None
+        or const_1_minus_Cos_4_phi_data is None
     ) and (
         const_1_minus_Cos_0_phi_data
         != const_1_minus_Cos_0_phi_data
@@ -557,13 +587,15 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
                 f"scanned_phi = {scanned_phi}."
             )
         else:
-            if len(cos_powers) \
-                    != len(scanned_phi) \
-                    != len(const_1_minus_Cos_0_phi_data) \
-                    != len(const_1_plus_Cos_1_phi_data) \
-                    != len(const_1_minus_Cos_2_phi_data) \
-                    != len(const_1_plus_Cos_3_phi_data) \
-                    != len(const_1_minus_Cos_4_phi_data):
+            if (
+                len(cos_powers)
+                != len(scanned_phi)
+                != len(const_1_minus_Cos_0_phi_data)
+                != len(const_1_plus_Cos_1_phi_data)
+                != len(const_1_minus_Cos_2_phi_data)
+                != len(const_1_plus_Cos_3_phi_data)
+                != len(const_1_minus_Cos_4_phi_data)
+            ):
                 raise ValueError(
                     f"ERROR: the 'cos_powers_phi_and_constants_data' values (cos_powers, phi_data), "
                     f"are not the same length -> "
@@ -580,7 +612,8 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
                 for z in range(0, len(cos_powers)):
                     if cos_powers[0] != cos_powers[z]:
                         raise ValueError(
-                            "ERROR: the 'cos_powers' are not all the same for a given fit.")
+                            "ERROR: the 'cos_powers' are not all the same for a given fit."
+                        )
 
                 cos_powers_idential_value = cos_powers[0]
 
@@ -591,10 +624,10 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
         )
 
     if isinstance(cos_powers_idential_value, str):
-        cos_powers_modified = ''
+        cos_powers_modified = ""
         for p in range(0, len(cos_powers_idential_value)):
-            if cos_powers[p] == '-':
-                cos_powers_modified += '_'
+            if cos_powers[p] == "-":
+                cos_powers_modified += "_"
             else:
                 cos_powers_modified += cos_powers_idential_value[p]
 
@@ -602,11 +635,38 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
         cos_powers_modified = cos_powers_idential_value
 
     # check for acceptable cos_powers
-    if cos_powers_modified not in \
-            ['1', '2', '3', '4', '1_3', '2_4', '1_2', '3_4', '1_2_3', '1_2_3_4',
-             1, 2, 3, 4, 13, 24, 12, 34, 123, 1234,
-             1., 2., 3., 4., 13., 24., 12., 34., 123., 1234.
-             ]:
+    if cos_powers_modified not in [
+        "1",
+        "2",
+        "3",
+        "4",
+        "1_3",
+        "2_4",
+        "1_2",
+        "3_4",
+        "1_2_3",
+        "1_2_3_4",
+        1,
+        2,
+        3,
+        4,
+        13,
+        24,
+        12,
+        34,
+        123,
+        1234,
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        13.0,
+        24.0,
+        12.0,
+        34.0,
+        123.0,
+        1234.0,
+    ]:
         raise ValueError(
             f"ERROR: {cos_powers} was entered for the cos_powers variable, but the only "
             f"available options are "
@@ -616,141 +676,197 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
             f" 1., 2., 3., 4., 13., 24., 12., 34., 123., 1234.]"
         )
 
-    if cos_powers_modified in ['1',  1,  1.]:
+    if cos_powers_modified in ["1", 1, 1.0]:
         # NOTE: THE ALL BUT THE 'kx' VALUES ARE REPLACES WITH A CONSTANT,
 
         if use_const_1_plus_minus_Cos_x_values_bool is False:
-            dihedral_energy = 1 / 2 * (
-                + k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180)
-                        )
+            dihedral_energy = (
+                1 / 2 * (+k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180)))
             )
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = 1 / 2 * (
-                + k1 * const_1_plus_Cos_1_phi_data
-            )
+            dihedral_energy = 1 / 2 * (+k1 * const_1_plus_Cos_1_phi_data)
 
-    elif cos_powers_modified in ['2', 2, 2.]:
+    elif cos_powers_modified in ["2", 2, 2.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
-            dihedral_energy = 1 / 2 * (
-                + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
+            dihedral_energy = (
+                1 / 2 * (+k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180)))
             )
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = 1 / 2 * (
-                + k2 * const_1_minus_Cos_2_phi_data
-            )
+            dihedral_energy = 1 / 2 * (+k2 * const_1_minus_Cos_2_phi_data)
 
-    elif cos_powers_modified in ['3', 3, 3.]:
+    elif cos_powers_modified in ["3", 3, 3.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
-            dihedral_energy = 1 / 2 * (
-                + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
+            dihedral_energy = (
+                1 / 2 * (+k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180)))
             )
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = 1 / 2 * (
-                + k3 * const_1_plus_Cos_3_phi_data
-            )
+            dihedral_energy = 1 / 2 * (+k3 * const_1_plus_Cos_3_phi_data)
 
-    elif cos_powers_modified in ['4', 4, 4.]:
+    elif cos_powers_modified in ["4", 4, 4.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
-            dihedral_energy = 1 / 2 * (
-                + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180))
+            dihedral_energy = (
+                1 / 2 * (+k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180)))
             )
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = 1 / 2 * (
-                + k4 * const_1_minus_Cos_4_phi_data
-            )
+            dihedral_energy = 1 / 2 * (+k4 * const_1_minus_Cos_4_phi_data)
 
-    elif cos_powers_modified in ['1_3', 13, 13.]:
+    elif cos_powers_modified in ["1_3", 13, 13.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
-            dihedral_energy = 1 / 2 * (
-                + k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
-                + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
+                    + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
+                )
             )
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = 1 / 2 * (
-                + k1 * const_1_plus_Cos_1_phi_data
-                + k3 * const_1_plus_Cos_3_phi_data
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k1 * const_1_plus_Cos_1_phi_data
+                    + k3 * const_1_plus_Cos_3_phi_data
+                )
             )
 
-    elif cos_powers_modified in ['2_4', 24, 24.]:
+    elif cos_powers_modified in ["2_4", 24, 24.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
-            dihedral_energy = 1 / 2 * (
-                + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
-                + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180))
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
+                    + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180))
+                )
             )
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = 1 / 2 * (
-                + k2 * const_1_minus_Cos_2_phi_data
-                + k4 * const_1_minus_Cos_4_phi_data
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k2 * const_1_minus_Cos_2_phi_data
+                    + k4 * const_1_minus_Cos_4_phi_data
+                )
             )
 
-    elif cos_powers_modified in ['3_4', 34, 34.]:
+    elif cos_powers_modified in ["3_4", 34, 34.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
-            dihedral_energy = 1 / 2 * (
-                + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
-                + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180))
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
+                    + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180))
+                )
             )
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = 1 / 2 * (
-                + k3 * const_1_plus_Cos_3_phi_data
-                + k4 * const_1_minus_Cos_4_phi_data
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k3 * const_1_plus_Cos_3_phi_data
+                    + k4 * const_1_minus_Cos_4_phi_data
+                )
             )
 
-    elif cos_powers_modified in ['1_2', 12, 12.]:
+    elif cos_powers_modified in ["1_2", 12, 12.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
-            dihedral_energy = 1 / 2 * (
-                + k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
-                + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
+                    + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
+                )
             )
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = 1 / 2 * (
-                + k1 * const_1_plus_Cos_1_phi_data
-                + k2 * const_1_minus_Cos_2_phi_data
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k1 * const_1_plus_Cos_1_phi_data
+                    + k2 * const_1_minus_Cos_2_phi_data
+                )
             )
 
-    elif cos_powers_modified in ['1_2_3', 123, 123.]:
+    elif cos_powers_modified in ["1_2_3", 123, 123.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
-            dihedral_energy = 1 / 2 * (
-                + k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
-                + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
-                + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
+                    + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
+                    + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
+                )
             )
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = 1 / 2 * (
-                + k1 * const_1_plus_Cos_1_phi_data
-                + k2 * const_1_minus_Cos_2_phi_data
-                + k3 * const_1_plus_Cos_3_phi_data
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k1 * const_1_plus_Cos_1_phi_data
+                    + k2 * const_1_minus_Cos_2_phi_data
+                    + k3 * const_1_plus_Cos_3_phi_data
+                )
             )
 
-    elif cos_powers_modified in ['1_2_3_4', 1234, 1234.]:
+    elif cos_powers_modified in ["1_2_3_4", 1234, 1234.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
-            dihedral_energy = 1 / 2 * (
-                + k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
-                + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
-                + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
-                + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180))
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
+                    + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
+                    + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
+                    + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180))
+                )
             )
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = 1 / 2 * (
-                + k1 * const_1_plus_Cos_1_phi_data
-                + k2 * const_1_minus_Cos_2_phi_data
-                + k3 * const_1_plus_Cos_3_phi_data
-                + k4 * const_1_minus_Cos_4_phi_data
+            dihedral_energy = (
+                1
+                / 2
+                * (
+                    +k1 * const_1_plus_Cos_1_phi_data
+                    + k2 * const_1_minus_Cos_2_phi_data
+                    + k3 * const_1_plus_Cos_3_phi_data
+                    + k4 * const_1_minus_Cos_4_phi_data
+                )
             )
 
     return dihedral_energy
 
+
 # periodic dihedral function using
 
 
-def periodic_dihedral_n_1_2_3_4_5(phi_data,
-                                  K_0, K_1, K_2, K_3, K_4, K_5,
-                                  n_0, n_1, n_2, n_3, n_4, n_5,
-                                  d_0, d_1, d_2, d_3, d_4, d_5,
-                                  ):
+def periodic_dihedral_n_1_2_3_4_5(
+    phi_data,
+    K_0,
+    K_1,
+    K_2,
+    K_3,
+    K_4,
+    K_5,
+    n_0,
+    n_1,
+    n_2,
+    n_3,
+    n_4,
+    n_5,
+    d_0,
+    d_1,
+    d_2,
+    d_3,
+    d_4,
+    d_5,
+):
     """Periodic or CHARMM style dihedral energy calculation from n=1 to n=5.
 
     This is the Periodic or CHARMM style dihedral energy calculation.
@@ -839,10 +955,10 @@ def RB_torsion_n_1_2_3_4_5(phi_data, k_0, k_1, k_2, k_3, k_4, k_5):
     torsion_energy = (
         k_0
         + k_1 * np.cos(psi_data)
-        + k_2 * np.cos(psi_data)**2
-        + k_3 * np.cos(psi_data)**3
-        + k_4 * np.cos(psi_data)**4
-        + k_5 * np.cos(psi_data)**5
+        + k_2 * np.cos(psi_data) ** 2
+        + k_3 * np.cos(psi_data) ** 3
+        + k_4 * np.cos(psi_data) ** 4
+        + k_5 * np.cos(psi_data) ** 5
     )
 
     return torsion_energy
@@ -872,18 +988,26 @@ def get_r_squared(data_points, fitted_values):
         These values are typically 0-1, but can be negative if the intercept
         constant or other parameters are manually not used in the fitting process.
     """
-    if not isinstance(data_points, (list, type((1, 2)), type(np.array([1])), type(np.ndarray([1])))) \
-            or not isinstance(fitted_values, (list, type((1, 2)), type(np.array([1])), type(np.array([1])))):
+    if not isinstance(
+        data_points,
+        (list, type((1, 2)), type(np.array([1])), type(np.ndarray([1]))),
+    ) or not isinstance(
+        fitted_values,
+        (list, type((1, 2)), type(np.array([1])), type(np.array([1]))),
+    ):
         raise TypeError(
             f"ERROR: Both the 'data_points' and 'fitted_values' must be "
             f"list, tuple, or numpy.array of the same length. The are the following: \n"
             f"- type(data_points) = {type(data_points)} \n"
             f"- len(data_points) = {len(data_points)} \n"
             f"- type(fitted_value) = {type(fitted_values)} \n"
-            f"- len(fitted_value) = {len(fitted_values)}")
+            f"- len(fitted_value) = {len(fitted_values)}"
+        )
 
     for r_i in range(0, len(data_points)):
-        if not isinstance(data_points[r_i], (float, int)) or not isinstance(fitted_values[r_i], (float, int)):
+        if not isinstance(data_points[r_i], (float, int)) or not isinstance(
+            fitted_values[r_i], (float, int)
+        ):
             raise TypeError(
                 f"ERROR: The 'data_points' or 'fitted_values' lists do not contain all floats or integers."
             )
@@ -891,14 +1015,8 @@ def get_r_squared(data_points, fitted_values):
     rss = 0
     tss = 0
     for iter_i, value_i in enumerate(data_points):
-        rss += (
-            data_points[iter_i]
-            - fitted_values[iter_i]
-        ) ** 2
-        tss += (
-            data_points[iter_i] -
-            np.average(data_points)
-        ) ** 2
+        rss += (data_points[iter_i] - fitted_values[iter_i]) ** 2
+        tss += (data_points[iter_i] - np.average(data_points)) ** 2
 
     r_squared_0_to_1 = 1 - rss / tss
 

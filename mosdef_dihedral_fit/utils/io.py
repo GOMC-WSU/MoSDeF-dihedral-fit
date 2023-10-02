@@ -19,5 +19,7 @@ def get_mosdef_dihedral_fit_fn(filename):
         "mosdef_dihedral_fit", os.path.join("utils", "files", filename)
     )
     if not os.path.exists(full_path_and_filename):
-        raise ValueError(f"ERROR: The {full_path_and_filename} does not exists.")
+        raise ValueError(
+            f"ERROR: The {full_path_and_filename} does not exists."
+        )
     return full_path_and_filename
