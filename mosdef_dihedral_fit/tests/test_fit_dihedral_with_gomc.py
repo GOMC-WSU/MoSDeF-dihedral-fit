@@ -11,9 +11,13 @@ from mosdef_dihedral_fit.tests.base_test import BaseTest
 from mosdef_dihedral_fit.utils.io import get_mosdef_dihedral_fit_fn
 
 # user changable variable, as it needs to be run locally
+# May try to get a way to automatically detect the binary using `shutil.which()`
 gomc_binary_directory = "/home/brad/Programs/GOMC/GOMC_2_75/bin"
 
 
+@pytest.mark.skipif(
+    not os.path.isfile(gomc_binary_directory), reason="GOMC binary not deteced."
+)
 class TestFitDihedralWithGomc(BaseTest):
     def test_gaussian_log_file_fit_oplsaa_fit_ethane_HC_CT_CT_HC(self):
         fit_dihedral_with_gomc(
