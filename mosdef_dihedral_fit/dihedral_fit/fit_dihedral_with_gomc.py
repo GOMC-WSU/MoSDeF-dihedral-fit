@@ -1,9 +1,11 @@
 import os
+import shutil
 import pandas as pd
 import numpy as np
 import mbuild as mb
 import subprocess
 import unyt as u
+from unyt.dimensions import angle, energy, length, temperature
 import mosdef_gomc.formats.gmso_charmm_writer as mf_charmm
 import mosdef_gomc.formats.gmso_gomc_conf_writer as gomc_control
 import matplotlib.pyplot as plt
@@ -13,7 +15,6 @@ from scipy.optimize import curve_fit
 from mbuild.utils.conversion import OPLS_to_RB
 from mosdef_gomc.utils.conversion import OPLS_to_periodic
 
-import mosdef_dihedral_fit.utils.basic_operations as mdf_basic
 import mosdef_dihedral_fit.utils.file_read_and_write as mdf_frw
 import mosdef_dihedral_fit.utils.math_operations as mdf_math
 
@@ -26,16 +27,17 @@ def fit_dihedral_with_gomc(
         fit_dihedral_atom_types,
         mol2_selection,
         forcefield_selection,
-        temperature,
+        temperature_unyt_units,
         gomc_binary_path,
-        qm_log_files_and_entries_to_remove,
+        qm_log_files_and_entries_to_remove_dict,
+        manual_dihedral_atom_numbers_list=None,
         zeroed_dihedral_atom_types=None,
         qm_engine="gaussian",
-        override_VDWGeometricSigma=None,
+        VDWGeometricSigma=None,
         atom_type_naming_style='general',
         gomc_cpu_cores=1,
-        fit_min_validated_r_squared=0.99,
-        fit_validation_r_squared_rtol=1e-03
+        fit_min_validated_r_squared=0.98,
+        fit_validation_r_squared_rtol=2.5e-02
 ):
     """Fit the desired dihedral to a MM force field, based on QM data.
 
@@ -52,7 +54,7 @@ def fit_dihedral_with_gomc(
     not be fit properly or the user should use caution when using this
     function (GOMC) to do the dihedral fitting.
 
-    NOTE: This dihedral fitting process can accomidate fitting more
+    NOTE: This dihedral fitting process can accommodate fitting more
     than 1 dihedral fit of the same type simultaneously.
 
     NOTE: Not all cos power terms are allowed to be utilized in the
@@ -65,11 +67,18 @@ def fit_dihedral_with_gomc(
     and recreated while running this function to ensure only the
     lasted data is in these folders.
 
+
     Parameters
     ----------
     fit_dihedral_atom_types: list of four (4) strings (Example: ['HC', 'CT, 'CT, 'HC'])
         The atom types/classes (strings in the list) of the dihedral which is
         being fitted with non-zero k-values.
+
+        NOTE: The extracted atom types/classes can be determined also by
+        looking at the 'GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp' and
+        'GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp' files in the
+        'GOMC_simulations' folder. These files can also be checked to
+        confirm it is zeroing the correct dihedrals.
     mol2_selection: str
         The mol2 file which matches the element, atom type, bonded connnections,
         the 'EXACT ATOM ORDER AND CONFIGURATION AS IN THE QM SIMULATION INPUT FILES'.
@@ -84,39 +93,101 @@ def fit_dihedral_with_gomc(
 
         * Example str for FF file: 'path_to file/trappe-ua.xml'
 
-    temperature: unyt.unyt_quantity
+    temperature_unyt_units: unyt.unyt_quantity
         The temperature of the system that was performed for the Quantum Mechanics
         (QM) simulation.
     gomc_binary_path: str
-        The path or directory of the GOMC binary file "GOMC_CPU_NVT", which is used to
-        perform the Molecular Mechanics (MM) energy calculations. This does not include
-        the "GOMC_CPU_NVT" in this variable.
+        The path or directory of the GOMC binary file "GOMC_CPU_NVT" (GOMC >= v2.75),
+        which is used to perform the Molecular Mechanics (MM) energy calculations.
+        This does not include the "GOMC_CPU_NVT" in this variable.
 
         Example: '/home/brad/Programs/GOMC/GOMC_2_76/bin'
 
-    qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
-        This is a dictionary comprised of a key (string) of the QM log file path and name,
-        and a list of integers, which are the QM optimization parameters to remove from
-        the written data, in order of reading from each file. These can be seen in the
-        order of the dictionary file name (strings).  These removed parameters allow
-        users to remove any bad or repeated data points for the QM log file when needed.
+    qm_log_files_and_entries_to_remove_dict: dict, {str: [int>=0, ..., int>=0]}
+        * qm_engine="gaussian"
+            This is a dictionary comprised of a key (string) of the QM log file path and name
+            (Gaussian 16 log file only), and a list of integers, which are the QM optimization
+            parameters to remove from the written data, in order of reading from each file.
+            These can be seen in the order of the dictionary file name (strings).
+            These removed parameters allow users to remove any bad or repeated data
+            points for the QM log file when needed.
 
-        Example 1: {'path/guassian_log_file.log': []}
-        Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+            Example 1: {'path/guassian_log_file.log': []}
 
-        Example 2: {'path/guassian_log_file.log': [0, 23]}
-        Uses all data points from the 'path/guassian_log_file.log' file, except points
-        0 and 23.  NOTE: Python counting starts at 0.
+            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+
+            Example 2: {'path/guassian_log_file.log': [0, 23]}
+            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            0 and 23.  NOTE: Python counting starts at 0.
+
+        * qm_engine="gaussian_style_final_files"
+            This is a dictionary comprised of a key (string) of the  file paths to the
+            Gaussian 16 style final formatted files, and a list of integers, which are the
+            QM optimization parameters to remove from the written data, in order of reading
+            from each folder. These can be seen in the order of the dictionary file name (strings).
+            These removed parameters allow users to remove any bad or repeated data points
+            for the QM log file when needed.
+            NOTE: The energy and dihedral angle file in this directory need to be
+            named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
+
+            Example of energy and dihedral angle file ('dihedral.txt'):
+
+            | # Scan of Total Energy
+            | # X-Axis:  Scan Coordinate
+            | # Y-Axis:  Total Energy (Hartree)
+            | #                  X                   Y
+            |                  0.0     -267.0062955742
+            |                 10.0     -267.0062900424
+
+            NOTE: The coordinate files in this directory need to be
+            named 'dihedral_coords_position_XXXX.txt' for the each angles coordinate values.
+            There are as XXX file in this directory where XXX is the number of dihedral angles.
+            The file numbering starts at 1 so the files are named 'dihedral_coords_position_1.txt'
+            to 'dihedral_coords_position_XXXX.txt'
+
+            Example of coordinate file ('dihedral_coords_position_1.txt'):
+
+            | Row	Highlight	Display	Tag	Symbol	X	Y	Z
+            | 1       No      Show    1       C       0.077153        -0.010211       0.106889
+            | 2       No      Show    2       C       -1.455163       0.076994        0.364648
+            | 3       No      Show    3       C       -2.162794       1.205823        -0.378912
+            | 4       No      Show    4       O       0.614863        1.022719        -0.303596
+            | 5       No      Show    5       O       0.581656        -1.105138       0.370604
+            | 6       No      Show    6       H       -1.703737       2.157201        -0.140757
+            | 7       No      Show    7       H       -2.079381       1.073202        -1.454515
+            | 8       No      Show    8       H       -1.898266       -0.885627       0.121028
+            | 9       No      Show    9       H       -1.593015       0.205080        1.439694
+            | 10      No      Show    10      H       -3.224767       1.255506        -0.130085
+
+            Example 1: {'path_to_gaussian_style_final_files': []}
+            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+
+            Example 2: {'path_to_gaussian_style_final_files': [0, 23]}
+            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            0 and 23.  NOTE: Python counting starts at 0.
+
+    manual_dihedral_atom_numbers_list: list of 4 integers, default=None
+        NOTE: Only needed for qm_engine="gaussian_style_final_files"
+
+        This is a list of the dihedral atom numbers in order that were used for the dihedral
+        fit. This information needs to be correct and in order to produce correct results.
+        The values must be the same in all the combined files.
     zeroed_dihedral_atom_types: nest list with lists of four (4) strings, default=None
         The nests list(s) of the other dihedrals, that need to have their k-values zeroed to
         properly fit the the 'fit_dihedral_atom_types' dihedral.
 
         Example: [['CT', 'CT, 'CT, 'HC'], ['NT', 'CT, 'CT, 'HC']]
 
+        NOTE: The extracted atom types/classes can be determined also by
+        looking at the 'GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp' and
+        'GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp' files in the
+        'GOMC_simulations' folder. These files can also be checked to
+        confirm it is zeroing the correct dihedrals.
+
     qm_engine: str (currently only 'guassian'), default='guassian'
         The Quantum Mechanics (QM) simulation engine utilized to produce the files listed
-        in the 'qm_log_files_and_entries_to_remove' variable(s).
-    override_VDWGeometricSigma: boolean, default = None
+        in the 'qm_log_files_and_entries_to_remove_dict' variable(s).
+    VDWGeometricSigma: boolean, default = None
         Override the VDWGeometricSigma in the foyer or GMSO XML file.
         If this is None, it will use whatever is specified in the XML file, or the
         default foyer or GMSO values. BEWARE, if it is not specified XML file, it has a default.
@@ -131,12 +202,11 @@ def fit_dihedral_with_gomc(
         which uses the arithmetic mean when combining Lennard-Jones or "
         VDW sigma parameters for different atom types.
     atom_type_naming_style: str, optional, default='all_unique', ('general' or 'all_unique')
-        'general':
+        * 'general'
 
         NOTE: In this case, as long as the force field XML file is correct, we can use the
         'general' convention safely, because there is no potential of atom type/class overlap
         with another force field file.
-
 
         The 'general' convention only tests if the sigma, epsilons, mass, and Mie-n values are
         identical between the different molecules (residues in this context) and their applied
@@ -151,18 +221,23 @@ def fit_dihedral_with_gomc(
         If the sigma, epsilons, mass, and Mie-n values are the same between force fields
         the general method can be applied; if not, it defaults to the 'all_unique' method.
 
-        Example of CHARMM style atom types in an all-atom ethane and ethanol system:
-        * Ethane: alkane carbon = CT, alkane hydrogen = HC
-        * Ethanol: alkane carbon = CT, alkane hydrogen = HC , oxygen in alcohol = OH, hydrogen in alcohol = OH
+        --- Example of CHARMM style atom types in an all-atom ethane and ethanol system:
+
+        --- Ethane: alkane carbon = CT, alkane hydrogen = HC
+
+        --- Ethanol: alkane carbon = CT, alkane hydrogen = HC , oxygen in alcohol = OH, hydrogen in alcohol = OH
 
         This is only permitted when the following is true; otherwise it will default to the the 'all_unique':
-        * All the MoSDeF force field XML's atom classes' non-bonded parameters
+
+        --- All the MoSDeF force field XML's atom classes' non-bonded parameters
         (sigma, epsilon, mass, and Mie-n power constant) values are THE SAME.
-        * If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
+
+        --- If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
         gomc_fix_bonds, or gomc_fix_angles NOT IN any other residue/molecule, the 'all_unique' type
         will be used.
 
-        'all_unique':
+        * 'all_unique'
+
         The 'all_unique' convention is the SAFE way to parameterize the system.
         The MoSDeF force field XML atom names within residue/molecule are all unique,
         where each one adds an alpha numberic value after the MoSDeF force field XML atom classes to
@@ -171,19 +246,24 @@ def fit_dihedral_with_gomc(
         but have less bonded class parameters.
 
         Example of CHARMM style atom types in an all-atom ethane and ethanol system:
-        * Ethane: alkane carbon type 0 = CT0, alkane hydrogen type 0 = HC0
-        * Ethanol: alkane carbon type 1 = CT1, alkane carbon type 2 = CT2,
+
+        --- Ethane: alkane carbon type 0 = CT0, alkane hydrogen type 0 = HC0
+
+        --- Ethanol: alkane carbon type 1 = CT1, alkane carbon type 2 = CT2,
         alkane hydrogen type 1 = HC1 , oxygen in alcohol type 0 = OH0, hydrogen in alcohol type 0 = OH0
 
         This is selected when auto-selected when:
-        * All the MoSDeF force field XML's atom classes' non-bonded parameters
+
+        --- All the MoSDeF force field XML's atom classes' non-bonded parameters
         (sigma, epsilon, mass, and Mie-n power constant) values are NOT THE SAME.
-        * If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
+
+        --- If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
         gomc_fix_bonds, or gomc_fix_angles are IN any other residue/molecule.
-    gomc_cpu_cores: int, default=1
+
+    gomc_cpu_cores: int>0, default=1
         The number of CPU-cores that are used to perform the GOMC simulations, required
         for the Molecular Mechanics (MM) energy calulations.
-    fit_min_validated_r_squared: float (0 <= fit_min_validated_r_squared <= 1), default=0.99
+    fit_min_validated_r_squared: float (0 < fit_min_validated_r_squared < 1), default=0.98
         The minimum R**2 (R-squared) value to test the validity of the fit with the
         new dihedral fitted constants, as fitted in the
         QM - MM energy data vs. the dihedral function fit, mentioned below.
@@ -193,19 +273,21 @@ def fit_dihedral_with_gomc(
         will not be check for accuracy because the  R**2 (R-squared) values are compared
         differently as a check.  These are compared between the following calculations:
 
-        * QM - MM energy data vs. the dihedral function fit:
+        QM - MM energy data vs. the dihedral function fit:
         For the MM calculations, the 'fit_dihedral_atom_types' and
         'zeroed_dihedral_atom_types' are dihedral energies are set to zero, which is
         during the fitting process with 1 or more of the same dihedrals being fit simultaneously.
 
-        * QM vs. the MM energy data:
+        QM vs. the MM energy data:
         For the MM calculations, the 'fit_dihedral_atom_types' are set to the values which were
         fit for the specific cosine combinations during the fitting process with 1 or more of the
         same dihedrals being fit simultaneously, and the 'zeroed_dihedral_atom_types' are
         dihedral energies are set to zero.
 
-    fit_validation_r_squared_rtol: float, default=1e-03
-        Where the QM data is defined as the actual data; this is the fractional difference
+        NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
+
+    fit_validation_r_squared_rtol: float (0 < fit_min_validated_r_squared < 1), default=2.5e-02
+        Where the QM data is defined as the actual data; this is the difference
         of the dihedral's calculated R-squared values between:
         * The QM-MM fitting process, where the fit MM dihedral k-values are zero (0).
         * The MM calculations where the fit k-value are entered in the MM data and
@@ -214,176 +296,386 @@ def fit_dihedral_with_gomc(
         fit_dihedral_atom_types,
         mol2_selection,
         forcefield_selection,
-        temperature,
+        temperature_unyt_units,
         gomc_binary_path,
-        qm_log_files_and_entries_to_remove,
+        qm_log_files_and_entries_to_remove_dict,
         zeroed_dihedral_atom_types=None,
+
+        NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
 
     Returns
     -------
     Files containing the following information in the following relative locations:
-        GOMC_simulations/GOMC_pdb_psf_ff_files.pdb
-            The PDB file used in the GOMC simulations generated via MoSDeF-GOMC.
-        GOMC_simulations/GOMC_pdb_psf_ff_files.pdf
-            The PSF file used in the GOMC simulations generated via MoSDeF-GOMC.
-        GOMC_simulations/GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp
-            The original force field file generated via MoSDeF-GOMC with the
-            force field parameters exactly as listed in the provided force field
-            XML file.
-        GOMC_simulations/GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp
-            The modified force field file with the fit and other selected dihedrals
-            zeroed out.
-        GOMC_simulations/GOMC_pdb_psf_ff_files_OPLS_fit_XXX_dihedral.inp
-            The modified force field file with the fit is set to the fitted k-values
-            ('fit_dihedral_atom_types') with all the other selected dihedrals
-            ('zeroed_dihedral_atom_types') being zeroed out, where the XXX
-            in the file name being the different  possibilities of cos power combinations
-            of the dihedral fit. These may be 1 or more of these files/cos power
-            combinations.
-        GOMC_simulations/GOMC_zeroed_dihedral_coords_XXX.conf
-            The GOMC control files for all the phi dihedral angles selected
-            from the QM simulations where the 'fit_dihedral_atom_types' and the
-            'zeroed_dihedral_atom_types' k-values are all set to zero.  The XXX is the
-            integer number of the dihedrals starting at 1, adding 1 for every
-            additional phi dihedral angles selected from the QM simulations.
 
-            These are simulations are to get the total energy difference between
-            QM and MM simulation with all the 'fit_dihedral_atom_types' and the
-            'zeroed_dihedral_atom_types' k-values are all set to zero.
-        GOMC_simulations/GOMC_OPLS_fit_YYY_dihedral_coords_XXX.conf
-            The GOMC control files for all the phi dihedral angles selected
-            from the QM simulations where the 'fit_dihedral_atom_types' are set to
-            the solved k-values for the cos power equation combination, which is listed
-            as the variable YYY, and the 'zeroed_dihedral_atom_types' k-values are all set
-            to zero.  The XXX is the integer number of the dihedrals starting at 1, adding
-            1 for every additional phi dihedral angles selected from the QM simulations.
+    GOMC_simulations/GOMC_pdb_psf_ff_files.pdb
+        The PDB file used in the GOMC simulations generated via MoSDeF-GOMC.
+    GOMC_simulations/GOMC_pdb_psf_ff_files.pdf
+        The PSF file used in the GOMC simulations generated via MoSDeF-GOMC.
+    GOMC_simulations/GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp
+        The original force field file generated via MoSDeF-GOMC with the
+        force field parameters exactly as listed in the provided force field
+        XML file.
+    GOMC_simulations/GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp
+        The modified force field file with the fit and other selected dihedrals
+        zeroed out.
+    GOMC_simulations/GOMC_pdb_psf_ff_files_OPLS_fit_XXX_dihedral.inp
+        The modified force field file with the fit is set to the fitted k-values
+        ('fit_dihedral_atom_types') with all the other selected dihedrals
+        ('zeroed_dihedral_atom_types') being zeroed out, where the XXX
+        in the file name being the different  possibilities of cos power combinations
+        of the dihedral fit. These may be 1 or more of these files/cos power
+        combinations.
+    GOMC_simulations/GOMC_zeroed_dihedral_coords_XXX.conf
+        The GOMC control files for all the phi dihedral angles selected
+        from the QM simulations where the 'fit_dihedral_atom_types' and the
+        'zeroed_dihedral_atom_types' k-values are all set to zero.  The XXX is the
+        integer number of the dihedrals starting at 1, adding 1 for every
+        additional phi dihedral angles selected from the QM simulations.
 
-            These are simulations are to get the total energy difference between
-            QM and MM simulation with the 'fit_dihedral_atom_types' set to
-            the solved k-values for each YYY combination of cos powers.  There
-            will be a set of phi angles for every YYY combination.
+        These are simulations are to get the total energy difference between
+        QM and MM simulation with all the 'fit_dihedral_atom_types' and the
+        'zeroed_dihedral_atom_types' k-values are all set to zero.
+    GOMC_simulations/GOMC_OPLS_fit_YYY_dihedral_coords_XXX.conf
+        The GOMC control files for all the phi dihedral angles selected
+        from the QM simulations where the 'fit_dihedral_atom_types' are set to
+        the solved k-values for the cos power equation combination, which is listed
+        as the variable YYY, and the 'zeroed_dihedral_atom_types' k-values are all set
+        to zero.  The XXX is the integer number of the dihedrals starting at 1, adding
+        1 for every additional phi dihedral angles selected from the QM simulations.
 
-            These GOMC simulations are used to validate the fit when the k-values
-            for each individual dihedral is automatically entered in the force
-            field file. NOTE: In the original fitting process, there can be more
-            than 1 dihedral of the same type fit simultaneously.
-        GOMC_simulations/output_GOMC_zeroed_dihedral_coords_XXX.txt
-            The log output for the 'GOMC_zeroed_dihedral_coords_XXX.conf' simulation.
-            The XXX is the integer number of the dihedrals starting at 1, adding 1 for
-            every additional phi dihedral angles selected from the QM simulations.
-        GOMC_simulations/output_GOMC_OPLS_fit_YYY_dihedral_coords_XXX.txt
-            The log output for the 'GOMC_OPLS_fit_YYY_dihedral_coords_XXX.conf' simulation.
-            The XXX is the integer number of the dihedrals starting at 1, adding 1 for
-            every additional phi dihedral angles selected from the QM simulations.
-            The variable YYY is the cos power equation combinations used for the
-            'fit_dihedral_atom_types' to fit the k-values.
-        extracted_guassian_data/dihedral.txt
-            The QM data in a Gaussian-style output file which holds the scanned
-            dihedral angles, in degrees, and the optimized energy value, in Hartree units,
-            for the molecule/fragment.
-        extracted_guassian_data/dihedral_coords_position_XXX.txt
-            The optimized QM dihedral coordinates in a Gaussian-style output file.
-            The XXX is the integer number of the dihedrals starting at 1, adding 1 for
-            every additional phi dihedral angles selected from the QM simulations.
-            The coordinates are in Angstroms.
-        xyz_restart_xsc_coor_files/dihedral_coords_position_XXX.xyz
-            The optimized QM dihedral coordinates in the '.xyz' format. This permits
-            VMD to convert the '.xyz' format to a GOMC-usable '.coor' format, which
-            contains all the coordinate precision of the QM data and allows GOMC to
-            restart the simulation with all this precision. Otherwise, GOMC would
-            need to use the 3-decimal precision of the PDB format.
-            The XXX is the integer number of the dihedrals starting at 1, adding 1 for
-            every additional phi dihedral angles selected from the QM simulations.
-            The coordinates are in Angstroms.
-        xyz_restart_xsc_coor_files/dihedral_coords_position_XXX.coor
-            The GOMC-usable '.coor' format, allowing the optimized QM dihedral coordinates
-            to be used in full percision when restarting the GOMC simulation.
-            Otherwise, GOMC would need to use the 3-decimal precision of the PDB format.
-            The XXX is the integer number of the dihedrals starting at 1, adding 1 for
-            every additional phi dihedral angles selected from the QM simulations.
-            The coordinates are in Angstroms.
-        all_normalized_energies_in_kcal_per_mol.txt
-            For each dihedral angle (degrees), the QM, MM, and difference in dihedral
-            energies (kcal/mol) when the 'fit_dihedral_atom_types' and the
-            'zeroed_dihedral_atom_types' k-values are all set to zero. This also
-            contains the sum of all the C1, C2, C3, and C4 values for every
-            'fit_dihedral_atom_types' in the system, where there may be multiple of the
-            same dihedral in the same molecule.
+        These are simulations are to get the total energy difference between
+        QM and MM simulation with the 'fit_dihedral_atom_types' set to
+        the solved k-values for each YYY combination of cos powers.  There
+        will be a set of phi angles for every YYY combination.
 
-            OPLS dihedral equation in with C1, C2, C2, and C4 instead of the cos terms:
+        These GOMC simulations are used to validate the fit when the k-values
+        for each individual dihedral is automatically entered in the force
+        field file. NOTE: In the original fitting process, there can be more
+        than 1 dihedral of the same type fit simultaneously.
+    GOMC_simulations/output_GOMC_zeroed_dihedral_coords_XXX.txt
+        The log output for the 'GOMC_zeroed_dihedral_coords_XXX.conf' simulation.
+        The XXX is the integer number of the dihedrals starting at 1, adding 1 for
+        every additional phi dihedral angles selected from the QM simulations.
+    GOMC_simulations/output_GOMC_OPLS_fit_YYY_dihedral_coords_XXX.txt
+        The log output for the 'GOMC_OPLS_fit_YYY_dihedral_coords_XXX.conf' simulation.
+        The XXX is the integer number of the dihedrals starting at 1, adding 1 for
+        every additional phi dihedral angles selected from the QM simulations.
+        The variable YYY is the cos power equation combinations used for the
+        'fit_dihedral_atom_types' to fit the k-values.
+    extracted_guassian_data/dihedral.txt
+        The QM data in a Gaussian-style output file which holds the scanned
+        dihedral angles, in degrees, and the optimized energy value, in Hartree units,
+        for the molecule/fragment.
+    extracted_guassian_data/dihedral_coords_position_XXX.txt
+        The optimized QM dihedral coordinates in a Gaussian-style output file.
+        The XXX is the integer number of the dihedrals starting at 1, adding 1 for
+        every additional phi dihedral angles selected from the QM simulations.
+        The coordinates are in Angstroms.
+    xyz_restart_xsc_coor_files/dihedral_coords_position_XXX.xyz
+        The optimized QM dihedral coordinates in the '.xyz' format. This permits
+        VMD to convert the '.xyz' format to a GOMC-usable '.coor' format, which
+        contains all the coordinate precision of the QM data and allows GOMC to
+        restart the simulation with all this precision. Otherwise, GOMC would
+        need to use the 3-decimal precision of the PDB format.
+        The XXX is the integer number of the dihedrals starting at 1, adding 1 for
+        every additional phi dihedral angles selected from the QM simulations.
+        The coordinates are in Angstroms.
+    xyz_restart_xsc_coor_files/dihedral_coords_position_XXX.coor
+        The GOMC-usable '.coor' format, allowing the optimized QM dihedral coordinates
+        to be used in full percision when restarting the GOMC simulation.
+        Otherwise, GOMC would need to use the 3-decimal precision of the PDB format.
+        The XXX is the integer number of the dihedrals starting at 1, adding 1 for
+        every additional phi dihedral angles selected from the QM simulations.
+        The coordinates are in Angstroms.
+    all_normalized_energies_in_kcal_per_mol.txt
+        For each dihedral angle (degrees), the QM, MM, and difference in dihedral
+        energies (kcal/mol) when the 'fit_dihedral_atom_types' and the
+        'zeroed_dihedral_atom_types' k-values are all set to zero. This also
+        contains the sum of all the C1, C2, C3, and C4 values for every
+        'fit_dihedral_atom_types' in the system, where there may be multiple of the
+        same dihedral in the same molecule.
 
-            OPLS_energy = k1 * C1 + k2 * C2 + k3 * C3 + k4 * C4
+        This file contains the corrected dihedral fit points between QM and MM
+        after all the non-bonded, 1-4 dihedral scaling, and
+        bonded (no MM dihedral bonded interactions) interactions of the
+        MM force fields are taken into account.  Specifically, the
+        'Gaussian_minus_GOMC_E_kcal_per_mol' column contains these points,
+        which can be used to perform alternative dihedral fits outside of
+        this software package.  For example, higher cosine power fits or
+        the CHARMM style periodic fits with no C0/k0 term (CHARMM has the
+        C0/k0 term being a harmonic dihedral, not a periodic dihedral).
 
-            C1 = (1 + cos(1 * phi))
-            C2 = (1 - cos(2 * phi))
-            C3 = (1 + cos(3 * phi))
-            C4 = (1 - cos(4 * phi))
+        OPLS dihedral equation in with C1, C2, C2, and C4 instead of the cos terms:
 
-        all_normalized_energies_OPLS_fit_YYY_in_kcal_per_mol.txt
-            For each dihedral angle (degrees), the QM, MM, and difference in dihedral
-            energies (kcal/mol) when the 'fit_dihedral_atom_types' are set to
-            the solved k-values for the cos power equation combination, which is listed
-            as the variable YYY. This also contains fit k1, k2, k3, and k4
-            values (kcal/mol), are the same in every dihedral angle row.
+        OPLS_energy = k1 * C1 + k2 * C2 + k3 * C3 + k4 * C4
 
-            OPLS_energy =   k1 * (1 + cos(1 * phi))
-                          + k2 * (1 - cos(2 * phi))
-                          + k3 * (1 + cos(3 * phi))
-                          + k4 * (1 - cos(4 * phi))
+        C1 = (1 + cos(1 * phi))
 
-        gomc_raw_energies_in_Kelvin.txt
-            This is the initial raw energy, in Kelvin, extracted from all the
-            'output_GOMC_zeroed_dihedral_coord_XXX.txt' files.
-        all_normalized_energies_OPLS_fit_YYY_in_kcal_per_mol.txt
-            This is the initial raw energy, in Kelvin, extracted from all the
-            'output_GOMC_OPLS_fit_YYY_dihedral_coord_XXX.txt' files, where YYY
-            is an additional output file for each OPLS cosine combination.
-        opls_dihedral_k_constants_fit_energy.txt
-            The OPLS dihedral style k-value solutions given the 'fit_dihedral_atom_types'
-            input for each valid cosine power combination.  There could be 1 or
-            more valid cosine power combinations.
-            The k-values are in kcal/mol energy units.
-        periodic_dihedral_k_constants_fit_energy.txt
-            The periodic/CHARMM dihedral style k-value solutions given the
-            'fit_dihedral_atom_types' input for each valid cosine power combination.
-            There could be 1 or more valid cosine power combinations.
-            The periodic/CHARMM style dihedral k-value were analytically converted
-            from the OPLS dihedral form.
-            The k-values are in kcal/mol energy units.
-        RB_torsion_k_constants_fit_energy.txt
-            The RB torsion style k-value solutions given the
-            'fit_dihedral_atom_types' input for each valid cosine power combination.
-            There could be 1 or more valid cosine power combinations.
-            The RB torsion's k-value were analytically converted
-            from the OPLS dihedral form.
-            The k-values are in kcal/mol energy units.
-        opls_all_summed_dihedrals_k_constants_figure.pdf
-            For each valid cosine power combinations, the total OPLS dihedral energies
-            between QM and MM simulations are plotted, where the MM simulation's fitted
-            k-values ('fit_dihedral_atom_types') and all the other selected dihedrals
-            ('zeroed_dihedral_atom_types') are zeroed out.
-            This is the total energy difference in QM vs MM energy
-            for all the 'fit_dihedral_atom_types' summed together, as there can
-            be 1 or multiple of this dihedral type in a molecule, which were
-            all fit simultaneously.
-        opls_all_single_fit_dihedral_k_constants_figure.pdf
-            The final OPLS dihedral fit for the individual dihedrals
-            (individual dihedrals in the 'fit_dihedral_atom_types') for each
-            each valid cosine power combination. These plotted dihedral energies would be
-            the energy from a single (1) dihedral in the system, or the dihedral energy
-            (via k-values) that would be entered into the force field parameters.
-            This plot allows the users to compare the different valid cosine power
-            combinations and their R-squared values.
-            If multiple R-squared values are both nearly perfect and the plots
-            look different, this may be a sign that something is not correct with 1
-            or more of the nearly perfect R-squared fitted values, or fitting procedure
-            itself.
+        C2 = (1 - cos(2 * phi))
+
+        C3 = (1 + cos(3 * phi))
+
+        C4 = (1 - cos(4 * phi))
+
+    all_normalized_energies_OPLS_fit_YYY_in_kcal_per_mol.txt
+        For each dihedral angle (degrees), the QM, MM, and difference in dihedral
+        energies (kcal/mol) when the 'fit_dihedral_atom_types' are set to
+        the solved k-values for the cos power equation combination, which is listed
+        as the variable YYY. This also contains fit k1, k2, k3, and k4
+        values (kcal/mol), are the same in every dihedral angle row.
+
+        These files contains the corrected dihedral fit points between QM and MM
+        after all the non-bonded, 1-4 dihedral scaling, and
+        bonded (including the MM fitted dihedral YYY energies interactions)
+        interactions of the MM force fields are taken into account.
+        The 'Gaussian_minus_GOMC_E_kcal_per_mol' column contains these
+        points, which can be used to determine the goodness of the fit; if all
+        these values are zero (0) or close to zero (0), it means the fit is good.
+
+        OPLS dihedral equation in with C1, C2, C2, and C4 instead of the cos terms:
+
+        OPLS_energy = k1 * C1 + k2 * C2 + k3 * C3 + k4 * C4
+
+        C1 = (1 + cos(1 * phi))
+
+        C2 = (1 - cos(2 * phi))
+
+        C3 = (1 + cos(3 * phi))
+
+        C4 = (1 - cos(4 * phi))
+
+    gomc_raw_energies_in_Kelvin.txt
+        This is the initial raw energy, in Kelvin, extracted from all the
+        'output_GOMC_zeroed_dihedral_coord_XXX.txt' files.
+    all_normalized_energies_OPLS_fit_YYY_in_kcal_per_mol.txt
+        This is the initial raw energy, in Kelvin, extracted from all the
+        'output_GOMC_OPLS_fit_YYY_dihedral_coord_XXX.txt' files, where YYY
+        is an additional output file for each OPLS cosine combination.
+    opls_dihedral_k_constants_fit_energy.txt
+        The OPLS dihedral style k-value solutions given the 'fit_dihedral_atom_types'
+        input for each valid cosine power combination.  There could be 1 or
+        more valid cosine power combinations.
+        The k-values are in kcal/mol energy units.
+    periodic_dihedral_k_constants_fit_energy.txt
+        The periodic/CHARMM dihedral style k-value solutions given the
+        'fit_dihedral_atom_types' input for each valid cosine power combination.
+        There could be 1 or more valid cosine power combinations.
+        The periodic/CHARMM style dihedral k-value were analytically converted
+        from the OPLS dihedral form.
+        The k-values are in kcal/mol energy units.
+    RB_torsion_k_constants_fit_energy.txt
+        The RB torsion style k-value solutions given the
+        'fit_dihedral_atom_types' input for each valid cosine power combination.
+        There could be 1 or more valid cosine power combinations.
+        The RB torsion's k-value were analytically converted
+        from the OPLS dihedral form.
+        The k-values are in kcal/mol energy units.
+    opls_all_summed_dihedrals_k_constants_figure.pdf
+        For each valid cosine power combinations, the total OPLS dihedral energies
+        between QM and MM simulations are plotted, where the MM simulation's fitted
+        k-values ('fit_dihedral_atom_types') and all the other selected dihedrals
+        ('zeroed_dihedral_atom_types') are zeroed out.
+        This is the total energy difference in QM vs MM energy
+        for all the 'fit_dihedral_atom_types' summed together, as there can
+        be 1 or multiple of this dihedral type in a molecule, which were
+        all fit simultaneously.
+    opls_all_single_fit_dihedral_k_constants_figure.pdf
+        The final OPLS dihedral fit for the individual dihedrals
+        (individual dihedrals in the 'fit_dihedral_atom_types') for each
+        each valid cosine power combination. These plotted dihedral energies would be
+        the energy from a single (1) dihedral in the system, or the dihedral energy
+        (via k-values) that would be entered into the force field parameters.
+        This plot allows the users to compare the different valid cosine power
+        combinations and their R-squared values.
+        If multiple R-squared values are both nearly perfect and the plots
+        look different, this may be a sign that something is not correct with 1
+        or more of the nearly perfect R-squared fitted values, or fitting procedure
+        itself.
     """
-    # write the qm data files data out
-    mdf_frw.write_qm_data_files(
-        qm_log_files_and_entries_to_remove,
-        qm_engine=qm_engine
+    # check if 'mol2_selection' file is correct format
+    if not isinstance(mol2_selection, str):
+        raise TypeError("ERROR: Please enter mol2 file ('mol2_selection') as a string.")
+
+    extension_ff_name = os.path.splitext(mol2_selection)[-1]
+    if extension_ff_name != ".mol2":
+        raise ValueError(
+            "ERROR: Please enter enter mol2 file ('mol2_selection') name with the .mol2 extension.")
+
+    if not os.path.exists(mol2_selection):
+        raise ValueError(f"ERROR: The {mol2_selection} file ('mol2_selection') does not exists.")
+
+    # check if 'forcefield_selection' file is correct format
+    if not isinstance(forcefield_selection, str):
+        raise TypeError("ERROR: Please enter xml file ('forcefield_selection') as a string.")
+
+    extension_ff_name = os.path.splitext(forcefield_selection)[-1]
+    if extension_ff_name != ".xml":
+        raise ValueError(
+            "ERROR: Please enter enter xml file ('forcefield_selection') name with the .xml extension.")
+
+    if not os.path.exists(forcefield_selection):
+        raise ValueError(f"ERROR: The {forcefield_selection} file ('forcefield_selection') does not exists.")
+
+
+    if qm_engine == "gaussian" and manual_dihedral_atom_numbers_list is not None:
+        warn(
+            "WARNING: When reading the qm_engine = 'gaussian' files, the "
+            "'manual_dihedral_atom_numbers_list' is set to None, and will not be used, "
+            "because the the gaussian log files already contain this information."
+             )
+        manual_dihedral_atom_numbers_list = None
+
+    # test the temperature_unyt_units input
+    print_error_value = f"ERROR: The 'temperature_unyt_units' is not temperature of type {type(u.unyt_quantity)}."
+    if isinstance(temperature_unyt_units, u.unyt_quantity):
+        if temperature == temperature_unyt_units.units.dimensions:
+            temperature_unyt_units =temperature_unyt_units.to("K")
+
+        else:
+            raise ValueError(print_error_value)
+
+    else:
+        raise TypeError(print_error_value)
+
+    # test the qm_log_files_and_entries_to_remove_dict input
+    print_error_value = (
+        "ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict " 
+        "with a string keys and list of int>=0 as the values. Example: " 
+        "{'path/HC_CT_CT_HC_part_1.log'): [], 'path/HC_CT_CT_HC_part_2.log'): [0, 5]}"
     )
+    if isinstance(qm_log_files_and_entries_to_remove_dict, dict):
+        for key_j, value_j in qm_log_files_and_entries_to_remove_dict.items():
+
+            if isinstance(key_j, str):
+                if not os.path.exists(key_j):
+                    raise ValueError(
+                        f"ERROR: The {key_j} file ('qm_log_files_and_entries_to_remove_dict') does not exists."
+                    )
+
+            else:
+                raise TypeError(print_error_value)
+
+            print('*****************')
+            print(f'value_j = {str(value_j)}')
+            if isinstance(value_j, list):
+                for int_j in value_j:
+                    if not isinstance(int_j, int) or int_j < 0:
+                        raise TypeError(print_error_value)
+
+            else:
+                raise TypeError(print_error_value)
+
+    else:
+        raise TypeError(print_error_value)
+
+    # check if 'gomc_binary_path' leads to the file is correct format GOMC_CPU_NVT
+    if not isinstance(gomc_binary_path, str):
+        raise TypeError("ERROR: Please enter the 'gomc_binary_path' file as a string.")
+
+    if not os.path.exists(f"{gomc_binary_path}/{'GOMC_CPU_NVT'}"):
+        raise ValueError(
+            f"ERROR: The 'gomc_binary_path' file does not exist or contain the GOMC 'GOMC_CPU_NVT' file."
+        )
+
+    # test the 'zeroed_dihedral_atom_types' input
+    print_error_value = (
+        "ERROR: The 'zeroed_dihedral_atom_types' is not None or a list containing "
+        "lists with 4 strings each. Example: "
+        "[['CT', 'CT, 'CT, 'HC'], ['NT', 'CT, 'CT, 'HC']]."
+    )
+    if isinstance(zeroed_dihedral_atom_types, (list, type(None))):
+        if isinstance(zeroed_dihedral_atom_types, list):
+            for list_j in zeroed_dihedral_atom_types:
+                if isinstance(list_j, list) and len(list_j)==4:
+                    for str_j in list_j:
+                        if not isinstance(str_j, str):
+                            raise TypeError(print_error_value)
+
+                else:
+                    raise TypeError(print_error_value)
+
+    else:
+        raise TypeError(print_error_value)
+
+    # test the 'atom_type_naming_style' input
+    if isinstance(atom_type_naming_style, str):
+        if not atom_type_naming_style in ["general", "all_unique"]:
+            raise ValueError(
+                f"ERROR: The 'atom_type_naming_style' = {atom_type_naming_style}, which is not "
+                f"any of the available options. "
+                f"The options are 'general' or 'all_unique'."
+            )
+
+    else:
+        raise TypeError(
+            f"ERROR: The 'atom_type_naming_style' is a {type(atom_type_naming_style)}, but it needs to be a str."
+        )
+
+    # test the 'fit_min_validated_r_squared' input
+    if isinstance(fit_min_validated_r_squared, float):
+        if not (fit_min_validated_r_squared>0 and fit_min_validated_r_squared<1):
+            raise ValueError(
+                f"ERROR: The 'fit_min_validated_r_squared'= {fit_min_validated_r_squared}, "
+                f"but it must be a 0<float<1."
+                             )
+
+    else:
+        raise TypeError(
+            f"ERROR: The 'fit_min_validated_r_squared' is a {type(fit_min_validated_r_squared)}, "
+            f"but it must be a 0<float<1."
+        )
+
+    # test the 'fit_validation_r_squared_rtol' input
+    if isinstance(fit_validation_r_squared_rtol, float):
+        if not (fit_validation_r_squared_rtol>0 and fit_validation_r_squared_rtol<1):
+            raise ValueError(
+                f"ERROR: The 'fit_validation_r_squared_rtol' = {fit_validation_r_squared_rtol}, "
+                f"but it must be a 0<float<1.")
+
+    else:
+        raise TypeError(
+            f"ERROR: The 'fit_validation_r_squared_rtol' is a {type( fit_validation_r_squared_rtol)}, "
+            f"but it must be a 0<float<1."
+        )
+
+    # test the 'gomc_cpu_cores' input
+    if isinstance(gomc_cpu_cores, int):
+        if gomc_cpu_cores<=0:
+            raise ValueError(
+                f"ERROR: The 'gomc_cpu_cores' = {gomc_cpu_cores}, and it must be an int > 0."
+            )
+
+    else:
+        raise TypeError(
+            f"ERROR: The 'gomc_cpu_cores' is a {type(gomc_cpu_cores)}, but it needs to be a int."
+        )
+
+    # check values write the qm data files data out
+    if isinstance(qm_engine , str):
+        if qm_engine == "gaussian":
+            mdf_frw.write_qm_data_files(
+                qm_log_files_and_entries_to_remove_dict,
+                manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
+                qm_engine=qm_engine
+            )
+        elif qm_engine == "gaussian_style_final_files":
+            mdf_frw.write_qm_data_files(
+                qm_log_files_and_entries_to_remove_dict,
+                manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
+                qm_engine=qm_engine
+            )
+
+        else:
+            raise ValueError(
+                f"ERROR: The 'qm_engine' = {qm_engine}, which is not "
+                f"any of the available options. "
+                f"The options are 'gaussian' or 'gaussian_style_final_files'."
+            )
+
+    else:
+        raise TypeError(
+            f"ERROR: The 'qm_engine' is a {type(qm_engine)}, but it needs to be a str."
+        )
 
     # **************************************************************
     # **************************************************************
@@ -399,15 +691,16 @@ def fit_dihedral_with_gomc(
     # **************************************************************
     # **************************************************************
 
-
     # **************************************************************
     # make the PDB, PSF and FF files for all the dihedral angles (START)
     # **************************************************************
 
     # delete existing make a gomc simulation folder ('GOMC_simulations') and move there
     gomc_runs_folder_name = 'GOMC_simulations'
-    mdf_basic.delete_directory(gomc_runs_folder_name)
-    mdf_basic.create_directory(gomc_runs_folder_name)
+
+    if os.path.isdir(gomc_runs_folder_name):
+        shutil.rmtree(gomc_runs_folder_name)
+    os.mkdir(gomc_runs_folder_name)
 
     # The gomc raw energy filename in Kelvin Energies
     gomc_raw_energy_filename = "gomc_raw_energies_in_Kelvin.txt"
@@ -495,8 +788,9 @@ def fit_dihedral_with_gomc(
 
     # delete the 'xyz_and_coor_files' folder, if it exists, and create a new 'xyz_and_coor_files' folder
     xyz_xsc_coor_files_directory = "xyz_restart_xsc_coor_files"
-    mdf_basic.delete_directory(xyz_xsc_coor_files_directory)
-    mdf_basic.create_directory(xyz_xsc_coor_files_directory)
+    if os.path.isdir(xyz_xsc_coor_files_directory):
+        shutil.rmtree(xyz_xsc_coor_files_directory)
+    os.mkdir(xyz_xsc_coor_files_directory)
 
     # write all the xyz coordinate from the Guassian optimized coordinate file in the 'xyz_files' folder
     [atom_pdb_names_list, elementpdb_names_list] = mdf_frw.get_atom_names_and_elements_from_pdb(
@@ -508,7 +802,8 @@ def fit_dihedral_with_gomc(
     qm_coordinate_file_extension = 'txt'
 
     # check the gaussian file is correct
-    mdf_frw.check_guassian_angle_energy_file_correct(qm_energy_file_dir_and_name)
+    mdf_frw.check_guassian_angle_energy_file_correct(
+        qm_energy_file_dir_and_name)
 
     # Read the gaussian data and extract angles and number of scans (number of angles and degress analyzed)
     Guassian_raw_degrees_list = pd.DataFrame(pd.read_csv(
@@ -524,7 +819,8 @@ def fit_dihedral_with_gomc(
     )
 
     # Using vmd write the GOMC restart .coor files required for the
-    mdf_frw.write_restart_coor_from_xyz_file(xyz_xsc_coor_files_directory, total_qm_scans)
+    mdf_frw.write_restart_coor_from_xyz_file(
+        xyz_xsc_coor_files_directory, total_qm_scans)
 
     # **************************************************************
     # Create the xyz files in a folder so VMD can read them with
@@ -580,7 +876,7 @@ def fit_dihedral_with_gomc(
             f'{gomc_runs_folder_name}/{control_file_name_str}',
             'NVT',
             MC_steps,
-            temperature,
+            temperature_unyt_units,
             ff_psf_pdb_file_directory=None,
             check_input_files_exist=False,
             Parameters=f"{output_gomc_pdb_psf_ff_file_name_str}_dihedrals_zeroed.inp",
@@ -602,7 +898,7 @@ def fit_dihedral_with_gomc(
                 "Pressure": None,
                 "Ewald": True,
                 "ElectroStatic": True,
-                "VDWGeometricSigma": override_VDWGeometricSigma,
+                "VDWGeometricSigma": VDWGeometricSigma,
                 "Rcut": Rcut,
                 "RcutLow": RcutLow,
                 "LRC": LRC,
@@ -640,13 +936,13 @@ def fit_dihedral_with_gomc(
         # make the GOMC control file for each dihedral angle (END)
         # **************************************************************
 
-
-
         # *********************************
         # Write the restart .xsc file for GOMC (START)
         # *********************************
-        gomc_restart_xsc_txt_file = open(f'{xyz_xsc_coor_files_directory}/starting_point.xsc', "w")
-        gomc_restart_xsc_txt_file.write(f"# GOMC extended system configuration output file\n")
+        gomc_restart_xsc_txt_file = open(
+            f'{xyz_xsc_coor_files_directory}/starting_point.xsc', "w")
+        gomc_restart_xsc_txt_file.write(
+            f"# GOMC extended system configuration output file\n")
         gomc_restart_xsc_txt_file.write(
             f"#$LABELS step a_x a_y a_z b_x b_y b_z c_x c_y c_z o_x o_y o_z s_x s_y s_z s_u s_v s_w\n"
         )
@@ -687,7 +983,8 @@ def fit_dihedral_with_gomc(
         # **************************************************************
 
         # open the gomc raw energy file so it can be writen over in the loop
-        read_gomc_log_file = open(f'{gomc_runs_folder_name}/{output_name_control_file_name_str}', "r").readlines()
+        read_gomc_log_file = open(
+            f'{gomc_runs_folder_name}/{output_name_control_file_name_str}', "r").readlines()
         get_e_titles = True
         for log_file_iter, log_file_line_iter in enumerate(read_gomc_log_file):
             log_file_splitline_iter = log_file_line_iter.split()
@@ -698,13 +995,14 @@ def fit_dihedral_with_gomc(
             # only open the gomc raw energy file and write header for 1st iteration (1)
             if len(log_file_splitline_iter) >= 2:
                 if scan_iter == 1 and log_file_splitline_iter[0] == "ETITLE:" and get_e_titles is True:
-                    gomc_combined_raw_energy = open(gomc_raw_energy_filename, "w")
+                    gomc_combined_raw_energy = open(
+                        gomc_raw_energy_filename, "w")
                     # remove the wrongly entered 5 spaces in before "ETITLE:
                     # (This will be fixed in GOMC so it is not required)
                     extra_spaces_for_header_space_gomc_bug = 5
-                    gomc_combined_raw_energy.write( f'{"Dihedral_Position": <19} '
+                    gomc_combined_raw_energy.write(f'{"Dihedral_Position": <19} '
                                                    f'{"Dihedral_Degrees": <19} '
-                                                    f'{log_file_line_iter[extra_spaces_for_header_space_gomc_bug:]}'
+                                                   f'{log_file_line_iter[extra_spaces_for_header_space_gomc_bug:]}'
                                                    )
                     if get_e_titles is True:
                         get_e_titles = False
@@ -725,8 +1023,6 @@ def fit_dihedral_with_gomc(
         raise ValueError("ERROR: The GOMC simulations did not run. There is likely an error in creating the "
                          "required GOMC files or user inputs to the desired files.")
 
-
-
     # **************************************************************
     # **************************************************************
     # Extract Energies from GOMC remove duplicate 0 point and
@@ -739,26 +1035,32 @@ def fit_dihedral_with_gomc(
     # **************************************************************
 
     conversion_hartree_to_kcal_per_mol = 627.509474063
-    conversion_K_to_kcal_per_mol = (1 * u.Kelvin).to_value("kcal/mol", equivalence="thermal")
-
+    conversion_K_to_kcal_per_mol = (
+        1 * u.Kelvin).to_value("kcal/mol", equivalence="thermal")
 
     # *********************************
     # get GOMC data (START)
     # *********************************
     # extract the raw data
-    GOMC_data_df = pd.DataFrame(pd.read_csv(gomc_raw_energy_filename,  sep='\s+'))
-    GOMC_data_dihedral_degrees_list = GOMC_data_df.loc[:, 'Dihedral_Degrees'].tolist()
+    GOMC_data_df = pd.DataFrame(pd.read_csv(
+        gomc_raw_energy_filename,  sep='\s+'))
+    GOMC_data_dihedral_degrees_list = GOMC_data_df.loc[:, 'Dihedral_Degrees'].tolist(
+    )
     GOMC_data_total_energy_K_list = GOMC_data_df.loc[:, 'TOTAL'].tolist()
 
     # convert from Kelvin to kcal/mol normalize so the min value is 0
     GOMC_data_total_energy_kcal_per_mol_list = \
         [i * conversion_K_to_kcal_per_mol for i in GOMC_data_total_energy_K_list]
     GOMC_data_total_energy_kcal_per_mol_normalize_list = \
-        [i -min(GOMC_data_total_energy_kcal_per_mol_list) for i in GOMC_data_total_energy_kcal_per_mol_list]
+        [i - min(GOMC_data_total_energy_kcal_per_mol_list)
+         for i in GOMC_data_total_energy_kcal_per_mol_list]
 
-    print(f"GOMC_data_dihedral_degrees_list = {GOMC_data_dihedral_degrees_list}")
-    print(f"GOMC_data_total_energy_kcal_per_mol_list = {GOMC_data_total_energy_kcal_per_mol_list}")
-    print(f"GOMC_data_total_energy_kcal_per_mol_normalize_list = {GOMC_data_total_energy_kcal_per_mol_normalize_list}")
+    print(
+        f"GOMC_data_dihedral_degrees_list = {GOMC_data_dihedral_degrees_list}")
+    print(
+        f"GOMC_data_total_energy_kcal_per_mol_list = {GOMC_data_total_energy_kcal_per_mol_list}")
+    print(
+        f"GOMC_data_total_energy_kcal_per_mol_normalize_list = {GOMC_data_total_energy_kcal_per_mol_normalize_list}")
     # *********************************
     # get GOMC data (END)
     # *********************************
@@ -767,11 +1069,12 @@ def fit_dihedral_with_gomc(
     # get Gaussian data (START)
     # *********************************
 
-
     # extract the raw data
-    Guassian_data_df = pd.DataFrame(pd.read_csv(qm_energy_file_dir_and_name, sep='\s+', header=3))
+    Guassian_data_df = pd.DataFrame(pd.read_csv(
+        qm_energy_file_dir_and_name, sep='\s+', header=3))
     Guassian_data_dihedral_degrees_list = Guassian_data_df.iloc[:, 0].tolist()
-    Guassian_data_total_energy_Hartree_list = Guassian_data_df.iloc[:, 1].tolist()
+    Guassian_data_total_energy_Hartree_list = Guassian_data_df.iloc[:, 1].tolist(
+    )
 
     # convert from Hartree to kcal/mol energy units
     Guassian_data_total_energy_kcal_per_mol_list = \
@@ -779,10 +1082,13 @@ def fit_dihedral_with_gomc(
 
     # normalize so the min value is 0
     Guassian_data_total_energy_kcal_per_mol_normalize_list = \
-        [i -min(Guassian_data_total_energy_kcal_per_mol_list) for i in Guassian_data_total_energy_kcal_per_mol_list]
+        [i - min(Guassian_data_total_energy_kcal_per_mol_list)
+         for i in Guassian_data_total_energy_kcal_per_mol_list]
 
-    print(f"Guassian_data_dihedral_degrees_list = {Guassian_data_dihedral_degrees_list}")
-    print(f"Guassian_data_total_energy_kcal_per_mol_list = {Guassian_data_total_energy_kcal_per_mol_list}")
+    print(
+        f"Guassian_data_dihedral_degrees_list = {Guassian_data_dihedral_degrees_list}")
+    print(
+        f"Guassian_data_total_energy_kcal_per_mol_list = {Guassian_data_total_energy_kcal_per_mol_list}")
     print(f"Guassian_data_total_energy_kcal_per_mol_normalize_list = "
           f"{Guassian_data_total_energy_kcal_per_mol_normalize_list}"
           )
@@ -793,7 +1099,7 @@ def fit_dihedral_with_gomc(
         Guassian_data_total_energy_kcal_per_mol_normalize_list[i]
         - GOMC_data_total_energy_kcal_per_mol_normalize_list[i]
         for i in range(0, len(Guassian_data_total_energy_kcal_per_mol_normalize_list))
-         ]
+    ]
 
     Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list = [
         Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_list[i] -
@@ -801,7 +1107,8 @@ def fit_dihedral_with_gomc(
         for i in range(0, len(Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_list))
     ]
 
-    print(f'Gaussian_minus_GOMC_data_dihedral_degrees_list = {Gaussian_minus_GOMC_data_dihedral_degrees_list}')
+    print(
+        f'Gaussian_minus_GOMC_data_dihedral_degrees_list = {Gaussian_minus_GOMC_data_dihedral_degrees_list}')
     print(
         f'Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list = \
     {Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list}'
@@ -815,19 +1122,41 @@ def fit_dihedral_with_gomc(
     # and all sum 1/2*(k1 * scalar_i) = sum 1/2*(k1 * (1 +/- cos(n * phi)) values
     # (START)
     # *********************************
+    # extract the data from the QM log file
+    if qm_engine == "gaussian":
+        [
+            matching_dihedral_types_by_atom_numbers_list,
+            matching_dihedral_types_by_atom_type_list,
+            all_matching_dihedral_coordinates_angstroms_added_to_k_values_list,
+            all_matching_dihedral_phi_degrees_added_to_k_values_list,
+            all_sum_opls_const_1_plus_or_minus_cos_n_list
+        ] = mdf_frw.get_matching_dihedral_info_and_opls_fitting_data(
+            fit_dihedral_atom_types,
+            f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}.psf",
+            qm_log_files_and_entries_to_remove_dict,
+            mol2_selection,
+            qm_engine=qm_engine,
+        )
 
-    [
-        matching_dihedral_types_by_atom_numbers_list,
-        matching_dihedral_types_by_atom_type_list,
-        all_matching_dihedral_coordinates_angstroms_added_to_k_values_list,
-        all_matching_dihedral_phi_degrees_added_to_k_values_list,
-        all_sum_opls_const_1_plus_or_minus_cos_n_list
-    ] = mdf_frw.get_matching_dihedral_info_and_opls_fitting_data(
-        fit_dihedral_atom_types,
-        f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}.psf",
-        qm_log_files_and_entries_to_remove,
-        qm_engine=qm_engine,
-    )
+    elif qm_engine == "gaussian_style_final_files":
+        [
+            matching_dihedral_types_by_atom_numbers_list,
+            matching_dihedral_types_by_atom_type_list,
+            all_matching_dihedral_coordinates_angstroms_added_to_k_values_list,
+            all_matching_dihedral_phi_degrees_added_to_k_values_list,
+            all_sum_opls_const_1_plus_or_minus_cos_n_list
+        ] = mdf_frw.get_matching_dihedral_info_and_opls_fitting_data(
+            fit_dihedral_atom_types,
+            f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}.psf",
+            qm_log_files_and_entries_to_remove_dict,
+            mol2_selection,
+            qm_engine=qm_engine,
+            manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
+        )
+    else:
+        raise ValueError(
+            f"ERROR: The entered qm_engine = {qm_engine} and the only valid options are {['gaussian']}"
+        )
 
     # get the individual sum_opls_const_1_plus_or_minus_cos_n_list ones for fitting and plotting
     const_1_minus_Cos_0_phi_data_lists = []
@@ -836,12 +1165,16 @@ def fit_dihedral_with_gomc(
     const_1_plus_Cos_3_phi_data_lists = []
     const_1_minus_Cos_4_phi_data_lists = []
     for const_1_plus_or_minus_cos_i in all_sum_opls_const_1_plus_or_minus_cos_n_list:
-        const_1_minus_Cos_0_phi_data_lists.append(const_1_plus_or_minus_cos_i[0])
-        const_1_plus_Cos_1_phi_data_lists.append(const_1_plus_or_minus_cos_i[1])
-        const_1_minus_Cos_2_phi_data_lists.append(const_1_plus_or_minus_cos_i[2])
-        const_1_plus_Cos_3_phi_data_lists.append(const_1_plus_or_minus_cos_i[3])
-        const_1_minus_Cos_4_phi_data_lists.append(const_1_plus_or_minus_cos_i[4])
-
+        const_1_minus_Cos_0_phi_data_lists.append(
+            const_1_plus_or_minus_cos_i[0])
+        const_1_plus_Cos_1_phi_data_lists.append(
+            const_1_plus_or_minus_cos_i[1])
+        const_1_minus_Cos_2_phi_data_lists.append(
+            const_1_plus_or_minus_cos_i[2])
+        const_1_plus_Cos_3_phi_data_lists.append(
+            const_1_plus_or_minus_cos_i[3])
+        const_1_minus_Cos_4_phi_data_lists.append(
+            const_1_plus_or_minus_cos_i[4])
 
     # *********************************
     # get all other dihedral angles (phi) that match the atom type of the scanned dihedral,
@@ -870,16 +1203,18 @@ def fit_dihedral_with_gomc(
     # Check if all the angles match between sorted GOMC and Gaussian data
     for j_angle in range(0, len(GOMC_data_dihedral_degrees_list)):
         if not len(GOMC_data_dihedral_degrees_list) == len(Guassian_data_dihedral_degrees_list):
-            raise ValueError("ERROR: The GOMC and Guassian output angles are not in the same angles in order.")
-
+            raise ValueError(
+                "ERROR: The GOMC and Guassian output angles are not in the same angles in order.")
 
     # Check if all the angles match between sorted GOMC and Gaussian data
     for k_angle in range(0, len(GOMC_data_dihedral_degrees_list)):
         if not len(GOMC_data_dihedral_degrees_list) == len(Guassian_data_dihedral_degrees_list):
-            raise ValueError("ERROR: The GOMC and Guassian output angles are not in the same angles in order.")
+            raise ValueError(
+                "ERROR: The GOMC and Guassian output angles are not in the same angles in order.")
         if k_angle == 0:
             # write out the GOMC and Gaussian data in a file
-            gomc_gaussian_kcal_mol_energy_data_txt_file = open(gomc_gaussian_kcal_mol_energy_filename, "w")
+            gomc_gaussian_kcal_mol_energy_data_txt_file = open(
+                gomc_gaussian_kcal_mol_energy_filename, "w")
             gomc_gaussian_kcal_mol_energy_data_txt_file.write(
                 f"{'Dihedral_Degrees': <30} "
                 f"{'GOMC_E_kcal_per_mol': <30} "
@@ -897,7 +1232,7 @@ def fit_dihedral_with_gomc(
             f"{Gaussian_minus_GOMC_data_dihedral_degrees_list[k_angle]: <30} "
             f"{GOMC_data_total_energy_kcal_per_mol_normalize_list[k_angle]: <30} "
             f"{Guassian_data_total_energy_kcal_per_mol_normalize_list[k_angle]: <30} "
-            f"{Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list[k_angle]: <30} "
+            f"{Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list[k_angle]: <40} "
             f"{const_1_minus_Cos_0_phi_data_lists[k_angle]: <30} "
             f"{const_1_plus_Cos_1_phi_data_lists[k_angle]: <30} "
             f"{const_1_minus_Cos_2_phi_data_lists[k_angle]: <30} "
@@ -911,7 +1246,6 @@ def fit_dihedral_with_gomc(
     # get GOMC and Gaussian data (END)
     # *********************************
 
-
     # **************************************************************
     # **************************************************************
     # Extract Energies from GOMC remove duplicate 0 point and
@@ -922,7 +1256,6 @@ def fit_dihedral_with_gomc(
     # (END)
     # **************************************************************
     # **************************************************************
-
 
     # *********************************
     # fit the Gaussian - GOMC dihedral (START)
@@ -937,36 +1270,41 @@ def fit_dihedral_with_gomc(
     # sort the by Dihedral_Degrees at the same time for
     # Dihedral_Degrees, GOMC_E_kcal_per_mol, Gaussian_E_kcal_per_mol, and Gaussian_minus_GOMC_E_kcal_per_mol
     sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list, \
-    sorted_GOMC_data_total_energy_kcal_per_mol_normalize_list, \
-    sorted_Guassian_data_total_energy_kcal_per_mol_normalize_list, \
-    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list, \
-    sorted_all_sum_opls_const_1_plus_or_minus_cos_n_list, \
-    sorted_const_1_minus_Cos_0_phi_data_lists, \
-    sorted_const_1_plus_Cos_1_phi_data_lists, \
-    sorted_const_1_minus_Cos_2_phi_data_lists, \
-    sorted_const_1_plus_Cos_3_phi_data_lists, \
-    sorted_const_1_minus_Cos_4_phi_data_lists, \
-    = zip(
-        *sorted(zip(
-            Gaussian_minus_GOMC_data_dihedral_degrees_list,
-            GOMC_data_total_energy_kcal_per_mol_normalize_list,
-            Guassian_data_total_energy_kcal_per_mol_normalize_list,
-            Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list,
-            all_sum_opls_const_1_plus_or_minus_cos_n_list,
-            const_1_minus_Cos_0_phi_data_lists,
-            const_1_plus_Cos_1_phi_data_lists,
-            const_1_minus_Cos_2_phi_data_lists,
-            const_1_plus_Cos_3_phi_data_lists,
-            const_1_minus_Cos_4_phi_data_lists
-        ))
-    )
+        sorted_GOMC_data_total_energy_kcal_per_mol_normalize_list, \
+        sorted_Guassian_data_total_energy_kcal_per_mol_normalize_list, \
+        sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list, \
+        sorted_all_sum_opls_const_1_plus_or_minus_cos_n_list, \
+        sorted_const_1_minus_Cos_0_phi_data_lists, \
+        sorted_const_1_plus_Cos_1_phi_data_lists, \
+        sorted_const_1_minus_Cos_2_phi_data_lists, \
+        sorted_const_1_plus_Cos_3_phi_data_lists, \
+        sorted_const_1_minus_Cos_4_phi_data_lists, \
+        = zip(
+            *sorted(zip(
+                Gaussian_minus_GOMC_data_dihedral_degrees_list,
+                GOMC_data_total_energy_kcal_per_mol_normalize_list,
+                Guassian_data_total_energy_kcal_per_mol_normalize_list,
+                Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list,
+                all_sum_opls_const_1_plus_or_minus_cos_n_list,
+                const_1_minus_Cos_0_phi_data_lists,
+                const_1_plus_Cos_1_phi_data_lists,
+                const_1_minus_Cos_2_phi_data_lists,
+                const_1_plus_Cos_3_phi_data_lists,
+                const_1_minus_Cos_4_phi_data_lists
+            ))
+        )
 
-    plot_max = int(max(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list) + 1.51)
+    print(f"sorted_GOMC_data_total_energy_kcal_per_mol_normalize_list = {sorted_GOMC_data_total_energy_kcal_per_mol_normalize_list}")
+    print(f"sorted_Guassian_data_total_energy_kcal_per_mol_normalize_list = {sorted_Guassian_data_total_energy_kcal_per_mol_normalize_list}")
+    print(f"sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list = {sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list}")
+
+    plot_max = int(max(
+        sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list) + 1.51)
     ax1.set_ylim(-int(plot_max * 1.5), plot_max)
     plt.title(
         "OPLS: All viable summed dihedral fits $\Longrightarrow$ $\Sigma$ matching dihedrals. \n"
         "(Non-zero k's = 1 and 3 -> label k_non_0='1_3')"
-              )
+    )
 
     # loop thru dihderal_k_zeros_list_k0_k1_k2_k3_k4 list and fit all that are listed in here
     # add add the label designnator k's used (i.e., Non-zero k's = 1 and 3 -> label '1_3')
@@ -990,7 +1328,6 @@ def fit_dihedral_with_gomc(
         f"{'k3_kcal_per_mol': <25} "
         f"{'k4_kcal_per_mol': <25} "
         f"{'r_squared': <25} "
-        f" \n"
     )
 
     # **********************************
@@ -1002,7 +1339,7 @@ def fit_dihedral_with_gomc(
     # set to kn or n variable fit for that you want as a string in a list with the variable name 'fit_k_list'
     # (i.e, n = 1 and 3 --> "1_3", i.e, n = 1 2, and 3 --> "1_2_3"))
     #
-    fit_k_list= [
+    fit_k_list = [
         '1',
         '2',
         '3',
@@ -1028,7 +1365,8 @@ def fit_dihedral_with_gomc(
     # set the number of differing cos constant terms needed to determine if it
     # can be used in the fitting. If there is only 1 that is different in a large
     # group, it may not be wrong, if it is not minimized in QM....
-    number_of_differnt_const_cos_needed_int = int(25 / 100 * len(sorted_const_1_plus_Cos_1_phi_data_lists) + 1 )
+    number_of_differnt_const_cos_needed_int = int(
+        25 / 100 * len(sorted_const_1_plus_Cos_1_phi_data_lists) + 1)
     for ck_const_i in range(0, len(sorted_const_1_plus_Cos_1_phi_data_lists)):
         # Check if can use cos power 1
         if bool(
@@ -1041,7 +1379,8 @@ def fit_dihedral_with_gomc(
                     )
                 )
         ) is False:
-            const_cos_count_powers_1_2_3_and_4_int_list[0] = 1 + const_cos_count_powers_1_2_3_and_4_int_list[0]
+            const_cos_count_powers_1_2_3_and_4_int_list[0] = 1 + \
+                const_cos_count_powers_1_2_3_and_4_int_list[0]
 
         # Check if can use cos power 2
         if bool(
@@ -1054,7 +1393,8 @@ def fit_dihedral_with_gomc(
                     )
                 )
         ) is False:
-            const_cos_count_powers_1_2_3_and_4_int_list[1] = 1 + const_cos_count_powers_1_2_3_and_4_int_list[1]
+            const_cos_count_powers_1_2_3_and_4_int_list[1] = 1 + \
+                const_cos_count_powers_1_2_3_and_4_int_list[1]
 
         # Check if can use cos power 3
         if bool(
@@ -1067,7 +1407,8 @@ def fit_dihedral_with_gomc(
                     )
                 )
         ) is False:
-            const_cos_count_powers_1_2_3_and_4_int_list[2] = 1 + const_cos_count_powers_1_2_3_and_4_int_list[2]
+            const_cos_count_powers_1_2_3_and_4_int_list[2] = 1 + \
+                const_cos_count_powers_1_2_3_and_4_int_list[2]
 
         # Check if can use cos power 4
         if bool(
@@ -1080,7 +1421,8 @@ def fit_dihedral_with_gomc(
                     )
                 )
         ) is False:
-            const_cos_count_powers_1_2_3_and_4_int_list[3] = 1 + const_cos_count_powers_1_2_3_and_4_int_list[3]
+            const_cos_count_powers_1_2_3_and_4_int_list[3] = 1 + \
+                const_cos_count_powers_1_2_3_and_4_int_list[3]
 
         # add the cos power value if enough differences in the constants are seen
         if const_cos_count_powers_1_2_3_and_4_int_list[0] >= number_of_differnt_const_cos_needed_int:
@@ -1124,21 +1466,22 @@ def fit_dihedral_with_gomc(
         for v in range(0, len(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list)):
             k_type_list_i.append(k_type_i)
 
-
         if k_type_i == '1':
 
             parameters, covariance = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists)
                 ),
-                np.asarray(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
             )
 
             # fix parameters to zero for the unused values because we want the list length the same,
@@ -1152,7 +1495,8 @@ def fit_dihedral_with_gomc(
             fit_opls_dihedral = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
@@ -1171,14 +1515,16 @@ def fit_dihedral_with_gomc(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists)
                 ),
-                np.asarray(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
             )
             # fix parameters to zero for the unused values because we want the list length the same,
             # and the unused ones are auto-set to 1.
@@ -1191,7 +1537,8 @@ def fit_dihedral_with_gomc(
             fit_opls_dihedral = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
@@ -1210,14 +1557,16 @@ def fit_dihedral_with_gomc(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists)
                 ),
-                np.asarray(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
             )
             # fix parameters to zero for the unused values because we want the list length the same,
             # and the unused ones are auto-set to 1.
@@ -1230,7 +1579,8 @@ def fit_dihedral_with_gomc(
             fit_opls_dihedral = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
@@ -1249,14 +1599,16 @@ def fit_dihedral_with_gomc(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists)
                 ),
-                np.asarray(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
             )
             # fix parameters to zero for the unused values because we want the list length the same,
             # and the unused ones are auto-set to 1.
@@ -1269,7 +1621,8 @@ def fit_dihedral_with_gomc(
             fit_opls_dihedral = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
@@ -1288,14 +1641,16 @@ def fit_dihedral_with_gomc(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists)
                 ),
-                np.asarray(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
             )
             # fix parameters to zero for the unused values because we want the list length the same,
             # and the unused ones are auto-set to 1.
@@ -1307,7 +1662,8 @@ def fit_dihedral_with_gomc(
             fit_opls_dihedral = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
@@ -1326,14 +1682,16 @@ def fit_dihedral_with_gomc(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists)
                 ),
-                np.asarray(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
             )
             # fix parameters to zero for the unused values because we want the list length the same,
             # and the unused ones are auto-set to 1.
@@ -1345,7 +1703,8 @@ def fit_dihedral_with_gomc(
             fit_opls_dihedral = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
@@ -1364,14 +1723,16 @@ def fit_dihedral_with_gomc(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists)
                 ),
-                np.asarray(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
             )
             # fix parameters to zero for the unused values because we want the list length the same,
             # and the unused ones are auto-set to 1.
@@ -1383,7 +1744,8 @@ def fit_dihedral_with_gomc(
             fit_opls_dihedral = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
@@ -1402,14 +1764,16 @@ def fit_dihedral_with_gomc(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists)
                 ),
-                np.asarray(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
             )
             # fix parameters to zero for the unused values because we want the list length the same,
             # and the unused ones are auto-set to 1.
@@ -1421,7 +1785,8 @@ def fit_dihedral_with_gomc(
             fit_opls_dihedral = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
@@ -1440,14 +1805,16 @@ def fit_dihedral_with_gomc(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists)
                 ),
-                np.asarray(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
             )
             # fix parameters to zero for the unused values because we want the list length the same,
             # and the unused ones are auto-set to 1.
@@ -1458,7 +1825,8 @@ def fit_dihedral_with_gomc(
             fit_opls_dihedral = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
@@ -1477,14 +1845,16 @@ def fit_dihedral_with_gomc(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists)
                 ),
-                np.asarray(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)
             )
             # fix parameters to zero for the unused values because we want the list length the same,
             # and the unused ones are auto-set to 1.
@@ -1494,7 +1864,8 @@ def fit_dihedral_with_gomc(
             fit_opls_dihedral = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
-                    np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
                     np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
@@ -1509,7 +1880,8 @@ def fit_dihedral_with_gomc(
             )
 
         else:
-            raise ValueError(f"ERROR: The {k_type_i} selected in the 'fit_k_list' variable is not a valid selection")
+            raise ValueError(
+                f"ERROR: The {k_type_i} selected in the 'fit_k_list' variable is not a valid selection")
 
         # calulate TSS, RSS and R**2
         r_squared = mdf_math.get_r_squared(
@@ -1518,20 +1890,20 @@ def fit_dihedral_with_gomc(
         )
 
         plt.plot(
-            np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list), np.asarray(fit_opls_dihedral),
+            np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list), np.asarray(
+                fit_opls_dihedral),
             '-', label=f" {k_type_i} | $R^{2}$={np.round(r_squared, decimals=4)}"
         )
 
         # wrie out the k constants and R^2
         opls_dihedral_k_constants_fit_energy_kcal_mol_txt_file.write(
-            f"{k_type_i: <25} "
-            f"{parameters[0]: <25} "
-            f"{parameters[1]: <25} "
-            f"{parameters[2]: <25} "
-            f"{parameters[3]: <25} "
-            f"{parameters[4]: <25} "
-            f"{r_squared: <25} "
-            f" \n"
+            f"\n{k_type_i: <25} "
+            f"{mdf_math.round_to_sig_figs(parameters[0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(parameters[1], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(parameters[2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(parameters[3], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(parameters[4], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(r_squared, sig_figs=12): <25} "
         )
 
     # plot the data point that it is being fit too
@@ -1554,16 +1926,16 @@ def fit_dihedral_with_gomc(
         ncol=2,
         loc="lower center",
         fontsize=legend_font_size,
-        prop={'family':'Arial','size': legend_font_size}
+        prop={'family': 'Arial', 'size': legend_font_size}
     )
 
-    #plt.show()
-    fig1.savefig(f"opls_{end_part_dihedral_k_constants_fit_energy_figure_filename}", dpi=300)
+    # plt.show()
+    fig1.savefig(
+        f"opls_{end_part_dihedral_k_constants_fit_energy_figure_filename}", dpi=300)
 
     # *********************************
     # fit the Gaussian - GOMC dihedral (END)
     # *********************************
-
 
     # *********************************
     # Plot all OPLS dihedral to fitted forms together (START)
@@ -1574,19 +1946,24 @@ def fit_dihedral_with_gomc(
                     header=0
                     )
     )
-    opls_fit_data_non_zero_k_constants_list = opls_fit_data_df.loc[:, 'non_zero_k_constants'].tolist()
-    opls_fit_data_k0_kcal_per_mol_list = opls_fit_data_df.loc[:, 'k0_kcal_per_mol'].tolist()
-    opls_fit_data_k1_kcal_per_mol_list = opls_fit_data_df.loc[:, 'k1_kcal_per_mol'].tolist()
-    opls_fit_data_k2_kcal_per_mol_list = opls_fit_data_df.loc[:, 'k2_kcal_per_mol'].tolist()
-    opls_fit_data_k3_kcal_per_mol_list = opls_fit_data_df.loc[:, 'k3_kcal_per_mol'].tolist()
-    opls_fit_data_k4_kcal_per_mol_list = opls_fit_data_df.loc[:, 'k4_kcal_per_mol'].tolist()
-    opls_fit_data_r_squared_list = opls_fit_data_df.loc[:, 'r_squared'].tolist()
+    opls_fit_data_non_zero_k_constants_list = opls_fit_data_df.loc[:, 'non_zero_k_constants'].tolist(
+    )
+    opls_fit_data_k0_kcal_per_mol_list = opls_fit_data_df.loc[:, 'k0_kcal_per_mol'].tolist(
+    )
+    opls_fit_data_k1_kcal_per_mol_list = opls_fit_data_df.loc[:, 'k1_kcal_per_mol'].tolist(
+    )
+    opls_fit_data_k2_kcal_per_mol_list = opls_fit_data_df.loc[:, 'k2_kcal_per_mol'].tolist(
+    )
+    opls_fit_data_k3_kcal_per_mol_list = opls_fit_data_df.loc[:, 'k3_kcal_per_mol'].tolist(
+    )
+    opls_fit_data_k4_kcal_per_mol_list = opls_fit_data_df.loc[:, 'k4_kcal_per_mol'].tolist(
+    )
+    opls_fit_data_r_squared_list = opls_fit_data_df.loc[:, 'r_squared'].tolist(
+    )
 
     # *********************************
     # Plot all OPLS dihedral to fitted forms together  (END)
     # *********************************
-
-
 
     # *********************************
     # Convert the OPLS dihedral to other forms (START)
@@ -1617,7 +1994,6 @@ def fit_dihedral_with_gomc(
         f"{'d4_kcal_per_mol': <25} "
         f"{'d5_kcal_per_mol': <25} "
         f"{'r_squared': <25} "
-        f" \n"
     )
 
     # create the RB torsions file
@@ -1633,9 +2009,7 @@ def fit_dihedral_with_gomc(
         f"{'k4_kcal_per_mol': <25} "
         f"{'k5_kcal_per_mol': <25} "
         f"{'r_squared': <25} "
-        f" \n"
     )
-
 
     # loop thru the different 'non_zero_k_constants' for the OPLS dihedral
     for opls_fit_i in range(0, len(opls_fit_data_non_zero_k_constants_list)):
@@ -1643,10 +2017,11 @@ def fit_dihedral_with_gomc(
         phi_check_degrees = 1
         phi_check_number_of_degree_values = int(360 / phi_check_degrees)
         phi_values_for_check_degrees_list = \
-            [-180 + i * phi_check_degrees for i in range(0, phi_check_number_of_degree_values)]
+            [-180 + i *
+                phi_check_degrees for i in range(0, phi_check_number_of_degree_values)]
 
         cos_power_list = [
-            opls_fit_data_non_zero_k_constants_list[opls_fit_i] \
+            opls_fit_data_non_zero_k_constants_list[opls_fit_i]
             for i in range(0, len(phi_values_for_check_degrees_list))
         ]
 
@@ -1671,7 +2046,7 @@ def fit_dihedral_with_gomc(
             )
 
             # check if the periodic and opls dihedral energies match all the values in the list
-            #for period_opls_ck_i in range(0, len(phi_values_for_check_degrees_list)):
+            # for period_opls_ck_i in range(0, len(phi_values_for_check_degrees_list)):
 
             # *********************************
             # Periodic / CHARMM dihedrals form calculations and checks (transformed from OPLS) (START)
@@ -1717,7 +2092,6 @@ def fit_dihedral_with_gomc(
             # *********************************
             # Periodic / CHARMM dihedrals form calculations and checks (transformed from OPLS)  (END)
             # *********************************
-
 
             # *********************************
             # RB torsions form calculations and checks (transformed from OPLS) (START)
@@ -1771,27 +2145,26 @@ def fit_dihedral_with_gomc(
         # Added the '0_' to the 'non_zero_k_constants' as the k0 needed
         # for the OPLS conversion to the periodic/CHARMM style.
         periodic_dihedral_k_constants_fit_energy_kcal_mol_txt_file.write(
-            f"{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
-            f"{periodic_dihedral_k_n_d_values[0][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[1][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[2][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[3][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[4][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[5][0]: <25} "
-            f"{periodic_dihedral_k_n_d_values[0][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[1][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[2][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[3][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[4][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[5][1]: <25} "
-            f"{periodic_dihedral_k_n_d_values[0][2]: <25} "
-            f"{periodic_dihedral_k_n_d_values[1][2]: <25} "
-            f"{periodic_dihedral_k_n_d_values[2][2]: <25} "
-            f"{periodic_dihedral_k_n_d_values[3][2]: <25} "
-            f"{periodic_dihedral_k_n_d_values[4][2]: <25} "
-            f"{periodic_dihedral_k_n_d_values[5][2]: <25} "
-            f"{opls_fit_data_r_squared_list[opls_fit_i]: <25} "
-            f" \n"
+            f"\n{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[0][0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[1][0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[2][0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[3][0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[4][0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[5][0], sig_figs=12): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[0][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[1][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[2][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[3][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[4][1]): <25} "
+            f"{int(periodic_dihedral_k_n_d_values[5][1]): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[0][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[1][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[2][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[3][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[4][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(periodic_dihedral_k_n_d_values[5][2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(opls_fit_data_r_squared_list[opls_fit_i], sig_figs=12): <25} "
         )
 
         # Write the RB torsion constants to file.
@@ -1800,15 +2173,14 @@ def fit_dihedral_with_gomc(
         # Added the '0_' to the 'non_zero_k_constants' as the k0 needed
         # for the OPLS conversion to the RB torsion style.
         RB_torsion_k_constants_fit_energy_kcal_mol_txt_file.write(
-            f"{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
-            f"{RB_torsion_k_values[0]: <25} "
-            f"{RB_torsion_k_values[1]: <25} "
-            f"{RB_torsion_k_values[2]: <25} "
-            f"{RB_torsion_k_values[3]: <25} "
-            f"{RB_torsion_k_values[4]: <25} "
-            f"{RB_torsion_k_values[5]: <25} "
-            f"{opls_fit_data_r_squared_list[opls_fit_i]: <25} "
-            f" \n"
+            f"\n{f'0_{opls_fit_data_non_zero_k_constants_list[opls_fit_i]}': <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[0], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[1], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[2], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[3], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[4], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(RB_torsion_k_values[5], sig_figs=12): <25} "
+            f"{mdf_math.round_to_sig_figs(opls_fit_data_r_squared_list[opls_fit_i], sig_figs=12): <25} "
         )
 
         # *********************************
@@ -1826,8 +2198,6 @@ def fit_dihedral_with_gomc(
     # Convert the OPLS dihedral to other forms (END)
     # *********************************
 
-
-
     # *********************************
     # Check the all the OPLS dihedral forms are correct
     # by running GOMC with the fitted values and comparing it to QM
@@ -1835,7 +2205,7 @@ def fit_dihedral_with_gomc(
     # *********************************
     opls_k_constant_fitted_q_list = []
     opls_r_squared_fitted_data_via_gomc_list = []
-    for opls_q, opls_fit_q  in enumerate(opls_fit_data_non_zero_k_constants_list):
+    for opls_q, opls_fit_q in enumerate(opls_fit_data_non_zero_k_constants_list):
 
         gomc_fitted_gaussian_kcal_mol_energy_filename = \
             f"all_normalized_energies_OPLS_fit_{opls_fit_q}_in_kcal_per_mol.txt"
@@ -1844,7 +2214,6 @@ def fit_dihedral_with_gomc(
             read_gomc_fitted_restart_file_coor_dir_and_name = \
                 f'../{xyz_xsc_coor_files_directory}/dihedral_coords_position_{scan_iter_q}.coor'
             read_gomc_fitted_restart_file_xsc_dir_and_name = f'../{xyz_xsc_coor_files_directory}/starting_point.xsc'
-
 
             # The gomc raw energy filename in Kelvin Energies
             gomc_raw_energy_fitted_filename = f"gomc_raw_OPLS_fit_{opls_fit_q}_energies_in_Kelvin.txt"
@@ -1858,14 +2227,15 @@ def fit_dihedral_with_gomc(
                 f'output_GOMC_OPLS_fit_{opls_fit_q}_dihedral_coords_{scan_iter_q}.txt'
 
             print("#**********************")
-            print("Started: Writing NVT GOMC control file for the GOMC simulation with fitted dihedral k values.")
+            print(
+                "Started: Writing NVT GOMC control file for the GOMC simulation with fitted dihedral k values.")
             print("#**********************")
             gomc_control.write_gomc_control_file(
                 charmm,
                 f'{gomc_runs_folder_name}/{control_file_name_fitted_str}',
                 'NVT',
                 MC_steps,
-                temperature,
+                temperature_unyt_units,
                 ff_psf_pdb_file_directory=None,
                 check_input_files_exist=False,
                 Parameters=f"{output_gomc_pdb_psf_ff_file_name_str}_OPLS_fit_{opls_fit_q}_dihedral.inp",
@@ -1887,7 +2257,7 @@ def fit_dihedral_with_gomc(
                     "Pressure": None,
                     "Ewald": True,
                     "ElectroStatic": True,
-                    "VDWGeometricSigma": override_VDWGeometricSigma,
+                    "VDWGeometricSigma": VDWGeometricSigma,
                     "Rcut": Rcut,
                     "RcutLow": RcutLow,
                     "LRC": LRC,
@@ -1939,7 +2309,7 @@ def fit_dihedral_with_gomc(
                 f'{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}_OPLS_fit_{opls_fit_q}_dihedral.inp',
                 fit_dihedral_atom_types,
                 fit_dihedral_opls_k_0_1_2_3_4_values=opls_k_constant_fitted_q_list,
-                zeroed_dihedral_atom_types=None,
+                zeroed_dihedral_atom_types=zeroed_dihedral_atom_types,
             )
 
             # **************************************************************
@@ -1978,14 +2348,15 @@ def fit_dihedral_with_gomc(
                 # only open the gomc raw energy file and write header for 1st iteration (1)
                 if len(log_file_splitline_iter) >= 2:
                     if scan_iter_q == 1 and log_file_splitline_iter[0] == "ETITLE:" and get_e_titles is True:
-                        gomc_combined_raw_fitted_energy = open(gomc_raw_energy_fitted_filename, "w")
+                        gomc_combined_raw_fitted_energy = open(
+                            gomc_raw_energy_fitted_filename, "w")
                         # remove the wrongly entered 5 spaces in before "ETITLE:
                         # (This will be fixed in GOMC so it is not required)
                         extra_spaces_for_header_space_gomc_bug = 5
                         gomc_combined_raw_fitted_energy.write(f'{"Dihedral_Position": <19} '
-                                                       f'{"Dihedral_Degrees": <19} '
-                                                       f'{log_file_line_iter[extra_spaces_for_header_space_gomc_bug:]}'
-                                                       )
+                                                              f'{"Dihedral_Degrees": <19} '
+                                                              f'{log_file_line_iter[extra_spaces_for_header_space_gomc_bug:]}'
+                                                              )
                         if get_e_titles is True:
                             get_e_titles = False
 
@@ -2007,21 +2378,26 @@ def fit_dihedral_with_gomc(
                              "required GOMC test simulations files or user inputs to the desired files.")
 
         # extract the raw data
-        GOMC_data_fitted_df = pd.DataFrame(pd.read_csv(gomc_raw_energy_fitted_filename, sep='\s+'))
-        GOMC_data_fitted_dihedral_degrees_list = GOMC_data_fitted_df.loc[:, 'Dihedral_Degrees'].tolist()
-        GOMC_data_fitted_total_energy_K_list = GOMC_data_fitted_df.loc[:, 'TOTAL'].tolist()
-        print(f'GOMC_data_fitted_dihedral_degrees_list = {GOMC_data_fitted_dihedral_degrees_list}')
-        print(f'GOMC_data_fitted_total_energy_K_list = {GOMC_data_fitted_total_energy_K_list}')
-
+        GOMC_data_fitted_df = pd.DataFrame(pd.read_csv(
+            gomc_raw_energy_fitted_filename, sep='\s+'))
+        GOMC_data_fitted_dihedral_degrees_list = GOMC_data_fitted_df.loc[:, 'Dihedral_Degrees'].tolist(
+        )
+        GOMC_data_fitted_total_energy_K_list = GOMC_data_fitted_df.loc[:, 'TOTAL'].tolist(
+        )
+        print(
+            f'GOMC_data_fitted_dihedral_degrees_list = {GOMC_data_fitted_dihedral_degrees_list}')
+        print(
+            f'GOMC_data_fitted_total_energy_K_list = {GOMC_data_fitted_total_energy_K_list}')
 
         # convert from Kelvin to kcal/mol normalize so the min value is 0
         GOMC_data_fitted_total_energy_kcal_per_mol_list = \
             [i * conversion_K_to_kcal_per_mol for i in GOMC_data_fitted_total_energy_K_list]
         GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list = \
-            [i - min(GOMC_data_fitted_total_energy_kcal_per_mol_list) \
+            [i - min(GOMC_data_fitted_total_energy_kcal_per_mol_list)
              for i in GOMC_data_fitted_total_energy_kcal_per_mol_list]
 
-        print(f'GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list = {GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list}')
+        print(
+            f'GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list = {GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list}')
 
         # *********************************
         # get GOMC data (END)
@@ -2031,9 +2407,12 @@ def fit_dihedral_with_gomc(
         # get Gaussian data (START)
         # *********************************
         # extract the raw data
-        Guassian_data_df = pd.DataFrame(pd.read_csv(qm_energy_file_dir_and_name, sep='\s+', header=3))
-        Guassian_data_fitted_dihedral_degrees_list = Guassian_data_df.iloc[:, 0].tolist()
-        Guassian_data_total_energy_Hartree_list = Guassian_data_df.iloc[:, 1].tolist()
+        Guassian_data_df = pd.DataFrame(pd.read_csv(
+            qm_energy_file_dir_and_name, sep='\s+', header=3))
+        Guassian_data_fitted_dihedral_degrees_list = Guassian_data_df.iloc[:, 0].tolist(
+        )
+        Guassian_data_total_energy_Hartree_list = Guassian_data_df.iloc[:, 1].tolist(
+        )
 
         # convert from Hartree to kcal/mol energy units
         Guassian_data_total_energy_kcal_per_mol_list = \
@@ -2064,11 +2443,15 @@ def fit_dihedral_with_gomc(
             Guassian_data_total_energy_kcal_per_mol_normalize_list,
             GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list
         )
-        opls_r_squared_fitted_data_via_gomc_list.append(opls_r_squared_fitted_data_via_gomc_iter)
+        opls_r_squared_fitted_data_via_gomc_list.append(
+            opls_r_squared_fitted_data_via_gomc_iter)
 
         # Use R**2 (R-squared) to compare the data used to fit the dihedral(s)
         # via a single or multi-dihedral fit, to the individual fit entered in
         # GOMC and then recompared to Gaussian and write out the data to a file.
+        print(f"*****************")
+        print(f"GOMC_data_fitted_dihedral_degrees_list === {len(GOMC_data_fitted_dihedral_degrees_list)}")
+        print(f"*****************")
         for q_angle in range(0, len(GOMC_data_fitted_dihedral_degrees_list)):
             if q_angle == 0:
                 # write out the GOMC and Gaussian data in a file
@@ -2084,11 +2467,10 @@ def fit_dihedral_with_gomc(
                     f"{'k2_OPLS_kcal_mol': <30} "
                     f"{'k3_OPLS_kcal_mol': <30} "
                     f"{'k4_OPLS_kcal_mol': <30} "
-                    f" \n"
                 )
 
             gomc_fitted_gaussian_kcal_mol_energy_data_txt_file.write(
-                f"{Gaussian_minus_GOMC_data_fitted_dihedral_degrees_list[q_angle]: <30} "
+                f"\n{Gaussian_minus_GOMC_data_fitted_dihedral_degrees_list[q_angle]: <30} "
                 f"{GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list[q_angle]: <30} "
                 f"{Guassian_data_total_energy_kcal_per_mol_normalize_list[q_angle]: <30} "
                 f"{Gaussian_minus_GOMC_data_fitted_total_energy_kcal_per_mol_normalized_list[q_angle]: <30} "
@@ -2097,7 +2479,6 @@ def fit_dihedral_with_gomc(
                 f"{str(opls_k_constant_fitted_q_list[2]): <30} "
                 f"{str(opls_k_constant_fitted_q_list[3]): <30} "
                 f"{str(opls_k_constant_fitted_q_list[4]): <30} "
-                f" \n"
                 )
 
         # Compare original fit vs run through GOMC as a validation test case
@@ -2109,29 +2490,29 @@ def fit_dihedral_with_gomc(
         ):
             raise ValueError(
                 f"ERROR: The calculated R-squared energy values from the fit type "
-                f"{opls_fit_data_non_zero_k_constants_list[opls_q]} does not match "
-                f"the validated case for "
-                f"'fit_min_validated_r_squared' >= {fit_min_validated_r_squared}, "
-                f"within the relative tolerance or "
-                f"'fit_validation_r_squared_rtol' = {fit_validation_r_squared_rtol}. \n"
+                f"{opls_fit_data_non_zero_k_constants_list[opls_q]} "
+                f"does not match the validated case for 'fit_min_validated_r_squared' >= " \
+                f"{mdf_math.round_to_sig_figs(fit_min_validated_r_squared,sig_figs=8)}, "
+                f"within the relative tolerance or 'fit_validation_r_squared_rtol' = "
+                f"{mdf_math.round_to_sig_figs(fit_validation_r_squared_rtol,sig_figs=8)}. \n"
                 f"- Fit via the individual or multi-dihedral fit, when "
                 f"Gaussian minus GOMC with the selected dihedral set to zero \n"
-                f"--> R-squared = {opls_fit_data_r_squared_list[opls_q]} \n"
+                f"--> R-squared = "
+                f"{mdf_math.round_to_sig_figs(opls_fit_data_r_squared_list[opls_q],sig_figs=8)} \n"
                 f"- Fit via the validation test case, when "
                 f"Gaussian minus GOMC with the selected individual dihedral added in GOMC \n"
-                f"-- >R-squared = {opls_r_squared_fitted_data_via_gomc_list[opls_q]} \n"
+                f"-- >R-squared = "
+                f"{mdf_math.round_to_sig_figs(opls_r_squared_fitted_data_via_gomc_list[opls_q],sig_figs=8)} \n"
                 f"The 'fit_min_validated_r_squared' and 'fit_validation_r_squared_rtol' "
                 f"variables may need to be adjusted, \n"
                 f"there is likely something wrong with the fitting procedure, the "
                 f"software parameters need tuned, or there is a bug in the software. \n\n "
                 f"NOTE: Since the R-squared values are calculated via different parameters, \n"
                 f"the compared R-squared values could be very different if they are not nearly \n"
-                f"a perfect fit (R-squared --> 0.98 to 1)."
-                f""
+                f"a perfect fit (R-squared --> ~0.98 to 0.99999999)."
             )
 
     gomc_fitted_gaussian_kcal_mol_energy_data_txt_file.close()
-
 
     # *********************************
     # Check the all the OPLS dihedral forms are correct
@@ -2162,7 +2543,8 @@ def fit_dihedral_with_gomc(
         for j in range(0, phi_degrees_iter):
             phi_degrees_list_iter.append(-180 + j * delta_phi_degrees_iter)
 
-            cos_power_list_iter.append(opls_fit_data_non_zero_k_constants_list[opls_fit_j])
+            cos_power_list_iter.append(
+                opls_fit_data_non_zero_k_constants_list[opls_fit_j])
 
             opls_dihedral_energy_iter = mdf_math.opls_dihedral(
                 (
@@ -2184,7 +2566,6 @@ def fit_dihedral_with_gomc(
             opls_dihedral_energy_list_iter.append(opls_dihedral_energy_iter)
 
         max_energy_list_iter.append(max(opls_dihedral_energy_list_iter))
-
 
         plt.plot(
             np.asarray(phi_degrees_list_iter),
@@ -2213,7 +2594,7 @@ def fit_dihedral_with_gomc(
     plot_max = int(max(max_energy_list_iter) + 1.51)
     ax2.set_ylim(-int(plot_max * 2.5), plot_max)
 
-    #plt.show()
+    # plt.show()
     fig2.savefig(
         f"opls_{all_individual_fit_dihedral_k_constants_figure_filename}",
         dpi=300
