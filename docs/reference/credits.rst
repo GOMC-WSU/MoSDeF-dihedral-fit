@@ -19,7 +19,7 @@ MoSDeF-dihedral-fit developers:
 **Jeffrey Potoff** - Advisor and maintainer
 
 
-`MoSDeF-dihedral-fit <https://github.com/GOMC-WSU/MoSDeF-dihedral-fit>`_ was developed and created as a collaborative effort between **Wayne State University**, **Vanderbilt University**, and **Atomfold LLC** (`Atomfold LLC website <https://atomfold.com>`_).  
+`MoSDeF-dihedral-fit <https://github.com/GOMC-WSU/MoSDeF-dihedral-fit>`_ was developed and created as a collaborative effort between **Wayne State University**, **Vanderbilt University**, and **Atomfold LLC** (`Atomfold LLC website <https://atomfold.com>`_).
 
 **Wayne State University** developled the `GPU Optimized Monte Carlo (GOMC) <http://gomc.eng.wayne.edu>`_ engine, which is utilized in this software.
 

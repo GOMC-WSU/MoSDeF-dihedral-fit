@@ -23,7 +23,7 @@ module swap gnu7 intel/2019
 JOB=HC_CT_CT_HC_multiplicity_1
 DIR=/wsu/home/hf/hf68/hf6839/Simulations/heavy_metals_reuse/dihedrals/gaussian/ethane_HC_CT_CT_HC/multiplicity_1/guassian_runs
 
- 
+
 g16<< EOF > $DIR/$JOB.log
 
 
@@ -32,7 +32,7 @@ g16<< EOF > $DIR/$JOB.log
 %chk=$JOB.chk
 %nproc=4
 %mem=32GB
-# opt=modredundant UHF/6-31G* SCF=(MaxCycle=1000) Geom=PrintInputOrient 
+# opt=modredundant UHF/6-31G* SCF=(MaxCycle=1000) Geom=PrintInputOrient
 
 Dihedral Scan at UHF/6-31G*
 

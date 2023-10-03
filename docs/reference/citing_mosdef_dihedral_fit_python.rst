@@ -59,4 +59,3 @@ Please also cite the following software:
 	* `Visual Molecular Dynamics (VMD) <https://www.ks.uiuc.edu/Research/vmd/>`_
 
 	* `vmd-python <https://github.com/Eigenstate/vmd-python>`_
-
