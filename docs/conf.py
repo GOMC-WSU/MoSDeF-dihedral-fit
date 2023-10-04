@@ -19,9 +19,9 @@ import sys
 import gmso
 import gsd
 import mock
-import unyt
-import scipy.optimize
 import scipy
+import scipy.optimize
+import unyt
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -29,8 +29,7 @@ import scipy
 
 MOCK_MODULES = [
     "gmso" "gsd" "unyt",
-    "scipy.optimize"
-    "mdtraj",
+    "scipy.optimize" "mdtraj",
     "mdtraj.core.element",
     "nglview",
     "oset",

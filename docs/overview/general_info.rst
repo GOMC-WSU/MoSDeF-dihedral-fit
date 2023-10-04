@@ -26,7 +26,7 @@ the `Gaussian 16 <https://www.gaussin.com>`_ log files, and a **mol2** file.
 
 
 The `MoSDeF-GOMC <https://github.com/GOMC-WSU/MoSDeF-GOMC/tree/master/mosdef_gomc>`_ software package is used
-for the Molecular Mechanics (MM) calculation, which utilizes 
+for the Molecular Mechanics (MM) calculation, which utilizes
 `GPU Optimized Monte Carlo (GOMC) <http://gomc.eng.wayne.edu>`_, the
 `Molecular Simulation Design Framework (MoSDeF) <https://mosdef.org>`_, and the
 `vmd-python <https://github.com/Eigenstate/vmd-python>`_ core software packages. For the Quantum Mechanics calculations,
@@ -36,8 +36,8 @@ fits the desired dihedral, accounting for multiple dihedrals simultaneously. The
 a wide range of allowable dihedral fits with different cosine term combinations, including plots for visual reference;
 from this information, the user can then select the best dihedral fit for the specific application.
 Additionally, the 1-4 interactions for the force fields can be explicitly set in the force field XML file,
-allowing the flexibility that some other dihedral fitters lack. Lastly, the dihedral fits are compared by recalculating 
-the dihedral in **GOMC >= v2.75** and comparing it to the original **Gaussian 16** energies, ensuring a correct dihedral fit.  
+allowing the flexibility that some other dihedral fitters lack. Lastly, the dihedral fits are compared by recalculating
+the dihedral in **GOMC >= v2.75** and comparing it to the original **Gaussian 16** energies, ensuring a correct dihedral fit.
 
 
 
@@ -69,7 +69,7 @@ The **MoSDeF** software consists of the following core packages:
 
 **vmd-python License**:
 
-The **vmd-python** software is licensed by the Theoretical and Computational Biophysics Group at the Beckman Institute for Advanced Science and Technology at the University of Illinois at Urbana-Champaign, which is a modified version of VMD. 
+The **vmd-python** software is licensed by the Theoretical and Computational Biophysics Group at the Beckman Institute for Advanced Science and Technology at the University of Illinois at Urbana-Champaign, which is a modified version of VMD.
 
 The vmd-python website is https://github.com/Eigenstate/vmd-python
 
