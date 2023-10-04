@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import pytest
 import unyt as u
 
@@ -11,9 +12,15 @@ from mosdef_dihedral_fit.tests.base_test import BaseTest
 from mosdef_dihedral_fit.utils.io import get_mosdef_dihedral_fit_fn
 
 # user changable variable, as it needs to be run locally
+# May try to get a way to automatically detect the binary using `shutil.which()`
 gomc_binary_directory = "/home/brad/Programs/GOMC/GOMC_2_75/bin"
 
 
+# NOTE: When comparing fitted values with reference value, we are using numpy.isclose() with absolute tolerance of 0.02 and relative tolerance of 0.08 (8%) to account for difference that incur across operating system.
+@pytest.mark.skipif(
+    not os.path.isfile(f"{gomc_binary_directory}/GOMC_CPU_NVT"),
+    reason="GOMC binary not deteced.",
+)
 class TestFitDihedralWithGomc(BaseTest):
     def test_gaussian_log_file_fit_oplsaa_fit_ethane_HC_CT_CT_HC(self):
         fit_dihedral_with_gomc(
@@ -1521,10 +1528,15 @@ class TestFitDihedralWithGomc(BaseTest):
 
                         # check the k-values and the r-squared fit
                         else:
-                            assert mdf_math.round_to_sig_figs(
-                                float(split_line_i[j]), number_sig_i
-                            ) == mdf_math.round_to_sig_figs(
-                                correct_line_values[i][j], number_sig_i
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
                             )
 
         # check the periodic dihedral file
@@ -1792,10 +1804,15 @@ class TestFitDihedralWithGomc(BaseTest):
 
                         # check the k-values and the r-squared fit
                         else:
-                            assert mdf_math.round_to_sig_figs(
-                                float(split_line_i[j]), number_sig_i
-                            ) == mdf_math.round_to_sig_figs(
-                                correct_line_values[i][j], number_sig_i
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
                             )
 
         # check the RB torsion file
@@ -1931,10 +1948,15 @@ class TestFitDihedralWithGomc(BaseTest):
 
                         # check the k-values and the r-squared fit
                         else:
-                            assert mdf_math.round_to_sig_figs(
-                                float(split_line_i[j]), number_sig_i
-                            ) == mdf_math.round_to_sig_figs(
-                                correct_line_values[i][j], number_sig_i
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
                             )
 
     def test_gaussian_style_files_fit_oplsaa_fit_CT_CT_C_OH_in_COOH(self):
@@ -2171,10 +2193,15 @@ class TestFitDihedralWithGomc(BaseTest):
 
                         # check the k-values and the r-squared fit
                         else:
-                            assert mdf_math.round_to_sig_figs(
-                                float(split_line_i[j]), number_sig_i
-                            ) == mdf_math.round_to_sig_figs(
-                                correct_line_values[i][j], number_sig_i
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
                             )
 
         # check the periodic dihedral file
@@ -2442,10 +2469,15 @@ class TestFitDihedralWithGomc(BaseTest):
 
                         # check the k-values and the r-squared fit
                         else:
-                            assert mdf_math.round_to_sig_figs(
-                                float(split_line_i[j]), number_sig_i
-                            ) == mdf_math.round_to_sig_figs(
-                                correct_line_values[i][j], number_sig_i
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
                             )
 
         # check the RB torsion file
@@ -2581,10 +2613,15 @@ class TestFitDihedralWithGomc(BaseTest):
 
                         # check the k-values and the r-squared fit
                         else:
-                            assert mdf_math.round_to_sig_figs(
-                                float(split_line_i[j]), number_sig_i
-                            ) == mdf_math.round_to_sig_figs(
-                                correct_line_values[i][j], number_sig_i
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
                             )
 
     def test_gaussian_style_files_fit_oplsaa_fit_CT_CT_C_OH_in_COOH_2_files_missing_1_first_point(
@@ -2826,10 +2863,15 @@ class TestFitDihedralWithGomc(BaseTest):
 
                         # check the k-values and the r-squared fit
                         else:
-                            assert mdf_math.round_to_sig_figs(
-                                float(split_line_i[j]), number_sig_i
-                            ) == mdf_math.round_to_sig_figs(
-                                correct_line_values[i][j], number_sig_i
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
                             )
 
         # check the periodic dihedral file
@@ -3097,10 +3139,15 @@ class TestFitDihedralWithGomc(BaseTest):
 
                         # check the k-values and the r-squared fit
                         else:
-                            assert mdf_math.round_to_sig_figs(
-                                float(split_line_i[j]), number_sig_i
-                            ) == mdf_math.round_to_sig_figs(
-                                correct_line_values[i][j], number_sig_i
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
                             )
 
         # check the RB torsion file
@@ -3236,10 +3283,15 @@ class TestFitDihedralWithGomc(BaseTest):
 
                         # check the k-values and the r-squared fit
                         else:
-                            assert mdf_math.round_to_sig_figs(
-                                float(split_line_i[j]), number_sig_i
-                            ) == mdf_math.round_to_sig_figs(
-                                correct_line_values[i][j], number_sig_i
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
                             )
 
     def test_gaussian_log_file_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH_bad_element_order_mol2(
@@ -4821,11 +4873,11 @@ class TestFitDihedralWithGomc(BaseTest):
             f"- Fit via the individual or multi-dihedral fit, when "
             f"Gaussian minus GOMC with the selected dihedral set to zero \n"
             f"--> R-squared = "
-            f"{'0.99792638'} \n"
+            f"{'0.998'} \n"
             f"- Fit via the validation test case, when "
             f"Gaussian minus GOMC with the selected individual dihedral added in GOMC \n"
             f"-- >R-squared = "
-            f"{'0.98698695'} \n"
+            f"{'0.987'} \n"
             f"The 'fit_min_validated_r_squared' and 'fit_validation_r_squared_rtol' "
             f"variables may need to be adjusted, \n"
             f"there is likely something wrong with the fitting procedure, the "
