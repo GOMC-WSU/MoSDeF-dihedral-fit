@@ -36,10 +36,10 @@ Select the desired variables, file, and set the temperature.
     # The temperature of the Molecular Mechanics (MM) simulation.
     temperature_in_unyt_units = 298.15 * u.Kelvin
 
-    # Choose mixing rule (override_VDWGeometricSigma_bool) to override the value (True or False)
+    # Choose mixing rule (VDWGeometricSigma_bool) to override the value (True or False)
     # that was chosen in the force field (FF) XML file.  This variable is not required and will be
     # selected automatically; however, you should override it if you are unsure of the setting.
-    override_VDWGeometricSigma_bool = True
+    VDWGeometricSigma_bool = True
 
     # Atom type naming convention ( str, optional, default=’all_unique’, (‘general’ or ‘all_unique’) )
     # General is safe and recommended since we are using a single FF XML file.
@@ -78,7 +78,7 @@ Run the dihedral fit to fit to the MM simulations:
         log_files_and_removed_points,
         zeroed_dihedral_atom_types=zeroed_dihedrals,
         qm_engine="gaussian",
-        override_VDWGeometricSigma=override_VDWGeometricSigma_bool,
+        VDWGeometricSigma=VDWGeometricSigma_bool,
         atom_type_naming_style='general',
         gomc_cpu_cores=1,
         fit_min_validated_r_squared=0.99,
@@ -120,10 +120,10 @@ Select the desired variables, file, and set the temperature.
     # The temperature of the Molecular Mechanics (MM) simulation.
     temperature_in_unyt_units = 298.15 * u.Kelvin
 
-    # Choose mixing rule (override_VDWGeometricSigma_bool) to override the value (True or False)
+    # Choose mixing rule (VDWGeometricSigma_bool) to override the value (True or False)
     # that was chosen in the force field (FF) XML file.  This variable is not required and will be
     # selected automatically; however, you should override it if you are unsure of the setting.
-    override_VDWGeometricSigma_bool = True
+    VDWGeometricSigma_bool = True
 
     # Atom type naming convention ( str, optional, default=’all_unique’, (‘general’ or ‘all_unique’) )
     # General is safe and recommended since we are using a single FF XML file.
@@ -163,7 +163,7 @@ Run the dihedral fit to fit to the MM simulations:
 	manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
         zeroed_dihedral_atom_types=zeroed_dihedrals,
         qm_engine="gaussian_style_final_files",
-        override_VDWGeometricSigma=override_VDWGeometricSigma_bool,
+        VDWGeometricSigma=VDWGeometricSigma_bool,
         atom_type_naming_style='general',
         gomc_cpu_cores=1,
     	fit_min_validated_r_squared=0.99,
