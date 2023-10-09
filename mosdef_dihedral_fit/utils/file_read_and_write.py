@@ -525,7 +525,7 @@ def get_final_gaussian_output_file_data(
                 )
             if isinstance(value_j, list):
                 for r_i in value_j:
-                    if not isinstance(r_i, int) or r_i < 0:
+                    if not isinstance(r_i, (int, np.int64)) or r_i < 0:
                         raise TypeError(
                             f"ERROR: In the 'get_final_gaussian_output_file_data' function, "
                             f"the 'qm_log_files_and_entries_to_remove_dict' values '{value_j}' "
