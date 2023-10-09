@@ -1,5 +1,6 @@
 import os
 
+import numpy as np
 import unyt as u
 
 import mosdef_dihedral_fit.utils.math_operations as mdf_math
@@ -128,16 +129,45 @@ class TestFileReading(BaseTest):
         assert "dihedral_coords_position_2.coor" in os.listdir()
 
     def test_check_guassian_angle_energy_file_correct(self):
-        # load from tests/files
-        pass
+        full_path = self.get_fn("dihedral.txt")
+        assert check_guassian_angle_energy_file_correct(full_path)
 
     def test_check_guassian_optimized_coordinate_file_correct(self):
-        # load from tests/files
-        pass
+        full_path = self.get_fn("dihedral_coords_position_36.txt")
+        assert check_guassian_optimized_coordinate_file_correct(full_path)
 
     def test_get_final_gaussian_output_file_data(self):
-        # load from tests/files
-        pass
+        full_path = self.get_fn("qm_files/")
+        in_indices = [3, 1, 2, 8]
+        out = get_final_gaussian_output_file_data(
+            {full_path: list(map(int, np.arange(32, dtype=int)))}, in_indices
+        )
+        (
+            angles,
+            energies,
+            coords,
+            elements,
+            n_atoms,
+            out_indices,
+        ) = get_final_gaussian_output_file_data(
+            {full_path: list(np.arange(32, dtype=int))}, [3, 1, 2, 8]
+        )
+        assert out
+        assert in_indices == out_indices
+        assert angles == ["150.0", "160.0", "170.0", "-180.0"]
+        assert np.allclose(
+            np.array(energies).astype(float),
+            np.array(
+                [-79.2264709151, -79.2276351404, -79.2284591083, -79.2287549865]
+            ),
+        )
+        assert np.shape(coords) == (
+            4,
+            n_atoms,
+            3,
+        )  # 4 to grab from, 8 total atoms,
+        assert elements == ["C", "C", "H", "H", "H", "H", "H", "H"]
+        assert n_atoms == 8
 
     def test_get_gaussian_log_file_data(self):
         # load from tests/files
