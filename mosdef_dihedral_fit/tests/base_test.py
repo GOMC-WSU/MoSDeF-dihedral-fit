@@ -2,7 +2,6 @@ import pathlib
 
 import numpy as np
 import pytest
-import pathlib
 
 
 class BaseTest:
@@ -14,5 +13,3 @@ class BaseTest:
         """Get test file path in test/files"""
         current_path = pathlib.Path(__file__).parent.resolve()
         return str(current_path / pathname)
-
-
