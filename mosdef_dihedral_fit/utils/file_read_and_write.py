@@ -68,7 +68,7 @@ def get_atom_names_and_elements_from_pdb(pdb_directory_and_filename):
     outputting them as lists.
 
     NOTE: This only works if the first column for all atoms/beads is
-    labeled 'ATOM', which is currently on the only output for the PDB
+    labeled 'ATOM' or 'HETATM', which is currently the only output for the PDB
     files via MoSDeF-GOMC.
 
     Parameters
@@ -95,7 +95,7 @@ def get_atom_names_and_elements_from_pdb(pdb_directory_and_filename):
                 get_atom_type_bool = False
 
             # and len(split_line_m) in [10, 11, 12]
-            if split_line_m[0] in ["ATOM"] and get_atom_type_bool is True:
+            if split_line_m[0] in ["ATOM", "HETATM"] and get_atom_type_bool is True:
                 atom_name_j = ""
                 element_name_j = ""
                 for fix_space_j in range(12, 12 + len(line_m[12:16])):
@@ -283,9 +283,10 @@ def write_restart_coor_from_xyz_file(coor_files_directory, total_qm_scans):
     # (START)
     # *******************************************
 
+    current_dir = os.getcwd()
     os.chdir(f"{coor_files_directory}")
     vmd.evaltcl(f"source {write_coor_vmd_source_file}")
-    os.chdir(f"..")
+    os.chdir(current_dir) # go back to starting directory
 
     # *******************************************
     # change to the 'coor_files_directory' directory and write the .coor restart files via VMD
