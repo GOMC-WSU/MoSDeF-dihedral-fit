@@ -1876,6 +1876,8 @@ def change_gomc_ff_file_dihedral_values(
         being fitted with non-zero k-values.
     fit_dihedral_opls_k_0_1_2_3_4_values: list of five (5) floats or int (Example: [k0, k1, k2, k3, k4])
         The OPLS k-values (k0, k1, k2, k3, k4) that the 'fit_dihedral_atom_types' are changed too.
+        NOTE: These need input in their correct unit form (i.e., kcal/mol or K) for the
+        given GOMC force file outputs (i.e., kcal/mol for LJ and K for Mie or Exp6).
     zeroed_dihedral_atom_types: nest list with lists of four (4) strings, default=None
         The nests list(s) of the other dihedrals, that need to have their k-values zeroed to
         properly fit the the 'fit_dihedral_atom_types' dihedral.

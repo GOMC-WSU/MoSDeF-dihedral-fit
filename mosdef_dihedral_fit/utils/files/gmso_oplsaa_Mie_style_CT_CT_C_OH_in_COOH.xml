@@ -1,0 +1,272 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ForceField name="OPLS-AA--CT_CT_C_OH_in_COOH (MIE version)" version="0.0.0">
+  <FFMetaData combiningRule="geometric" electrostatics14Scale="0.5" nonBonded14Scale="0.5">
+    <Units energy="kJ/mol" mass="amu" charge="elementary_charge" distance="nm"/>
+  </FFMetaData>
+  <AtomTypes expression="(n/(n-m)) * (n/m)**(m/(n-m)) * epsilon * ((sigma/r)**n - (sigma/r)**m)">
+    <ParametersUnitDef parameter="sigma" unit="nm"/>
+    <ParametersUnitDef parameter="epsilon" unit="kJ/mol"/>
+    <ParametersUnitDef parameter="n" unit="dimensionless"/>
+    <ParametersUnitDef parameter="m" unit="dimensionless"/>
+    <AtomType name="opls_135" atomclass="CT" element="C" charge="-0.18" mass="12.01100" definition="[C;X4](C)(H)(H)H" description="alkane CH3" doi="10.1021/ja9621760" overrides="">
+      <Parameters>
+        <Parameter name="epsilon" value="0.276144"/>
+        <Parameter name="sigma" value="0.35"/>
+        <Parameter name="n" value="12"/>
+        <Parameter name="m" value="6"/>
+      </Parameters>
+    </AtomType>
+    <AtomType name="opls_136" atomclass="CT" element="C" charge="-0.12" mass="12.01100" definition="[C;X4](C)(C)(H)H" description="alkane CH2" doi="10.1021/ja9621760" overrides="">
+      <Parameters>
+        <Parameter name="epsilon" value="0.276144"/>
+        <Parameter name="sigma" value="0.35"/>
+         <Parameter name="n" value="12"/>
+        <Parameter name="m" value="6"/>
+      </Parameters>
+    </AtomType>
+    <AtomType name="opls_137" atomclass="CT" element="C" charge="-0.06" mass="12.01100" definition="[C;X4](C)(C)(C)H" description="alkane CH" doi="10.1021/ja9621760" overrides="">
+      <Parameters>
+        <Parameter name="epsilon" value="0.276144"/>
+        <Parameter name="sigma" value="0.35"/>
+         <Parameter name="n" value="12"/>
+        <Parameter name="m" value="6"/>
+      </Parameters>
+    </AtomType>
+    <AtomType name="opls_138" atomclass="CT" element="C" charge="-0.24" mass="12.01100" definition="[C;X4](H)(H)(H)H" description="alkane CH4" doi="10.1021/ja9621760" overrides="">
+      <Parameters>
+        <Parameter name="epsilon" value="0.276144"/>
+        <Parameter name="sigma" value="0.35"/>
+         <Parameter name="n" value="12"/>
+        <Parameter name="m" value="6"/>
+      </Parameters>
+    </AtomType>
+    <AtomType name="opls_139" atomclass="CT" element="C" charge="0.0" mass="12.01100" definition="[C;X4](C)(C)(C)C" description="alkane C" doi="10.1021/ja9621760" overrides="">
+      <Parameters>
+        <Parameter name="epsilon" value="0.276144"/>
+        <Parameter name="sigma" value="0.35"/>
+         <Parameter name="n" value="12"/>
+        <Parameter name="m" value="6"/>
+      </Parameters>
+    </AtomType>
+    <AtomType name="opls_140" atomclass="HC" element="H" charge="0.06" mass="1.00800" definition="H[C;X4]" description="alkane H" doi="10.1021/ja9621760" overrides="">
+      <Parameters>
+        <Parameter name="epsilon" value="0.12552"/>
+        <Parameter name="sigma" value="0.25"/>
+         <Parameter name="n" value="12"/>
+        <Parameter name="m" value="6"/>
+      </Parameters>
+    </AtomType>
+    <AtomType name="opls_267" atomclass="C" element="C" charge="0.52" mass="12.01100" definition="[C;X3]([O;X1])OH" description="Co in CCOOH BRADS MODIFIED: removed overrides" doi="10.1021/ja9621760" overrides="">
+      <Parameters>
+        <Parameter name="epsilon" value="0.43932"/>
+        <Parameter name="sigma" value="0.375"/>
+         <Parameter name="n" value="12"/>
+        <Parameter name="m" value="6"/>
+      </Parameters>
+    </AtomType>
+    <AtomType name="opls_268" atomclass="OH" element="O" charge="-0.53" mass="15.9994" definition="[O;X2]([C;%opls_267])H" description="Oh in CCOOH" doi="10.1021/ja9621760" overrides="opls_154">
+      <Parameters>
+        <Parameter name="epsilon" value="0.71128"/>
+        <Parameter name="sigma" value="0.3"/>
+         <Parameter name="n" value="12"/>
+        <Parameter name="m" value="6"/>
+      </Parameters>
+    </AtomType>
+    <AtomType name="opls_269" atomclass="O_3" element="O" charge="-0.44" mass="15.9994" definition="[O;X1]([C;%opls_267](OH))" description="Oc in CCOOH BRADS MODIFIED: removed overrides" doi="10.1021/ja9621760" overrides="">
+      <Parameters>
+        <Parameter name="epsilon" value="0.87864"/>
+        <Parameter name="sigma" value="0.296"/>
+         <Parameter name="n" value="12"/>
+        <Parameter name="m" value="6"/>
+      </Parameters>
+    </AtomType>
+    <AtomType name="opls_270" atomclass="HO" element="H" charge="0.45" mass="1.00800" definition="H([O;%opls_268])" description="H in CCOOH" doi="10.1021/ja9621760" overrides="opls_155">
+      <Parameters>
+        <Parameter name="epsilon" value="0.0"/>
+        <Parameter name="sigma" value="1.0"/>
+         <Parameter name="n" value="12"/>
+        <Parameter name="m" value="6"/>
+      </Parameters>
+    </AtomType>
+  </AtomTypes>
+  <BondTypes expression="1/2 * k * (r-r_eq)**2">
+    <ParametersUnitDef parameter="r_eq" unit="nm"/>
+    <ParametersUnitDef parameter="k" unit="kJ/mol/nm**2"/>
+    <BondType name="BondType-Harmonic-1" class1="C" class2="CT">
+      <Parameters>
+        <Parameter name="k" value="265265.6"/>
+        <Parameter name="r_eq" value="0.1522"/>
+      </Parameters>
+    </BondType>
+    <BondType name="BondType-Harmonic-2" class1="C" class2="O_3">
+      <Parameters>
+        <Parameter name="k" value="476976.0"/>
+        <Parameter name="r_eq" value="0.1229"/>
+      </Parameters>
+    </BondType>
+    <BondType name="BondType-Harmonic-3" class1="C" class2="OH">
+      <Parameters>
+        <Parameter name="k" value="376560.0"/>
+        <Parameter name="r_eq" value="0.1364"/>
+      </Parameters>
+    </BondType>
+    <BondType name="BondType-Harmonic-4" class1="CT" class2="CT">
+      <Parameters>
+        <Parameter name="k" value="224262.4"/>
+        <Parameter name="r_eq" value="0.1529"/>
+      </Parameters>
+    </BondType>
+    <BondType name="BondType-Harmonic-5" class1="CT" class2="HC">
+      <Parameters>
+        <Parameter name="k" value="284512.0"/>
+        <Parameter name="r_eq" value="0.109"/>
+      </Parameters>
+    </BondType>
+    <BondType name="BondType-Harmonic-6" class1="HO" class2="OH">
+      <Parameters>
+        <Parameter name="k" value="462750.4"/>
+        <Parameter name="r_eq" value="0.0945"/>
+      </Parameters>
+    </BondType>
+  </BondTypes>
+  <AngleTypes expression="1/2 * k * (theta - theta_eq)**2">
+    <ParametersUnitDef parameter="theta_eq" unit="radian"/>
+    <ParametersUnitDef parameter="k" unit="kJ/mol/radian**2"/>
+    <AngleType name="AngleType-Harmonic-1" class1="O_3" class2="C" class3="OH">
+      <Parameters>
+        <Parameter name="k" value="669.44"/>
+        <Parameter name="theta_eq" value="2.1467549799531"/>
+      </Parameters>
+    </AngleType>
+    <AngleType name="AngleType-Harmonic-2" class1="CT" class2="C" class3="O_3">
+      <Parameters>
+        <Parameter name="k" value="669.44"/>
+        <Parameter name="theta_eq" value="2.1991148575129"/>
+      </Parameters>
+    </AngleType>
+    <AngleType name="AngleType-Harmonic-3" class1="CT" class2="CT" class3="HC">
+      <Parameters>
+        <Parameter name="k" value="313.8"/>
+        <Parameter name="theta_eq" value="1.93207948196"/>
+      </Parameters>
+    </AngleType>
+    <AngleType name="AngleType-Harmonic-4" class1="HC" class2="CT" class3="HC">
+      <Parameters>
+        <Parameter name="k" value="276.144"/>
+        <Parameter name="theta_eq" value="1.88146493365"/>
+      </Parameters>
+    </AngleType>
+    <AngleType name="AngleType-Harmonic-5" class1="C" class2="CT" class3="HC">
+      <Parameters>
+        <Parameter name="k" value="292.88"/>
+        <Parameter name="theta_eq" value="1.91113553093"/>
+      </Parameters>
+    </AngleType>
+    <AngleType name="AngleType-Harmonic-6" class1="C" class2="OH" class3="HO">
+      <Parameters>
+        <Parameter name="k" value="292.88"/>
+        <Parameter name="theta_eq" value="1.867502299634"/>
+      </Parameters>
+    </AngleType>
+    <AngleType name="AngleType-Harmonic-7" class1="C" class2="CT" class3="CT">
+      <Parameters>
+        <Parameter name="k" value="527.184"/>
+        <Parameter name="theta_eq" value="1.93906079897"/>
+      </Parameters>
+    </AngleType>
+    <AngleType name="AngleType-Harmonic-8" class1="CT" class2="C" class3="OH">
+      <Parameters>
+        <Parameter name="k" value="585.76"/>
+        <Parameter name="theta_eq" value="1.9373154697137"/>
+      </Parameters>
+    </AngleType>
+  </AngleTypes>
+  <DihedralTypes expression="c0 * cos(phi)**0 + c1 * cos(phi)**1 + c2 * cos(phi)**2 + c3 * cos(phi)**3 + c4 * cos(phi)**4 + c5 * cos(phi)**5">
+    <ParametersUnitDef parameter="c5" unit="kJ/mol"/>
+    <ParametersUnitDef parameter="c4" unit="kJ/mol"/>
+    <ParametersUnitDef parameter="c3" unit="kJ/mol"/>
+    <ParametersUnitDef parameter="c2" unit="kJ/mol"/>
+    <ParametersUnitDef parameter="c1" unit="kJ/mol"/>
+    <ParametersUnitDef parameter="c0" unit="kJ/mol"/>
+    <DihedralType name="DihedralType-RB-Proper-1" class1="HO" class2="OH" class3="C" class4="O_3">
+      <Parameters>
+        <Parameter name="c0" value="23.012"/>
+        <Parameter name="c1" value="0.0"/>
+        <Parameter name="c2" value="-23.012"/>
+        <Parameter name="c3" value="0.0"/>
+        <Parameter name="c4" value="0.0"/>
+        <Parameter name="c5" value="0.0"/>
+      </Parameters>
+    </DihedralType>
+    <DihedralType name="DihedralType-RB-Proper-2" class1="HC" class2="CT" class3="C" class4="O_3">
+      <Parameters>
+        <Parameter name="c0" value="0.0"/>
+        <Parameter name="c1" value="0.0"/>
+        <Parameter name="c2" value="0.0"/>
+        <Parameter name="c3" value="0.0"/>
+        <Parameter name="c4" value="0.0"/>
+        <Parameter name="c5" value="0.0"/>
+      </Parameters>
+    </DihedralType>
+    <DihedralType name="DihedralType-RB-Proper-3" class1="HC" class2="CT" class3="CT" class4="HC">
+      <Parameters>
+        <Parameter name="c0" value="0.6276"/>
+        <Parameter name="c1" value="1.8828"/>
+        <Parameter name="c2" value="0.0"/>
+        <Parameter name="c3" value="-2.5104"/>
+        <Parameter name="c4" value="0.0"/>
+        <Parameter name="c5" value="0.0"/>
+      </Parameters>
+    </DihedralType>
+    <DihedralType name="DihedralType-RB-Proper-4" class1="HC" class2="CT" class3="C" class4="OH">
+      <Parameters>
+        <Parameter name="c0" value="0.0"/>
+        <Parameter name="c1" value="0.0"/>
+        <Parameter name="c2" value="0.0"/>
+        <Parameter name="c3" value="0.0"/>
+        <Parameter name="c4" value="0.0"/>
+        <Parameter name="c5" value="0.0"/>
+      </Parameters>
+    </DihedralType>
+    <DihedralType name="DihedralType-RB-Proper-5" class1="C" class2="CT" class3="CT" class4="HC">
+      <Parameters>
+        <Parameter name="c0" value="-0.2092"/>
+        <Parameter name="c1" value="-0.6276"/>
+        <Parameter name="c2" value="0.0"/>
+        <Parameter name="c3" value="0.8368"/>
+        <Parameter name="c4" value="0.0"/>
+        <Parameter name="c5" value="0.0"/>
+      </Parameters>
+    </DihedralType>
+    <DihedralType name="DihedralType-RB-Proper-6" class1="CT" class2="C" class3="OH" class4="HO">
+      <Parameters>
+        <Parameter name="c0" value="26.15"/>
+        <Parameter name="c1" value="-3.138"/>
+        <Parameter name="c2" value="-23.012"/>
+        <Parameter name="c3" value="0.0"/>
+        <Parameter name="c4" value="0.0"/>
+        <Parameter name="c5" value="0.0"/>
+      </Parameters>
+    </DihedralType>
+    <DihedralType name="DihedralType-RB-Proper-7" class1="CT" class2="CT" class3="C" class4="OH">
+      <Parameters>
+        <Parameter name="c0" value="100.0"/>
+        <Parameter name="c1" value="100.0"/>
+        <Parameter name="c2" value="100.0"/>
+        <Parameter name="c3" value="100.0"/>
+        <Parameter name="c4" value="0.0"/>
+        <Parameter name="c5" value="0.0"/>
+      </Parameters>
+    </DihedralType>
+    <DihedralType name="DihedralType-RB-Proper-8" class1="CT" class2="CT" class3="C" class4="O_3">
+      <Parameters>
+        <Parameter name="c0" value="100.0"/>
+        <Parameter name="c1" value="100.0"/>
+        <Parameter name="c2" value="100.0"/>
+        <Parameter name="c3" value="100.0"/>
+        <Parameter name="c4" value="0.0"/>
+        <Parameter name="c5" value="0.0"/>
+      </Parameters>
+    </DihedralType>
+  </DihedralTypes>
+</ForceField>
