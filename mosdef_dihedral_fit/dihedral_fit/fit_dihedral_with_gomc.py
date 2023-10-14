@@ -925,7 +925,6 @@ def fit_dihedral_with_gomc(
 
         print(f"charmm.combining_rule = {charmm.combining_rule}")
 
-
         gomc_control.write_gomc_control_file(
             charmm,
             f"{gomc_runs_folder_name}/{control_file_name_str}",
@@ -2539,13 +2538,15 @@ def fit_dihedral_with_gomc(
                 opls_fit_data_k1_kcal_per_mol_list[opls_q],
                 opls_fit_data_k2_kcal_per_mol_list[opls_q],
                 opls_fit_data_k3_kcal_per_mol_list[opls_q],
-                opls_fit_data_k4_kcal_per_mol_list[opls_q]
+                opls_fit_data_k4_kcal_per_mol_list[opls_q],
             ]
 
             # Add the modified k values for the simulation in their correct units,
             # kcal/mol for LJ and K for Mie or Exp6
             opls_k_constant_fitted_q_list_for_ff_modifications = [
-                u.unyt_quantity(ki, "kcal/mol").to_value(k_constant_units_str, equivalence="thermal")
+                u.unyt_quantity(ki, "kcal/mol").to_value(
+                    k_constant_units_str, equivalence="thermal"
+                )
                 for ki in opls_k_constant_fitted_q_list_kcal_per_mol
             ]
 

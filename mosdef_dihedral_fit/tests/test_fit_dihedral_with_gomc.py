@@ -3316,7 +3316,9 @@ class TestFitDihedralWithGomc(BaseTest):
                     "gaussian/CT_CT_C_OH/input/starting_coords/"
                     "protonated_fragment_CT_CT_C_OH_in_COOH_bad_element_order.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4210,7 +4212,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4243,7 +4247,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4276,7 +4282,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4309,7 +4317,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4345,7 +4355,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4381,7 +4393,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4417,7 +4431,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4453,7 +4469,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4487,7 +4505,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4523,7 +4543,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4557,7 +4579,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4591,7 +4615,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4625,7 +4651,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4660,7 +4688,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4695,7 +4725,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4730,7 +4762,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4765,7 +4799,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4800,7 +4836,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4835,7 +4873,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4891,7 +4931,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 get_mosdef_dihedral_fit_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                get_mosdef_dihedral_fit_fn(
+                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
+                ),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4912,13 +4954,17 @@ class TestFitDihedralWithGomc(BaseTest):
                 fit_validation_r_squared_rtol=0.0000002,
             )
 
-    def test_gaussian_log_file_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH_in_mie_form(self):
+    def test_gaussian_log_file_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH_in_mie_form(
+        self,
+    ):
         fit_dihedral_with_gomc(
             ["CT", "CT", "C", "OH"],
             get_mosdef_dihedral_fit_fn(
                 "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
             ),
-            get_mosdef_dihedral_fit_fn("gmso_oplsaa_Mie_style_CT_CT_C_OH_in_COOH.xml"),
+            get_mosdef_dihedral_fit_fn(
+                "gmso_oplsaa_Mie_style_CT_CT_C_OH_in_COOH.xml"
+            ),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
@@ -4937,122 +4983,122 @@ class TestFitDihedralWithGomc(BaseTest):
         )
 
         assert (
-                os.path.isfile("all_normalized_energies_in_kcal_per_mol.txt")
-                is True
+            os.path.isfile("all_normalized_energies_in_kcal_per_mol.txt")
+            is True
         )
         assert (
-                os.path.isfile(
-                    "all_normalized_energies_OPLS_fit_1_2_3_4_in_kcal_per_mol.txt"
-                )
-                is True
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_3_4_in_kcal_per_mol.txt"
+            )
+            is True
         )
         assert (
-                os.path.isfile(
-                    "all_normalized_energies_OPLS_fit_1_2_3_in_kcal_per_mol.txt"
-                )
-                is True
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_3_in_kcal_per_mol.txt"
+            )
+            is True
         )
         assert (
-                os.path.isfile(
-                    "all_normalized_energies_OPLS_fit_1_2_in_kcal_per_mol.txt"
-                )
-                is True
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_in_kcal_per_mol.txt"
+            )
+            is True
         )
         assert (
-                os.path.isfile(
-                    "all_normalized_energies_OPLS_fit_1_3_in_kcal_per_mol.txt"
-                )
-                is True
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_3_in_kcal_per_mol.txt"
+            )
+            is True
         )
         assert (
-                os.path.isfile(
-                    "all_normalized_energies_OPLS_fit_1_in_kcal_per_mol.txt"
-                )
-                is True
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_in_kcal_per_mol.txt"
+            )
+            is True
         )
         assert (
-                os.path.isfile(
-                    "all_normalized_energies_OPLS_fit_2_4_in_kcal_per_mol.txt"
-                )
-                is True
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_2_4_in_kcal_per_mol.txt"
+            )
+            is True
         )
         assert (
-                os.path.isfile(
-                    "all_normalized_energies_OPLS_fit_2_in_kcal_per_mol.txt"
-                )
-                is True
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_2_in_kcal_per_mol.txt"
+            )
+            is True
         )
         assert (
-                os.path.isfile(
-                    "all_normalized_energies_OPLS_fit_3_4_in_kcal_per_mol.txt"
-                )
-                is True
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_3_4_in_kcal_per_mol.txt"
+            )
+            is True
         )
         assert (
-                os.path.isfile(
-                    "all_normalized_energies_OPLS_fit_3_in_kcal_per_mol.txt"
-                )
-                is True
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_3_in_kcal_per_mol.txt"
+            )
+            is True
         )
         assert (
-                os.path.isfile(
-                    "all_normalized_energies_OPLS_fit_4_in_kcal_per_mol.txt"
-                )
-                is True
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_4_in_kcal_per_mol.txt"
+            )
+            is True
         )
         assert os.path.isfile("gomc_raw_energies_in_Kelvin.txt") is True
         assert (
-                os.path.isfile("gomc_raw_OPLS_fit_1_2_3_4_energies_in_Kelvin.txt")
-                is True
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_3_4_energies_in_Kelvin.txt")
+            is True
         )
         assert (
-                os.path.isfile("gomc_raw_OPLS_fit_1_2_3_energies_in_Kelvin.txt")
-                is True
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_3_energies_in_Kelvin.txt")
+            is True
         )
         assert (
-                os.path.isfile("gomc_raw_OPLS_fit_1_2_energies_in_Kelvin.txt")
-                is True
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_energies_in_Kelvin.txt")
+            is True
         )
         assert (
-                os.path.isfile("gomc_raw_OPLS_fit_1_3_energies_in_Kelvin.txt")
-                is True
+            os.path.isfile("gomc_raw_OPLS_fit_1_3_energies_in_Kelvin.txt")
+            is True
         )
         assert (
-                os.path.isfile("gomc_raw_OPLS_fit_1_energies_in_Kelvin.txt") is True
+            os.path.isfile("gomc_raw_OPLS_fit_1_energies_in_Kelvin.txt") is True
         )
         assert (
-                os.path.isfile("gomc_raw_OPLS_fit_2_4_energies_in_Kelvin.txt")
-                is True
+            os.path.isfile("gomc_raw_OPLS_fit_2_4_energies_in_Kelvin.txt")
+            is True
         )
         assert (
-                os.path.isfile("gomc_raw_OPLS_fit_2_energies_in_Kelvin.txt") is True
+            os.path.isfile("gomc_raw_OPLS_fit_2_energies_in_Kelvin.txt") is True
         )
         assert (
-                os.path.isfile("gomc_raw_OPLS_fit_3_4_energies_in_Kelvin.txt")
-                is True
+            os.path.isfile("gomc_raw_OPLS_fit_3_4_energies_in_Kelvin.txt")
+            is True
         )
         assert (
-                os.path.isfile("gomc_raw_OPLS_fit_3_energies_in_Kelvin.txt") is True
+            os.path.isfile("gomc_raw_OPLS_fit_3_energies_in_Kelvin.txt") is True
         )
         assert (
-                os.path.isfile("gomc_raw_OPLS_fit_4_energies_in_Kelvin.txt") is True
+            os.path.isfile("gomc_raw_OPLS_fit_4_energies_in_Kelvin.txt") is True
         )
         assert (
-                os.path.isfile(
-                    "opls_all_single_fit_dihedral_k_constants_figure.pdf"
-                )
-                is True
+            os.path.isfile(
+                "opls_all_single_fit_dihedral_k_constants_figure.pdf"
+            )
+            is True
         )
         assert (
-                os.path.isfile("opls_all_summed_dihedrals_k_constants_figure.pdf")
-                is True
+            os.path.isfile("opls_all_summed_dihedrals_k_constants_figure.pdf")
+            is True
         )
         assert (
-                os.path.isfile("opls_dihedral_k_constants_fit_energy.txt") is True
+            os.path.isfile("opls_dihedral_k_constants_fit_energy.txt") is True
         )
         assert (
-                os.path.isfile("periodic_dihedral_k_constants_fit_energy.txt")
-                is True
+            os.path.isfile("periodic_dihedral_k_constants_fit_energy.txt")
+            is True
         )
         assert os.path.isfile("RB_torsion_k_constants_fit_energy.txt") is True
 
@@ -5576,4 +5622,3 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-
