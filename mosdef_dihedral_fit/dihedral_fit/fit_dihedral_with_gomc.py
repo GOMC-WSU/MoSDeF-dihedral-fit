@@ -62,7 +62,7 @@ def fit_dihedral_with_gomc(
     used for the fit, and only uses the valid power in the fitting
     process.
 
-    NOTE: The 'extracted_guassian_data' and 'GOMC_simulations'
+    NOTE: The 'extracted_gaussian_data' and 'GOMC_simulations'
     folder are deleted at the beginning of this function,
     and recreated while running this function to ensure only the
     lasted data is in these folders.
@@ -112,12 +112,12 @@ def fit_dihedral_with_gomc(
             These removed parameters allow users to remove any bad or repeated data
             points for the QM log file when needed.
 
-            Example 1: {'path/guassian_log_file.log': []}
+            Example 1: {'path/gaussian_log_file.log': []}
 
-            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+            Uses all the optimized data points from the 'path/gaussian_log_file.log' file.
 
-            Example 2: {'path/guassian_log_file.log': [0, 23]}
-            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            Example 2: {'path/gaussian_log_file.log': [0, 23]}
+            Uses all data points from the 'path/gaussian_log_file.log' file, except points
             0 and 23.  NOTE: Python counting starts at 0.
 
         * qm_engine="gaussian_style_final_files"
@@ -160,10 +160,10 @@ def fit_dihedral_with_gomc(
             | 10      No      Show    10      H       -3.224767       1.255506        -0.130085
 
             Example 1: {'path_to_gaussian_style_final_files': []}
-            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+            Uses all the optimized data points from the 'path/gaussian_log_file.log' file.
 
             Example 2: {'path_to_gaussian_style_final_files': [0, 23]}
-            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            Uses all data points from the 'path/gaussian_log_file.log' file, except points
             0 and 23.  NOTE: Python counting starts at 0.
 
     manual_dihedral_atom_numbers_list: list of 4 integers, default=None
@@ -184,7 +184,7 @@ def fit_dihedral_with_gomc(
         'GOMC_simulations' folder. These files can also be checked to
         confirm it is zeroing the correct dihedrals.
 
-    qm_engine: str (currently only 'guassian'), default='guassian'
+    qm_engine: str (currently only 'gaussian'), default='gaussian'
         The Quantum Mechanics (QM) simulation engine utilized to produce the files listed
         in the 'qm_log_files_and_entries_to_remove_dict' variable(s).
     VDWGeometricSigma: boolean, default = None
@@ -362,11 +362,11 @@ def fit_dihedral_with_gomc(
         every additional phi dihedral angles selected from the QM simulations.
         The variable YYY is the cos power equation combinations used for the
         'fit_dihedral_atom_types' to fit the k-values.
-    extracted_guassian_data/dihedral.txt
+    extracted_gaussian_data/dihedral.txt
         The QM data in a Gaussian-style output file which holds the scanned
         dihedral angles, in degrees, and the optimized energy value, in Hartree units,
         for the molecule/fragment.
-    extracted_guassian_data/dihedral_coords_position_XXX.txt
+    extracted_gaussian_data/dihedral_coords_position_XXX.txt
         The optimized QM dihedral coordinates in a Gaussian-style output file.
         The XXX is the integer number of the dihedrals starting at 1, adding 1 for
         every additional phi dihedral angles selected from the QM simulations.
@@ -830,7 +830,7 @@ def fit_dihedral_with_gomc(
         shutil.rmtree(xyz_xsc_coor_files_directory)
     os.mkdir(xyz_xsc_coor_files_directory)
 
-    # write all the xyz coordinate from the Guassian optimized coordinate file in the 'xyz_files' folder
+    # write all the xyz coordinate from the gaussian optimized coordinate file in the 'xyz_files' folder
     [
         atom_pdb_names_list,
         elementpdb_names_list,
@@ -838,26 +838,26 @@ def fit_dihedral_with_gomc(
         f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}.pdb"
     )
 
-    qm_energy_file_dir_and_name = "extracted_guassian_data/dihedral.txt"
+    qm_energy_file_dir_and_name = "extracted_gaussian_data/dihedral.txt"
     qm_parital_coordinate_file_starting_dir_and_name = (
-        "extracted_guassian_data/dihedral_coords_position_"
+        "extracted_gaussian_data/dihedral_coords_position_"
     )
     qm_coordinate_file_extension = "txt"
 
     # check the gaussian file is correct
-    mdf_frw.check_guassian_angle_energy_file_correct(
+    mdf_frw.check_gaussian_angle_energy_file_correct(
         qm_energy_file_dir_and_name
     )
 
     # Read the gaussian data and extract angles and number of scans (number of angles and degress analyzed)
-    Guassian_raw_degrees_list = (
+    gaussian_raw_degrees_list = (
         pd.DataFrame(
             pd.read_csv(qm_energy_file_dir_and_name, sep="\s+", header=3)
         )
         .iloc[:, 0]
         .tolist()
     )
-    total_qm_scans = len(Guassian_raw_degrees_list)
+    total_qm_scans = len(gaussian_raw_degrees_list)
 
     mdf_frw.write_xyz_file_from_gaussian_coordinates(
         elementpdb_names_list,
@@ -885,7 +885,7 @@ def fit_dihedral_with_gomc(
     # **************************************************************
 
     # write the GOMC control files
-    for scan_iter in range(1, len(Guassian_raw_degrees_list) + 1):
+    for scan_iter in range(1, len(gaussian_raw_degrees_list) + 1):
         read_gomc_restart_file_coor_dir_and_name = f"../{xyz_xsc_coor_files_directory}/dihedral_coords_position_{scan_iter}.coor"
         read_gomc_restart_file_xsc_dir_and_name = (
             f"../{xyz_xsc_coor_files_directory}/starting_point.xsc"
@@ -1052,7 +1052,7 @@ def fit_dihedral_with_gomc(
             log_file_splitline_iter = log_file_line_iter.split()
 
             # scan_iter starts at 1
-            dihedral_angle_degrees = Guassian_raw_degrees_list[scan_iter - 1]
+            dihedral_angle_degrees = gaussian_raw_degrees_list[scan_iter - 1]
 
             # only open the gomc raw energy file and write header for 1st iteration (1)
             if len(log_file_splitline_iter) >= 2:
@@ -1152,35 +1152,35 @@ def fit_dihedral_with_gomc(
     # *********************************
 
     # extract the raw data
-    Guassian_data_df = pd.DataFrame(
+    gaussian_data_df = pd.DataFrame(
         pd.read_csv(qm_energy_file_dir_and_name, sep="\s+", header=3)
     )
-    Guassian_data_dihedral_degrees_list = Guassian_data_df.iloc[:, 0].tolist()
-    Guassian_data_total_energy_Hartree_list = Guassian_data_df.iloc[
+    gaussian_data_dihedral_degrees_list = gaussian_data_df.iloc[:, 0].tolist()
+    gaussian_data_total_energy_Hartree_list = gaussian_data_df.iloc[
         :, 1
     ].tolist()
 
     # convert from Hartree to kcal/mol energy units
-    Guassian_data_total_energy_kcal_per_mol_list = [
+    gaussian_data_total_energy_kcal_per_mol_list = [
         i * conversion_hartree_to_kcal_per_mol
-        for i in Guassian_data_total_energy_Hartree_list
+        for i in gaussian_data_total_energy_Hartree_list
     ]
 
     # normalize so the min value is 0
-    Guassian_data_total_energy_kcal_per_mol_normalize_list = [
-        i - min(Guassian_data_total_energy_kcal_per_mol_list)
-        for i in Guassian_data_total_energy_kcal_per_mol_list
+    gaussian_data_total_energy_kcal_per_mol_normalize_list = [
+        i - min(gaussian_data_total_energy_kcal_per_mol_list)
+        for i in gaussian_data_total_energy_kcal_per_mol_list
     ]
 
     print(
-        f"Guassian_data_dihedral_degrees_list = {Guassian_data_dihedral_degrees_list}"
+        f"gaussian_data_dihedral_degrees_list = {gaussian_data_dihedral_degrees_list}"
     )
     print(
-        f"Guassian_data_total_energy_kcal_per_mol_list = {Guassian_data_total_energy_kcal_per_mol_list}"
+        f"gaussian_data_total_energy_kcal_per_mol_list = {gaussian_data_total_energy_kcal_per_mol_list}"
     )
     print(
-        f"Guassian_data_total_energy_kcal_per_mol_normalize_list = "
-        f"{Guassian_data_total_energy_kcal_per_mol_normalize_list}"
+        f"gaussian_data_total_energy_kcal_per_mol_normalize_list = "
+        f"{gaussian_data_total_energy_kcal_per_mol_normalize_list}"
     )
 
     # get the Gaussian minus GOMC total energy and then it normalized
@@ -1188,10 +1188,10 @@ def fit_dihedral_with_gomc(
         GOMC_data_dihedral_degrees_list
     )
     Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_list = [
-        Guassian_data_total_energy_kcal_per_mol_normalize_list[i]
+        gaussian_data_total_energy_kcal_per_mol_normalize_list[i]
         - GOMC_data_total_energy_kcal_per_mol_normalize_list[i]
         for i in range(
-            0, len(Guassian_data_total_energy_kcal_per_mol_normalize_list)
+            0, len(gaussian_data_total_energy_kcal_per_mol_normalize_list)
         )
     ]
 
@@ -1287,9 +1287,9 @@ def fit_dihedral_with_gomc(
         not len(GOMC_data_dihedral_degrees_list)
         == len(GOMC_data_total_energy_kcal_per_mol_list)
         == len(GOMC_data_total_energy_kcal_per_mol_normalize_list)
-        == len(Guassian_data_dihedral_degrees_list)
-        == len(Guassian_data_total_energy_kcal_per_mol_list)
-        == len(Guassian_data_total_energy_kcal_per_mol_normalize_list)
+        == len(gaussian_data_dihedral_degrees_list)
+        == len(gaussian_data_total_energy_kcal_per_mol_list)
+        == len(gaussian_data_total_energy_kcal_per_mol_normalize_list)
         == len(Gaussian_minus_GOMC_data_dihedral_degrees_list)
         == len(Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_list)
         == len(
@@ -1298,7 +1298,7 @@ def fit_dihedral_with_gomc(
         == len(all_sum_opls_const_1_plus_or_minus_cos_n_list)
     ):
         raise ValueError(
-            "ERROR: The GOMC and Guassian outputs do not match in length. "
+            "ERROR: The GOMC and gaussian outputs do not match in length. "
             "This could mean something is changed and wrong in the code, "
             "or GOMC is outputting multiple Initial eneries in the log file "
             ", in this case use a new version of GOMC."
@@ -1307,19 +1307,19 @@ def fit_dihedral_with_gomc(
     # Check if all the angles match between sorted GOMC and Gaussian data
     for j_angle in range(0, len(GOMC_data_dihedral_degrees_list)):
         if not len(GOMC_data_dihedral_degrees_list) == len(
-            Guassian_data_dihedral_degrees_list
+            gaussian_data_dihedral_degrees_list
         ):
             raise ValueError(
-                "ERROR: The GOMC and Guassian output angles are not in the same angles in order."
+                "ERROR: The GOMC and gaussian output angles are not in the same angles in order."
             )
 
     # Check if all the angles match between sorted GOMC and Gaussian data
     for k_angle in range(0, len(GOMC_data_dihedral_degrees_list)):
         if not len(GOMC_data_dihedral_degrees_list) == len(
-            Guassian_data_dihedral_degrees_list
+            gaussian_data_dihedral_degrees_list
         ):
             raise ValueError(
-                "ERROR: The GOMC and Guassian output angles are not in the same angles in order."
+                "ERROR: The GOMC and gaussian output angles are not in the same angles in order."
             )
         if k_angle == 0:
             # write out the GOMC and Gaussian data in a file
@@ -1342,7 +1342,7 @@ def fit_dihedral_with_gomc(
         gomc_gaussian_kcal_per_mol_energy_data_txt_file.write(
             f"{Gaussian_minus_GOMC_data_dihedral_degrees_list[k_angle]: <30} "
             f"{GOMC_data_total_energy_kcal_per_mol_normalize_list[k_angle]: <30} "
-            f"{Guassian_data_total_energy_kcal_per_mol_normalize_list[k_angle]: <30} "
+            f"{gaussian_data_total_energy_kcal_per_mol_normalize_list[k_angle]: <30} "
             f"{Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list[k_angle]: <40} "
             f"{const_1_minus_Cos_0_phi_data_lists[k_angle]: <30} "
             f"{const_1_plus_Cos_1_phi_data_lists[k_angle]: <30} "
@@ -1383,7 +1383,7 @@ def fit_dihedral_with_gomc(
     (
         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list,
         sorted_GOMC_data_total_energy_kcal_per_mol_normalize_list,
-        sorted_Guassian_data_total_energy_kcal_per_mol_normalize_list,
+        sorted_gaussian_data_total_energy_kcal_per_mol_normalize_list,
         sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list,
         sorted_all_sum_opls_const_1_plus_or_minus_cos_n_list,
         sorted_const_1_minus_Cos_0_phi_data_lists,
@@ -1396,7 +1396,7 @@ def fit_dihedral_with_gomc(
             zip(
                 Gaussian_minus_GOMC_data_dihedral_degrees_list,
                 GOMC_data_total_energy_kcal_per_mol_normalize_list,
-                Guassian_data_total_energy_kcal_per_mol_normalize_list,
+                gaussian_data_total_energy_kcal_per_mol_normalize_list,
                 Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list,
                 all_sum_opls_const_1_plus_or_minus_cos_n_list,
                 const_1_minus_Cos_0_phi_data_lists,
@@ -1412,7 +1412,7 @@ def fit_dihedral_with_gomc(
         f"sorted_GOMC_data_total_energy_kcal_per_mol_normalize_list = {sorted_GOMC_data_total_energy_kcal_per_mol_normalize_list}"
     )
     print(
-        f"sorted_Guassian_data_total_energy_kcal_per_mol_normalize_list = {sorted_Guassian_data_total_energy_kcal_per_mol_normalize_list}"
+        f"sorted_gaussian_data_total_energy_kcal_per_mol_normalize_list = {sorted_gaussian_data_total_energy_kcal_per_mol_normalize_list}"
     )
     print(
         f"sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list = {sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list}"
@@ -2430,7 +2430,7 @@ def fit_dihedral_with_gomc(
             f"all_normalized_energies_OPLS_fit_{opls_fit_q}_in_kcal_per_mol.txt"
         )
         # write the GOMC control files
-        for scan_iter_q in range(1, len(Guassian_raw_degrees_list) + 1):
+        for scan_iter_q in range(1, len(gaussian_raw_degrees_list) + 1):
             read_gomc_fitted_restart_file_coor_dir_and_name = f"../{xyz_xsc_coor_files_directory}/dihedral_coords_position_{scan_iter_q}.coor"
             read_gomc_fitted_restart_file_xsc_dir_and_name = (
                 f"../{xyz_xsc_coor_files_directory}/starting_point.xsc"
@@ -2593,7 +2593,7 @@ def fit_dihedral_with_gomc(
                 log_file_splitline_iter = log_file_line_iter.split()
 
                 # scan_iter starts at 1
-                dihedral_angle_degrees = Guassian_raw_degrees_list[
+                dihedral_angle_degrees = gaussian_raw_degrees_list[
                     scan_iter_q - 1
                 ]
 
@@ -2680,26 +2680,26 @@ def fit_dihedral_with_gomc(
         # get Gaussian data (START)
         # *********************************
         # extract the raw data
-        Guassian_data_df = pd.DataFrame(
+        gaussian_data_df = pd.DataFrame(
             pd.read_csv(qm_energy_file_dir_and_name, sep="\s+", header=3)
         )
-        Guassian_data_fitted_dihedral_degrees_list = Guassian_data_df.iloc[
+        gaussian_data_fitted_dihedral_degrees_list = gaussian_data_df.iloc[
             :, 0
         ].tolist()
-        Guassian_data_total_energy_Hartree_list = Guassian_data_df.iloc[
+        gaussian_data_total_energy_Hartree_list = gaussian_data_df.iloc[
             :, 1
         ].tolist()
 
         # convert from Hartree to kcal/mol energy units
-        Guassian_data_total_energy_kcal_per_mol_list = [
+        gaussian_data_total_energy_kcal_per_mol_list = [
             i * conversion_hartree_to_kcal_per_mol
-            for i in Guassian_data_total_energy_Hartree_list
+            for i in gaussian_data_total_energy_Hartree_list
         ]
 
         # normalize so the min value is 0
-        Guassian_data_total_energy_kcal_per_mol_normalize_list = [
-            i - min(Guassian_data_total_energy_kcal_per_mol_list)
-            for i in Guassian_data_total_energy_kcal_per_mol_list
+        gaussian_data_total_energy_kcal_per_mol_normalize_list = [
+            i - min(gaussian_data_total_energy_kcal_per_mol_list)
+            for i in gaussian_data_total_energy_kcal_per_mol_list
         ]
 
         # get the Gaussian minus GOMC total energy and then it normalized
@@ -2707,10 +2707,10 @@ def fit_dihedral_with_gomc(
             GOMC_data_fitted_dihedral_degrees_list
         )
         Gaussian_minus_GOMC_data_fitted_total_energy_kcal_per_mol_list = [
-            Guassian_data_total_energy_kcal_per_mol_normalize_list[i]
+            gaussian_data_total_energy_kcal_per_mol_normalize_list[i]
             - GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list[i]
             for i in range(
-                0, len(Guassian_data_total_energy_kcal_per_mol_normalize_list)
+                0, len(gaussian_data_total_energy_kcal_per_mol_normalize_list)
             )
         ]
 
@@ -2730,7 +2730,7 @@ def fit_dihedral_with_gomc(
         # get R**2 for the fit, running through GOMC to get the new energy of the
         # individual fit.
         opls_r_squared_fitted_data_via_gomc_iter = mdf_math.get_r_squared(
-            Guassian_data_total_energy_kcal_per_mol_normalize_list,
+            gaussian_data_total_energy_kcal_per_mol_normalize_list,
             GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list,
         )
         opls_r_squared_fitted_data_via_gomc_list.append(
@@ -2766,7 +2766,7 @@ def fit_dihedral_with_gomc(
             gomc_fitted_gaussian_kcal_per_mol_energy_data_txt_file.write(
                 f"\n{Gaussian_minus_GOMC_data_fitted_dihedral_degrees_list[q_angle]: <30} "
                 f"{GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list[q_angle]: <30} "
-                f"{Guassian_data_total_energy_kcal_per_mol_normalize_list[q_angle]: <30} "
+                f"{gaussian_data_total_energy_kcal_per_mol_normalize_list[q_angle]: <30} "
                 f"{Gaussian_minus_GOMC_data_fitted_total_energy_kcal_per_mol_normalized_list[q_angle]: <40} "
                 f"{str(opls_k_constant_fitted_q_list_kcal_per_mol[0]): <30} "
                 f"{str(opls_k_constant_fitted_q_list_kcal_per_mol[1]): <30} "
