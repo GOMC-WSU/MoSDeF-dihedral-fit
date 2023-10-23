@@ -2670,9 +2670,6 @@ def fit_dihedral_with_gomc(
         gaussian_data_df = pd.DataFrame(
             pd.read_csv(qm_energy_file_dir_and_name, sep="\s+", header=3)
         )
-        gaussian_data_fitted_dihedral_degrees_list = gaussian_data_df.iloc[
-            :, 0
-        ].tolist()
         gaussian_data_total_energy_Hartree_list = gaussian_data_df.iloc[
             :, 1
         ].tolist()
