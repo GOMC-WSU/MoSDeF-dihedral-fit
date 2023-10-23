@@ -92,7 +92,6 @@ def fit_dihedral_with_gomc(
         the system.
 
         * Example str for FF file: 'path_to file/trappe-ua.xml'
-
     temperature_unyt_units: unyt.unyt_quantity
         The temperature of the system that was performed for the Quantum Mechanics
         (QM) simulation.
@@ -102,7 +101,6 @@ def fit_dihedral_with_gomc(
         This does not include the "GOMC_CPU_NVT" in this variable.
 
         Example: '/home/brad/Programs/GOMC/GOMC_2_76/bin'
-
     qm_log_files_and_entries_to_remove_dict: dict, {str: [int>=0, ..., int>=0]}
         * qm_engine="gaussian"
             This is a dictionary comprised of a key (string) of the QM log file path and name
@@ -183,7 +181,6 @@ def fit_dihedral_with_gomc(
         'GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp' files in the
         'GOMC_simulations' folder. These files can also be checked to
         confirm it is zeroing the correct dihedrals.
-
     qm_engine: str (currently only 'gaussian'), default='gaussian'
         The Quantum Mechanics (QM) simulation engine utilized to produce the files listed
         in the 'qm_log_files_and_entries_to_remove_dict' variable(s).
@@ -259,7 +256,6 @@ def fit_dihedral_with_gomc(
 
         --- If the general CHARMM style atom type in any residue/molecule's gomc_fix_bonds_angles,
         gomc_fix_bonds, or gomc_fix_angles are IN any other residue/molecule.
-
     gomc_cpu_cores: int>0, default=1
         The number of CPU-cores that are used to perform the GOMC simulations, required
         for the Molecular Mechanics (MM) energy calulations.
@@ -285,7 +281,6 @@ def fit_dihedral_with_gomc(
         dihedral energies are set to zero.
 
         NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
-
     fit_validation_r_squared_rtol: float (0 < fit_min_validated_r_squared < 1), default=2.5e-02
         Where the QM data is defined as the actual data; this is the difference
         of the dihedral's calculated R-squared values between:
@@ -293,17 +288,9 @@ def fit_dihedral_with_gomc(
         * The MM calculations where the fit k-value are entered in the MM data and
         compared to the QM data.
 
-        fit_dihedral_atom_types,
-        mol2_selection,
-        forcefield_selection,
-        temperature_unyt_units,
-        gomc_binary_path,
-        qm_log_files_and_entries_to_remove_dict,
-        zeroed_dihedral_atom_types=None,
-
         NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
 
-    Returns
+    Outputs
     -------
     Files containing the following information in the following relative locations:
 
@@ -1305,7 +1292,7 @@ def fit_dihedral_with_gomc(
         )
 
     # Check if all the angles match between sorted GOMC and Gaussian data
-    for j_angle in range(0, len(GOMC_data_dihedral_degrees_list)):
+    for _ in range(0, len(GOMC_data_dihedral_degrees_list)):
         if not len(GOMC_data_dihedral_degrees_list) == len(
             gaussian_data_dihedral_degrees_list
         ):
@@ -1627,10 +1614,10 @@ def fit_dihedral_with_gomc(
     # **********************************
 
     # Run the fitting for only the allowed power types
-    for k_iter_i, k_type_i in enumerate(fit_k_list_allowed):
+    for k_type_i in fit_k_list_allowed:
         # make the list of k_type_i for fitting in the data
         k_type_list_i = []
-        for v in range(
+        for _ in range(
             0, len(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list)
         ):
             k_type_list_i.append(k_type_i)
@@ -1682,7 +1669,7 @@ def fit_dihedral_with_gomc(
             )
 
         elif k_type_i == "2":
-            parameters, covariance = curve_fit(
+            parameters, _ = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
@@ -1727,7 +1714,7 @@ def fit_dihedral_with_gomc(
             )
 
         elif k_type_i == "3":
-            parameters, covariance = curve_fit(
+            parameters, _ = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
@@ -1772,7 +1759,7 @@ def fit_dihedral_with_gomc(
             )
 
         elif k_type_i == "4":
-            parameters, covariance = curve_fit(
+            parameters, _ = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
@@ -1817,7 +1804,7 @@ def fit_dihedral_with_gomc(
             )
 
         elif k_type_i == "1_3":
-            parameters, covariance = curve_fit(
+            parameters, _ = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
@@ -1861,7 +1848,7 @@ def fit_dihedral_with_gomc(
             )
 
         elif k_type_i == "2_4":
-            parameters, covariance = curve_fit(
+            parameters, _ = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
@@ -1905,7 +1892,7 @@ def fit_dihedral_with_gomc(
             )
 
         elif k_type_i == "1_2":
-            parameters, covariance = curve_fit(
+            parameters, _ = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
@@ -1949,7 +1936,7 @@ def fit_dihedral_with_gomc(
             )
 
         elif k_type_i == "3_4":
-            parameters, covariance = curve_fit(
+            parameters, _ = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
@@ -1993,7 +1980,7 @@ def fit_dihedral_with_gomc(
             )
 
         elif k_type_i == "1_2_3":
-            parameters, covariance = curve_fit(
+            parameters, _ = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
@@ -2036,7 +2023,7 @@ def fit_dihedral_with_gomc(
             )
 
         elif k_type_i == "1_2_3_4":
-            parameters, covariance = curve_fit(
+            parameters, _ = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
@@ -2683,9 +2670,6 @@ def fit_dihedral_with_gomc(
         gaussian_data_df = pd.DataFrame(
             pd.read_csv(qm_energy_file_dir_and_name, sep="\s+", header=3)
         )
-        gaussian_data_fitted_dihedral_degrees_list = gaussian_data_df.iloc[
-            :, 0
-        ].tolist()
         gaussian_data_total_energy_Hartree_list = gaussian_data_df.iloc[
             :, 1
         ].tolist()

@@ -157,7 +157,7 @@ def write_xyz_file_from_gaussian_coordinates(
     total_qm_scans: int
         The number of QM scans in the QM coordinate file.
 
-    Returns
+    Outputs
     -------
     Writes the xyz file in the file in the selected 'xyz_files_directory' directory,
     with the file name 'dihedral_coords_position_n.xyz'.
@@ -199,7 +199,7 @@ def write_xyz_file_from_gaussian_coordinates(
         output_file_xyz_file.write(f"{comment_1_space_in_front}\n")
 
         # The Gaussian file need to have these columns "Row	Highlight	Display	Tag	Symbol	X	Y	Z"
-        check_guassian_optimized_coordinate_file_correct(
+        check_gaussian_optimized_coordinate_file_correct(
             read_gausian_file_dir_name
         )
         with open(read_gausian_file_dir_name, "r") as fp:
@@ -240,7 +240,7 @@ def write_restart_coor_from_xyz_file(coor_files_directory, total_qm_scans):
     total_qm_scans: int
         The number of QM scans in the QM coordinate file.
 
-    Returns
+    Outputs
     -------
     Writes and the restart coor file in the file in the selected
     'coor_files_directory' directory, with the file name
@@ -293,10 +293,10 @@ def write_restart_coor_from_xyz_file(coor_files_directory, total_qm_scans):
     # *******************************************
 
 
-def check_guassian_angle_energy_file_correct(guassian_energy_file_dir_and_name):
-    """Check that the Guassian/Gausview file containing the angle and energy is formatted correctly.
+def check_gaussian_angle_energy_file_correct(gaussian_energy_file_dir_and_name):
+    """Check that the gaussian/Gausview file containing the angle and energy is formatted correctly.
 
-    This checks the Guassian/Gausview containing the angle and energy is formatted correctly.
+    This checks the gaussian/Gausview containing the angle and energy is formatted correctly.
 
     The proper header format for the GausView/Gaussian output is as follows:
 
@@ -307,7 +307,7 @@ def check_guassian_angle_energy_file_correct(guassian_energy_file_dir_and_name):
 
     Parameters
     ----------
-    guassian_energy_file_dir_and_name: str
+    gaussian_energy_file_dir_and_name: str
         The directory and filename of the Gaussian/Gausview angle and energy file.
 
     Returns
@@ -316,7 +316,7 @@ def check_guassian_angle_energy_file_correct(guassian_energy_file_dir_and_name):
         True; if the file is formatted correctly
         TypeError; if the file is not formatted correctly
     """
-    with open(guassian_energy_file_dir_and_name, "r") as fp:
+    with open(gaussian_energy_file_dir_and_name, "r") as fp:
         gaussian_dihedral_header_line_correct_bool_list = [
             False,
             False,
@@ -386,12 +386,12 @@ def check_guassian_angle_energy_file_correct(guassian_energy_file_dir_and_name):
     return gaussian_angle_energy_file_correct
 
 
-def check_guassian_optimized_coordinate_file_correct(
+def check_gaussian_optimized_coordinate_file_correct(
     gaussian_optimized_coordinate_path_and_name,
 ):
-    """Check that the Guassian/Gausview file containing the optimized coordinates is formatted correctly.
+    """Check that the gaussian/Gausview file containing the optimized coordinates is formatted correctly.
 
-    This checks the Guassian/Gausview containing the optimized coordinates is formatted correctly.
+    This checks the gaussian/Gausview containing the optimized coordinates is formatted correctly.
 
     The proper header format for the GausView/Gaussian output is as follows:
 
@@ -442,9 +442,9 @@ def check_guassian_optimized_coordinate_file_correct(
 def get_final_gaussian_output_file_data(
     qm_log_files_and_entries_to_remove_dict, manual_dihedral_atom_numbers_list
 ):
-    """Get the Guassian/Gausview file data from the existing Guassian/Gausview files.
+    """Get the gaussian/Gausview file data from the existing gaussian/Gausview files.
 
-    This gets the Guassian/Gausview log file data for all the optimized configurations,
+    This gets the gaussian/Gausview log file data for all the optimized configurations,
     moving it to the folder that will be analyzed.
 
     The proper header format for the GausView/Gaussian output is as follows:
@@ -454,18 +454,18 @@ def get_final_gaussian_output_file_data(
     Parameters
     ----------
     qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
-        This is a dictionary comprised of a key (string) of the QM Guassian/Gausview file
+        This is a dictionary comprised of a key (string) of the QM gaussian/Gausview file
         data path and name,
         and a list of integers, which are the QM optimization parameters to remove from
         the written data, in order of reading from each file. These can be seen in the
         order of the dictionary file name (strings).  These removed parameters allow
         users to remove any bad or repeated data points for the QM log file when needed.
 
-        Example 1: {'path/guassian_log_file.log': []}
-        Uses all the optimized data points from the 'path/guassian_log_file_data_path' file.
+        Example 1: {'path/gaussian_log_file.log': []}
+        Uses all the optimized data points from the 'path/gaussian_log_file_data_path' file.
 
-        Example 2: {'path/guassian_log_file.log': [0, 23]}
-        Uses all data points from the 'path/guassian_log_file_data_path' file, except points
+        Example 2: {'path/gaussian_log_file.log': [0, 23]}
+        Uses all data points from the 'path/gaussian_log_file_data_path' file, except points
         0 and 23.  NOTE: Python counting starts at 0.
     manual_dihedral_atom_numbers_list: list, list of four (4) int (example: [3,2,1,5])
         This is a list of the dihedral atom numbers in order that were used for the dihedral
@@ -573,7 +573,7 @@ def get_final_gaussian_output_file_data(
         direct_gaussian_angles_energy_formated_file_name_iter = (
             f"{direct_gaussian_folder_iter}/dihedral.txt"
         )
-        check_guassian_angle_energy_file_correct(
+        check_gaussian_angle_energy_file_correct(
             direct_gaussian_angles_energy_formated_file_name_iter
         )
 
@@ -583,7 +583,7 @@ def get_final_gaussian_output_file_data(
             first_enerery_dihedral_file_data_header_lines = 4
             first_coord_file_data_header_lines = 1
 
-            # get the 1st QM Guassian/Gausview file angles and dihedrals
+            # get the 1st QM gaussian/Gausview file angles and dihedrals
             direct_gaussian_angles_energy_iter = fp1.readlines()
             for m, line_m in enumerate(direct_gaussian_angles_energy_iter):
                 m_less_spacers = int(
@@ -608,7 +608,7 @@ def get_final_gaussian_output_file_data(
                 elif m_less_spacers >= 0 and len(split_line_m) != 2:
                     raise ValueError(
                         f"ERROR: The directly input file {direct_gaussian_angles_energy_formated_file_name_iter} "
-                        f"is not in the correct Guassian sytle format."
+                        f"is not in the correct gaussian sytle format."
                     )
 
             total_used_and_unused_dihedrals_per_file = [
@@ -626,14 +626,14 @@ def get_final_gaussian_output_file_data(
                 if int(dih_per_file_i - 1) not in entries_to_remove_list_iter:
                     dihedral_counter += 1
                     direct_gaussian_coord_formated_file_name_iter = f"{direct_gaussian_folder_iter}/dihedral_coords_position_{dih_per_file_i}.txt"
-                    check_guassian_optimized_coordinate_file_correct(
+                    check_gaussian_optimized_coordinate_file_correct(
                         direct_gaussian_coord_formated_file_name_iter
                     )
 
                     with open(
                         direct_gaussian_coord_formated_file_name_iter, "r"
                     ) as fp2:
-                        # get the 1st QM Guassian/Gausview file angles and dihedrals
+                        # get the 1st QM gaussian/Gausview file angles and dihedrals
                         direct_gaussian_coord_iter = fp2.readlines()
                         for n, line_n in enumerate(direct_gaussian_coord_iter):
                             split_line_n = line_n.split()
@@ -661,7 +661,7 @@ def get_final_gaussian_output_file_data(
                             elif n_less_spacers >= 0 and len(split_line_n) != 8:
                                 raise ValueError(
                                     f"ERROR: The directly input file {direct_gaussian_coord_formated_file_name_iter} "
-                                    f"is not in the correct Guassian sytle format"
+                                    f"is not in the correct gaussian sytle format"
                                 )
 
                         # check the values against the past ones
@@ -693,7 +693,7 @@ def get_final_gaussian_output_file_data(
                                 all_number_of_atoms_list,
                                 direct_number_of_atoms_list_iter,
                                 "number of atoms",
-                                "Direct Guassian output file",
+                                "Direct gaussian output file",
                                 direct_gaussian_coord_formated_file_name_iter,
                             )
 
@@ -702,7 +702,7 @@ def get_final_gaussian_output_file_data(
                                 all_element_names_list,
                                 direct_element_names_list_iter,
                                 "element names",
-                                "Direct Guassian output file",
+                                "Direct gaussian output file",
                                 direct_gaussian_coord_formated_file_name_iter,
                             )
 
@@ -711,7 +711,7 @@ def get_final_gaussian_output_file_data(
                                 all_dihedral_atom_numbers_list,
                                 direct_dihedral_atom_numbers_list_iter,
                                 "dihedral atom numbers",
-                                "Direct Guassian output file",
+                                "Direct gaussian output file",
                                 direct_gaussian_coord_formated_file_name_iter,
                             )
 
@@ -731,9 +731,9 @@ def get_final_gaussian_output_file_data(
 def get_gaussian_log_file_data(
     qm_log_files_and_entries_to_remove_dict,
 ):
-    """Get the Guassian/Gausview file data from the log filefor all the optimized configurations.
+    """Get the gaussian/Gausview file data from the log filefor all the optimized configurations.
 
-    This gets the Guassian/Gausview log file data for all the optimized configurations,
+    This gets the gaussian/Gausview log file data for all the optimized configurations,
     allowing the data to be analyzed further.
 
     The proper header format for the GausView/Gaussian output is as follows:
@@ -749,11 +749,11 @@ def get_gaussian_log_file_data(
         order of the dictionary file name (strings).  These removed parameters allow
         users to remove any bad or repeated data points for the QM log file when needed.
 
-        Example 1: {'path/guassian_log_file.log': []}
-        Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+        Example 1: {'path/gaussian_log_file.log': []}
+        Uses all the optimized data points from the 'path/gaussian_log_file.log' file.
 
-        Example 2: {'path/guassian_log_file.log': [0, 23]}
-        Uses all data points from the 'path/guassian_log_file.log' file, except points
+        Example 2: {'path/gaussian_log_file.log': [0, 23]}
+        Uses all data points from the 'path/gaussian_log_file.log' file, except points
         0 and 23.  NOTE: Python counting starts at 0.
 
     Returns
@@ -868,7 +868,7 @@ def get_gaussian_log_file_data(
                 ):
                     dihedral_scan_line = m
 
-                # get the Guassian molecule charge and multiplicity
+                # get the gaussian molecule charge and multiplicity
                 if (
                     len(split_line_m) >= 4
                     and split_line_m[0] == "Charge"
@@ -1181,12 +1181,12 @@ def write_qm_data_files(
             order of the dictionary file name (strings).  These removed parameters allow
             users to remove any bad or repeated data points for the QM log file when needed.
 
-            Example 1: {'path/guassian_log_file.log': []}
+            Example 1: {'path/gaussian_log_file.log': []}
 
-            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+            Uses all the optimized data points from the 'path/gaussian_log_file.log' file.
 
-            Example 2: {'path/guassian_log_file.log': [0, 23]}
-            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            Example 2: {'path/gaussian_log_file.log': [0, 23]}
+            Uses all data points from the 'path/gaussian_log_file.log' file, except points
             0 and 23.  NOTE: Python counting starts at 0.
 
         * qm_engine="gaussian_style_final_files"
@@ -1229,10 +1229,10 @@ def write_qm_data_files(
             | 10      No      Show    10      H       -3.224767       1.255506        -0.130085
 
             Example 1: {'path_to_gaussian_style_final_files': []}
-            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+            Uses all the optimized data points from the 'path/gaussian_log_file.log' file.
 
             Example 2: {'path_to_gaussian_style_final_files': [0, 23]}
-            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            Uses all data points from the 'path/gaussian_log_file.log' file, except points
             0 and 23.  NOTE: Python counting starts at 0.
 
     manual_dihedral_atom_numbers_list: list of 4 integers, default=None
@@ -1248,7 +1248,7 @@ def write_qm_data_files(
 
     Returns
     -------
-    files are written to the created 'extracted_guassian_data' folder:
+    files are written to the created 'extracted_gaussian_data' folder:
         - 'dihedral.txt' file is in the standard Gaussian/Gausview format and
         contains the optimized scanned/rotated dihedral angle and energy in Hartree
         energy units.
@@ -1259,13 +1259,13 @@ def write_qm_data_files(
         in Angstrom units.
     """
     # delete any existing directories and make a new one
-    guassian_directory_name = "extracted_guassian_data"
-    if os.path.isdir(guassian_directory_name):
-        shutil.rmtree(guassian_directory_name)
-    os.mkdir(guassian_directory_name)
+    gaussian_directory_name = "extracted_gaussian_data"
+    if os.path.isdir(gaussian_directory_name):
+        shutil.rmtree(gaussian_directory_name)
+    os.mkdir(gaussian_directory_name)
 
     if qm_engine == "gaussian":
-        # extract the required data to write the Guassian style formatted output files
+        # extract the required data to write the gaussian style formatted output files
         [
             all_dihedral_angle_degrees_list,
             all_energy_hartree_list,
@@ -1301,7 +1301,7 @@ def write_qm_data_files(
         )
     # write the gaussian style formatted angle (degrees) and energy output files
     output_file_dihedral_energy = open(
-        f"extracted_guassian_data/dihedral.txt", "w"
+        f"extracted_gaussian_data/dihedral.txt", "w"
     )
 
     output_file_dihedral_energy.write(
@@ -1319,10 +1319,10 @@ def write_qm_data_files(
 
     output_file_dihedral_energy.close()
 
-    # write the guassian style formatted coordinates file
+    # write the gaussian style formatted coordinates file
     for qm_j in range(0, len(all_dihedral_angle_degrees_list)):
         output_file_dihedral_coordinates = open(
-            f"extracted_guassian_data/dihedral_coords_position_{int(qm_j+1)}.txt",
+            f"extracted_gaussian_data/dihedral_coords_position_{int(qm_j+1)}.txt",
             "w",
         )
 
@@ -1405,12 +1405,12 @@ def get_matching_dihedral_info_and_opls_fitting_data(
             order of the dictionary file name (strings).  These removed parameters allow
             users to remove any bad or repeated data points for the QM log file when needed.
 
-            Example 1: {'path/guassian_log_file.log': []}
+            Example 1: {'path/gaussian_log_file.log': []}
 
-            Uses all the optimized data points from the 'path/guassian_log_file.log' file.
+            Uses all the optimized data points from the 'path/gaussian_log_file.log' file.
 
-            Example 2: {'path/guassian_log_file.log': [0, 23]}
-            Uses all data points from the 'path/guassian_log_file.log' file, except points
+            Example 2: {'path/gaussian_log_file.log': [0, 23]}
+            Uses all data points from the 'path/gaussian_log_file.log' file, except points
             0 and 23.  NOTE: Python counting starts at 0.
 
         * qm_engine="gaussian_style_final_files"
@@ -1707,11 +1707,11 @@ def get_matching_dihedral_info_and_opls_fitting_data(
             matching_dihedral_types_by_atom_type_list.append(dih_atom_type_p)
 
         # check if the QM and PSF file match in atom numbers
-        # NOTE: Guassian and the PSF file start atom counting at 1.
+        # NOTE: gaussian and the PSF file start atom counting at 1.
 
         # extract the data from the QM log file
         if qm_engine == "gaussian":
-            # NOTE: Guassian start atom counting at 1.
+            # NOTE: gaussian start atom counting at 1.
             [
                 dihedral_angle_degrees_list,
                 energy_hartree_list,
@@ -1884,7 +1884,7 @@ def change_gomc_ff_file_dihedral_values(
 
         Example: [['CT', 'CT, 'CT, 'HC'], ['NT', 'CT, 'CT, 'HC']]
 
-    Returns
+    Outputs
     -------
     Write a modified GOMC/CHARMM style force field file
         Force files are written copied from the existing force field file
