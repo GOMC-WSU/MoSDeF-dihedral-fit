@@ -309,14 +309,14 @@ class TestFileReading(BaseTest):
         assert np.shape(coordsList) == (37, 9, 4, 3)
         degreesList = out[3]
         expected_degrees = [
-            180.0,
+            -180.0,
             -60.00001300151252,
             60.00001300151252,
             -60.00001300151252,
             59.99997399697496,
-            180.0,
+            -180.0,
             60.00001300151252,
-            180.0,
+            -180.0,
             -59.99997399697496,
         ]
         assert np.allclose(degreesList[0], expected_degrees)
