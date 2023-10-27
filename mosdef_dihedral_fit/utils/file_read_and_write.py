@@ -1888,7 +1888,7 @@ def change_gomc_ff_file_dihedral_values(
 
         Example: [['CT', 'CT, 'CT, 'HC'], ['NT', 'CT, 'CT, 'HC']]
 
-    Outputs
+    Notes
     -------
     Write a modified GOMC/CHARMM style force field file
         Force files are written copied from the existing force field file
