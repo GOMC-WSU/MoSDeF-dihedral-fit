@@ -12,7 +12,7 @@ fit_dihedral_with_gomc(
         298.15 * u.Kelvin, # relevant temperature
         gomc_binary_directory, # path to binary command from GOMC install
         {"HC_CT_CT_HC_multiplicity_1.log": []}, # log file to store info
-        zeroed_dihedral_atom_types=None, 
+        zeroed_dihedral_atom_types=None,
         qm_engine="gaussian",
         VDWGeometricSigma=False,
         atom_type_naming_style="general",
@@ -47,7 +47,7 @@ This package is made as an API with [MoSDeF](https://github.com/mosdef-hub) and 
     - [MoSDeF tools](https://mosdef.org)
     - [MoSDeF-GOMC integration](https://mosdef-gomc.readthedocs.io/en/latest/index.html)
     - [GOMC Examples](https://github.com/GOMC-WSU/GOMC_Examples/tree/main/MoSDef-GOMC)
-    - 
+    -
 
 ## Citations
     - Please cite MoSDeF-GOMC [here.](https://mosdef-gomc.readthedocs.io/en/latest/reference/citing_mosdef_gomc_python.html)
