@@ -68,7 +68,7 @@ def get_atom_names_and_elements_from_pdb(pdb_directory_and_filename):
     outputting them as lists.
 
     NOTE: This only works if the first column for all atoms/beads is
-    labeled 'ATOM', which is currently on the only output for the PDB
+    labeled 'ATOM' or 'HETATM', which is currently the only output for the PDB
     files via MoSDeF-GOMC.
 
     Parameters
@@ -95,7 +95,10 @@ def get_atom_names_and_elements_from_pdb(pdb_directory_and_filename):
                 get_atom_type_bool = False
 
             # and len(split_line_m) in [10, 11, 12]
-            if split_line_m[0] in ["ATOM"] and get_atom_type_bool is True:
+            if (
+                split_line_m[0] in ["ATOM", "HETATM"]
+                and get_atom_type_bool is True
+            ):
                 atom_name_j = ""
                 element_name_j = ""
                 for fix_space_j in range(12, 12 + len(line_m[12:16])):
@@ -283,9 +286,10 @@ def write_restart_coor_from_xyz_file(coor_files_directory, total_qm_scans):
     # (START)
     # *******************************************
 
+    current_dir = os.getcwd()
     os.chdir(f"{coor_files_directory}")
     vmd.evaltcl(f"source {write_coor_vmd_source_file}")
-    os.chdir(f"..")
+    os.chdir(current_dir)  # go back to starting directory
 
     # *******************************************
     # change to the 'coor_files_directory' directory and write the .coor restart files via VMD
@@ -521,7 +525,7 @@ def get_final_gaussian_output_file_data(
                 )
             if isinstance(value_j, list):
                 for r_i in value_j:
-                    if not isinstance(r_i, int) or r_i < 0:
+                    if not isinstance(r_i, (int, np.int64)) or r_i < 0:
                         raise TypeError(
                             f"ERROR: In the 'get_final_gaussian_output_file_data' function, "
                             f"the 'qm_log_files_and_entries_to_remove_dict' values '{value_j}' "
@@ -1246,7 +1250,7 @@ def write_qm_data_files(
         The QM simulation engine that was utilized also tells the log file readers
         what QM log file read to use for the analysis.
 
-    Returns
+    Notes
     -------
     files are written to the created 'extracted_gaussian_data' folder:
         - 'dihedral.txt' file is in the standard Gaussian/Gausview format and
@@ -1884,7 +1888,7 @@ def change_gomc_ff_file_dihedral_values(
 
         Example: [['CT', 'CT, 'CT, 'HC'], ['NT', 'CT, 'CT, 'HC']]
 
-    Outputs
+    Notes
     -------
     Write a modified GOMC/CHARMM style force field file
         Force files are written copied from the existing force field file

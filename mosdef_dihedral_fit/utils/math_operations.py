@@ -210,7 +210,7 @@ def dihedral_angle(
         dihedral_angle_degrees = -dihedral_angle_degrees
 
     if dihedral_angle_degrees == 180:
-        dihedral_angle_degrees == -180
+        dihedral_angle_degrees = -180
 
     return dihedral_angle_degrees
 

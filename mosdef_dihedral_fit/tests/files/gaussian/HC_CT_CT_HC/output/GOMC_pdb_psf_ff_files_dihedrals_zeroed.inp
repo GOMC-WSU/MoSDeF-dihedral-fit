@@ -1,0 +1,74 @@
+* This file was modified from the original GOMC FF file, by zeroing out the fitted dihedral = ['HC', 'CT', 'CT', 'HC'].
+* NOTE: The selected dihedrals may have been zeroed out in the original force field file (XML file), but are rezeroed here also.
+* GOMC_simulations/GOMC_pdb_psf_ff_files - created by mBuild using the on 2023-10-09 13:54:45.527036.
+* These parameters use the non-bonded LJ form --- with these force field(s) via MoSDef  {'TMP': '/Users/calcraven/Dropbox/Mac/Documents/Vanderbilt/Research/MoSDeF/Dihedral_Fitter/MoSDeF-dihedral-fit/mosdef_dihedral_fit/utils/files/oplsaa_ethane_HC_CT_CT_HC.xml'}.
+*  1-4 electrostatic scaling = {'TMP': 0.5} , and 1-4 non-bonded scaling = {'TMP': 0.5}, and non-bonded mixing rule = geometric
+
+*               8 atoms
+*               7 bonds
+*              12 angles
+*               9 dihedrals
+*               0 impropers
+
+
+* masses
+
+! atom_types      mass            ! atomClass_ResidueName
+* CT              12.011          ! TMP_opls_135
+* HC              1.008           ! TMP_opls_140
+
+BONDS * harmonic
+!
+! V(bond) = Kb(b - b0)**2
+!
+! Kb: kcal/mol/A**2 (LJ) and  K/A**2 (Mie and Exp6)
+! b0: A
+! Kb (kcal/mol) = Kb_K (K) * Boltz. const.; (9999999999 if no stretching)
+!
+! type_1   type_2     Kb              b0              ! extended_type_1      extended_type_2
+CT         CT         268.0           1.529           ! TMP_opls_135         TMP_opls_135
+CT         HC         340.0           1.09            ! TMP_opls_135         TMP_opls_140
+
+ANGLES * harmonic
+!
+! V(angle) = Ktheta(Theta - Theta0)**2
+!
+! Ktheta: kcal/mol/rad**2 (LJ) and  K/rad**2 (Mie and Exp6)
+! Theta0: degrees
+!
+!  Boltzmann = 0.0019872041 kcal / (mol * K)
+!
+! Ktheta (kcal/mol) = Ktheta_K (K) * Boltz. const.
+!
+! type_1   type_2     type_3     Ktheta          Theta0          ! extended_type_1      extended_type_2      extended_type_3
+CT         CT         HC         37.5            110.7           ! TMP_opls_135         TMP_opls_135         TMP_opls_140
+HC         CT         HC         33.0            107.8           ! TMP_opls_140         TMP_opls_135         TMP_opls_140
+
+DIHEDRALS * CHARMM
+!
+! V(dihedral) = Kchi(1 + cos(n(chi) - delta)), where delta also called chi0
+! NOTE: For the CHARMM FF n=0 is a harmonic dihedral, which is not supported. CHARMM FF where n=0 -->  V(dihedral) = Kchi(chi - chi0)**2)
+!
+! Kchi: kcal/mol (LJ) and K (Mie and Exp6)
+! n: multiplicity
+! delta: degrees
+!
+! Kchi (kcal/mol) = Kchi_K (K) * Boltz. const.
+! Boltzmann = 0.0019872041 kcal / (mol * K)
+!
+! type_1   type_2     type_3     type_4     Kchi            n          delta           ! extended_type_1      extended_type_2      extended_type_3      extended_type_4
+HC         CT         CT         HC         0.5             0          90.0            ! TMP_opls_140         TMP_opls_135         TMP_opls_135         TMP_opls_140
+! The input dihedral to periodic dihedral conversion error is OK [error <= 10^(-10)]
+! Maximum( |(input dihedral calc)-(periodic dihedral calc)| ) =  3.608224830031759e-16
+
+NONBONDED
+!
+! V(Lennard-Jones) = Epsilon,i,j[(Rmin,i,j/ri,j)**12 - 2(Rmin,i,j/ri,j)**6]
+!                                    or
+! V(Lennard-Jones) = 4 * Epsilon,i,j[(Sigma,i,j/ri,j)**12 - (Sigma,i,j/ri,j)**6]
+!
+! type_1   ignored         epsilon         Rmin/2          ignored         epsilon,1-4     Rmin/2,1-4      ! extended_type_1      extended_type_2
+CT         0.0             -0.066          1.9643085845    0.0             -0.033          1.9643085845    ! TMP_opls_135         TMP_opls_135
+HC         0.0             -0.03           1.4030775604    0.0             -0.015          1.4030775604    ! TMP_opls_140         TMP_opls_140
+
+END

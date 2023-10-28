@@ -14,7 +14,7 @@ repos:
     - id: check-yaml
     - id: end-of-file-fixer
     - id: trailing-whitespace
-      exclude: '^docs/|setup.cfg|\.txt$|\.log$|\.xyz$'
+      exclude: '^docs/|setup.cfg|\.txt$|\.log$|\.xyz$|\.pdb$|\.mol2$'
 - repo: https://github.com/psf/black
   rev: 23.10.0
   hooks:
@@ -27,5 +27,5 @@ repos:
   hooks:
     - id: isort
       name: isort (python)
-      exclude: '^docs/|setup.cfg|\.txt$|\.log$|\.xyz$'
+      exclude: '^docs/|setup.cfg|\.txt$|\.log$|\.xyz$|\.pdb$|\.mol2$'
       args: [--profile=black, --line-length=80]
