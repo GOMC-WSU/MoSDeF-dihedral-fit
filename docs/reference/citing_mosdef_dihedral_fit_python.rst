@@ -48,6 +48,8 @@ Download as :download:`BibTeX <mosdef_dihedral_fit_zenodo.bib>` or :download:`RI
 
 
 Please also cite the following software:
+	* `MoSDeF-GOMC <https://github.com/GOMC-WSU/MoSDeF-GOMC>`_ -- Python software for the creation of scientific workflows for the Monte Carlo simulation engine GOMC
+
 	* `mBuild <https://mbuild.mosdef.org/en/stable/>`_ -- A hierarchical, component based molecule builder
 
 	* `foyer <https://foyer.mosdef.org/en/stable/>`_ -- A package for atom-typing as well as applying and disseminating forcefields
