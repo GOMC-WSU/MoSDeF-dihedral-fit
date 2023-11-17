@@ -9,11 +9,11 @@ from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import (
     fit_dihedral_with_gomc,
 )
 from mosdef_dihedral_fit.tests.base_test import BaseTest
-from mosdef_dihedral_fit.utils.io import get_mosdef_dihedral_fit_fn
 
 # user changable variable, as it needs to be run locally
 # May try to get a way to automatically detect the binary using `shutil.which()`
 gomc_binary_directory = "/Users/brad/Programs/GOMC/GOMC_2_75/bin"
+gomc_binary_directory = "/Users/calcraven/Documents/Vanderbilt/Research/MoSDeF/Dihedral_Fitter/GOMC/bin"
 
 
 # NOTE: When comparing fitted values with reference value, we are using numpy.isclose() with absolute tolerance of 0.02 and relative tolerance of 0.08 (8%) to account for difference that incur across operating system.
@@ -25,14 +25,14 @@ class TestFitDihedralWithGomc(BaseTest):
     def test_gaussian_log_file_fit_oplsaa_fit_ethane_HC_CT_CT_HC(self):
         fit_dihedral_with_gomc(
             ["HC", "CT", "CT", "HC"],
-            get_mosdef_dihedral_fit_fn(
+            self.get_fn(
                 "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
             ),
-            get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+            self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                 ): [0],
             },
@@ -334,17 +334,17 @@ class TestFitDihedralWithGomc(BaseTest):
     ):
         fit_dihedral_with_gomc(
             ["HC", "CT", "CT", "HC"],
-            get_mosdef_dihedral_fit_fn(
+            self.get_fn(
                 "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
             ),
-            get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+            self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                 ): [0],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log"
                 ): [0],
             },
@@ -646,14 +646,14 @@ class TestFitDihedralWithGomc(BaseTest):
     ):
         fit_dihedral_with_gomc(
             ["CT", "CT", "C", "OH"],
-            get_mosdef_dihedral_fit_fn(
+            self.get_fn(
                 "gaussian/CT_CT_C_OH/input/starting_coords/protonated_fragment_CT_CT_C_OH_in_COOH.mol2"
             ),
-            get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+            self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/CT_CT_C_OH/output/CT_CT_C_OH_multiplicity_1.log"
                 ): [0],
             },
@@ -1297,16 +1297,16 @@ class TestFitDihedralWithGomc(BaseTest):
     ):
         fit_dihedral_with_gomc(
             ["CT", "CT", "C", "OH"],
-            get_mosdef_dihedral_fit_fn(
+            self.get_fn(
                 "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
             ),
-            get_mosdef_dihedral_fit_fn("oplsaa_CT_CT_C_OH_in_COOH_zeroed.xml"),
+            self.get_fn("oplsaa_CT_CT_C_OH_in_COOH_zeroed.xml"),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                get_mosdef_dihedral_fit_fn(
-                    "gaussian_style_output_files/CT_CT_C_OH/output"
-                ): [0],
+                self.get_fn("gaussian_style_output_files/CT_CT_C_OH/output"): [
+                    0
+                ],
             },
             manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
             zeroed_dihedral_atom_types=None,
@@ -1962,14 +1962,14 @@ class TestFitDihedralWithGomc(BaseTest):
     def test_gaussian_style_files_fit_oplsaa_fit_CT_CT_C_OH_in_COOH(self):
         fit_dihedral_with_gomc(
             ["CT", "CT", "C", "OH"],
-            get_mosdef_dihedral_fit_fn(
+            self.get_fn(
                 "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
             ),
-            get_mosdef_dihedral_fit_fn("oplsaa_CT_CT_C_OH_in_COOH_zeroed.xml"),
+            self.get_fn("oplsaa_CT_CT_C_OH_in_COOH_zeroed.xml"),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/output"
                 ): [],
             },
@@ -2629,17 +2629,17 @@ class TestFitDihedralWithGomc(BaseTest):
     ):
         fit_dihedral_with_gomc(
             ["CT", "CT", "C", "OH"],
-            get_mosdef_dihedral_fit_fn(
+            self.get_fn(
                 "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
             ),
-            get_mosdef_dihedral_fit_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+            self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                 ): [],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                 ): [0],
             },
@@ -3312,17 +3312,15 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/CT_CT_C_OH/input/starting_coords/"
                     "protonated_fragment_CT_CT_C_OH_in_COOH_bad_element_order.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/CT_CT_C_OH/output/CT_CT_C_OH_multiplicity_1.log"
                     ): [0],
                 },
@@ -3353,17 +3351,15 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/"
                     "starting_coords/CT_CT_C_3_OH_bad_element_order.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "oplsaa_CT_CT_C_OH_in_COOH_zeroed.xml"
-                ),
+                self.get_fn("oplsaa_CT_CT_C_OH_in_COOH_zeroed.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH/output"
                     ): [],
                 },
@@ -3380,14 +3376,14 @@ class TestFitDihedralWithGomc(BaseTest):
     def test_gaussian_log_file_variable_VDWGeometricSigma_default(self):
         fit_dihedral_with_gomc(
             ["HC", "CT", "CT", "HC"],
-            get_mosdef_dihedral_fit_fn(
+            self.get_fn(
                 "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
             ),
-            get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+            self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                 ): [0],
             },
@@ -3422,14 +3418,14 @@ class TestFitDihedralWithGomc(BaseTest):
     def test_gaussian_log_file_variable_VDWGeometricSigma_True(self):
         fit_dihedral_with_gomc(
             ["HC", "CT", "CT", "HC"],
-            get_mosdef_dihedral_fit_fn(
+            self.get_fn(
                 "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
             ),
-            get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+            self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                 ): [0],
             },
@@ -3464,14 +3460,14 @@ class TestFitDihedralWithGomc(BaseTest):
     def test_gaussian_log_file_variable_VDWGeometricSigma_False(self):
         fit_dihedral_with_gomc(
             ["HC", "CT", "CT", "HC"],
-            get_mosdef_dihedral_fit_fn(
+            self.get_fn(
                 "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
             ),
-            get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+            self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                 ): [0],
             },
@@ -3512,14 +3508,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3541,14 +3537,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 [0, "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3570,14 +3566,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", 1, "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3599,14 +3595,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", 2, "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3628,14 +3624,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", 3],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3658,11 +3654,11 @@ class TestFitDihedralWithGomc(BaseTest):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
                 value_path_mol2,
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3684,11 +3680,11 @@ class TestFitDihedralWithGomc(BaseTest):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
                 value_path_mol2,
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3710,11 +3706,11 @@ class TestFitDihedralWithGomc(BaseTest):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
                 value_path_mol2,
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3736,14 +3732,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
                 value_path_xml,
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3765,14 +3761,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
                 value_path_xml,
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3793,14 +3789,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
                 value_path_xml,
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3820,14 +3816,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.bar,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3847,14 +3843,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0],
                 },
@@ -3876,10 +3872,10 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 ["x"],
@@ -3901,15 +3897,15 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
                     1: [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log"
                     ): [0, 1],
                 },
@@ -3931,14 +3927,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [],
                     2: [0, 1],
@@ -3961,17 +3957,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): "s",
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log"
                     ): [0, 1],
                 },
@@ -3993,17 +3989,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log"
                     ): "x",
                 },
@@ -4025,17 +4021,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [0, "s"],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log"
                     ): "x",
                 },
@@ -4057,17 +4053,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log"
                     ): [0, 5, "s"],
                 },
@@ -4089,17 +4085,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [-1],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log"
                     ): [0, 5],
                 },
@@ -4121,17 +4117,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1_copy_for_test.log"
                     ): [0, -5],
                 },
@@ -4151,14 +4147,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 99999,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [],
                 },
@@ -4180,14 +4176,14 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
+                self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
                 f"gomc_binary_directory",
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                     ): [],
                 },
@@ -4209,19 +4205,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4244,19 +4238,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4279,19 +4271,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4314,19 +4304,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4352,19 +4340,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4390,19 +4376,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4428,19 +4412,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4466,19 +4448,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4502,19 +4482,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4540,19 +4518,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4576,19 +4552,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4612,19 +4586,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4648,19 +4620,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4685,19 +4655,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4722,19 +4690,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4759,19 +4725,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4796,19 +4760,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4833,19 +4795,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4870,19 +4830,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4928,19 +4886,17 @@ class TestFitDihedralWithGomc(BaseTest):
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
-                get_mosdef_dihedral_fit_fn(
+                self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                get_mosdef_dihedral_fit_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
                     ): [],
-                    get_mosdef_dihedral_fit_fn(
+                    self.get_fn(
                         "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
                     ): [0],
                 },
@@ -4959,18 +4915,16 @@ class TestFitDihedralWithGomc(BaseTest):
     ):
         fit_dihedral_with_gomc(
             ["CT", "CT", "C", "OH"],
-            get_mosdef_dihedral_fit_fn(
+            self.get_fn(
                 "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
             ),
-            get_mosdef_dihedral_fit_fn(
-                "gmso_oplsaa_Mie_style_CT_CT_C_OH_in_COOH.xml"
-            ),
+            self.get_fn("gmso_oplsaa_Mie_style_CT_CT_C_OH_in_COOH.xml"),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                get_mosdef_dihedral_fit_fn(
-                    "gaussian_style_output_files/CT_CT_C_OH/output"
-                ): [0],
+                self.get_fn("gaussian_style_output_files/CT_CT_C_OH/output"): [
+                    0
+                ],
             },
             manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
             zeroed_dihedral_atom_types=[["CT", "CT", "C", "O_3"]],
