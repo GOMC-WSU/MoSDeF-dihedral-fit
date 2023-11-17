@@ -21,7 +21,6 @@ from mosdef_dihedral_fit.utils.file_read_and_write import (
     write_restart_coor_from_xyz_file,
     write_xyz_file_from_gaussian_coordinates,
 )
-from mosdef_dihedral_fit.utils.io import get_mosdef_dihedral_fit_fn
 
 # user changable variable, as it needs to be run locally
 # gomc_binary_directory = "/Users/brad/Programs/GOMC/GOMC_2_75/bin"
@@ -31,7 +30,7 @@ gomc_binary_directory = "/Users/calcraven/Documents/Vanderbilt/Research/MoSDeF/D
 class TestFileReading(BaseTest):
     def test_get_from_mol2(self):
         fn = "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
-        full_fn = get_mosdef_dihedral_fit_fn(fn)
+        full_fn = self.get_fn(fn)
         (
             atom_namesList,
             element_namesList,
@@ -66,7 +65,7 @@ class TestFileReading(BaseTest):
 
     def test_get_from_pdb(self):
         fn = "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.pdb"
-        full_fn = get_mosdef_dihedral_fit_fn(fn)
+        full_fn = self.get_fn(fn)
         (
             atom_namesList,
             element_namesList,
@@ -114,7 +113,7 @@ class TestFileReading(BaseTest):
             "H6",
         ]
         fn = "gaussian_style_output_files/CT_CT_C_OH/output/"
-        full_fn = get_mosdef_dihedral_fit_fn(fn) + "dihedral_coords_position_"
+        full_fn = os.path.join(self.get_fn(fn), "dihedral_coords_position_")
         extension = ".txt"
 
         write_xyz_file_from_gaussian_coordinates(

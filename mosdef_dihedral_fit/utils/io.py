@@ -16,7 +16,7 @@ def get_mosdef_dihedral_fit_fn(filename):
         Full path to filename
     """
     full_path_and_filename = resource_filename(
-        "mosdef_dihedral_fit", os.path.join("utils", "files", filename)
+        "mosdef_dihedral_fit", os.path.join("tests/", "files", filename)
     )
     if not os.path.exists(full_path_and_filename):
         raise ValueError(
