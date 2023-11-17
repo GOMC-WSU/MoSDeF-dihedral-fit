@@ -25,16 +25,17 @@ fit_dihedral_with_gomc(
     )
 import os
 os.system("cat RB_torsion_k_constants_fit_energy.txt")
+os.system("cat opls_torsion_k_constants_fit_energy.txt")
+os.system("cat periodic_torsion_k_constants_fit_energy.txt")
 ```
 
 ## Installation/Setup
 ```
-conda install -c conda-forge mosdef_dihedral_fit
+conda install -c conda-forge mosdef-dihedral-fit
 git clone https://github.com/GOMC-WSU/GOMC.git
 cd GOMC
 chmod u+x metamake.sh
 ./metamake.sh
-./GOMC_<CPU|GPU>_XXXX +p4 in.conf # set to 4 threads
 ```
 
 ## Documentation
@@ -53,3 +54,4 @@ This package is made as an API with [MoSDeF](https://github.com/mosdef-hub) and 
 
 ## Citations
     - Please cite MoSDeF-GOMC [here.](https://mosdef-gomc.readthedocs.io/en/latest/reference/citing_mosdef_gomc_python.html)
+    - Other tools used in this package can be found in the MoSDeF-Dihedral-Fit documentation.
