@@ -1304,9 +1304,9 @@ class TestFitDihedralWithGomc(BaseTest):
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                self.get_fn(
-                    "gaussian_style_output_files/CT_CT_C_OH/output"
-                ): [0],
+                self.get_fn("gaussian_style_output_files/CT_CT_C_OH/output"): [
+                    0
+                ],
             },
             manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
             zeroed_dihedral_atom_types=None,
@@ -3316,9 +3316,7 @@ class TestFitDihedralWithGomc(BaseTest):
                     "gaussian/CT_CT_C_OH/input/starting_coords/"
                     "protonated_fragment_CT_CT_C_OH_in_COOH_bad_element_order.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -3357,9 +3355,7 @@ class TestFitDihedralWithGomc(BaseTest):
                     "gaussian_style_output_files/CT_CT_C_OH/input/"
                     "starting_coords/CT_CT_C_3_OH_bad_element_order.mol2"
                 ),
-                self.get_fn(
-                    "oplsaa_CT_CT_C_OH_in_COOH_zeroed.xml"
-                ),
+                self.get_fn("oplsaa_CT_CT_C_OH_in_COOH_zeroed.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4212,9 +4208,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4247,9 +4241,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4282,9 +4274,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4317,9 +4307,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4355,9 +4343,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4393,9 +4379,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4431,9 +4415,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4469,9 +4451,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4505,9 +4485,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4543,9 +4521,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4579,9 +4555,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4615,9 +4589,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4651,9 +4623,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4688,9 +4658,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4725,9 +4693,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4762,9 +4728,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4799,9 +4763,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4836,9 +4798,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4873,9 +4833,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4931,9 +4889,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 self.get_fn(
                     "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
                 ),
-                self.get_fn(
-                    "gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"
-                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
                 298.15 * u.Kelvin,
                 gomc_binary_directory,
                 {
@@ -4962,15 +4918,13 @@ class TestFitDihedralWithGomc(BaseTest):
             self.get_fn(
                 "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
             ),
-            self.get_fn(
-                "gmso_oplsaa_Mie_style_CT_CT_C_OH_in_COOH.xml"
-            ),
+            self.get_fn("gmso_oplsaa_Mie_style_CT_CT_C_OH_in_COOH.xml"),
             298.15 * u.Kelvin,
             gomc_binary_directory,
             {
-                self.get_fn(
-                    "gaussian_style_output_files/CT_CT_C_OH/output"
-                ): [0],
+                self.get_fn("gaussian_style_output_files/CT_CT_C_OH/output"): [
+                    0
+                ],
             },
             manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
             zeroed_dihedral_atom_types=[["CT", "CT", "C", "O_3"]],
