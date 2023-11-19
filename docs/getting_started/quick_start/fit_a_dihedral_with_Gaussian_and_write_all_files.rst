@@ -112,11 +112,6 @@ The plotted dihedral fits:
    #. opls_all_summed_dihedrals_k_constants_figure.pdf
 
 
-The plotted dihedral fits:
-   #. opls_all_single_fit_dihedral_k_constants_figure.pdf
-   #. opls_all_summed_dihedrals_k_constants_figure.pdf
-
-
 Fit a dihedral for propionic acid using Gaussian-style output files
 -------------------------------------------------------------------
 The propionic acid CT-CT-C-OH dihedral fit example is provided below. This is an example where the CT-CT-C-OH is fit for both
