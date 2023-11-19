@@ -1723,9 +1723,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                 all_element_names_list,
                 number_of_atoms_list,
                 dihedral_atom_numbers_list,
-            ] = get_gaussian_log_file_data(
-                qm_log_file_dict
-            )
+            ] = get_gaussian_log_file_data(qm_log_file_dict)
 
         elif qm_engine == "gaussian_style_final_files":
             if manual_dihedral_atom_numbers_list == None:
@@ -2281,9 +2279,7 @@ def change_gomc_ff_file_dihedral_values(
                     )
                 )
 
-                status_written_zero_dihedral_atom_types_dict[
-                    str(dih_m)
-                ] = True
+                status_written_zero_dihedral_atom_types_dict[str(dih_m)] = True
 
             elif (
                 str(dih_m)
@@ -2292,13 +2288,9 @@ def change_gomc_ff_file_dihedral_values(
                 not in list(status_written_fit_dihedral_atom_types_dict.keys())
             ) and (
                 str(dih_m)
-                not in list(
-                    status_written_zero_dihedral_atom_types_dict.keys()
-                )
+                not in list(status_written_zero_dihedral_atom_types_dict.keys())
                 and str(dih_m_reverse)
-                not in list(
-                    status_written_zero_dihedral_atom_types_dict.keys()
-                )
+                not in list(status_written_zero_dihedral_atom_types_dict.keys())
             ):
                 gomc_modified_kvalues_ff_file.write(f"{line_m}")
 

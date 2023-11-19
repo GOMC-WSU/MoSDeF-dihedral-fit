@@ -169,7 +169,9 @@ class TestFileReading(BaseTest):
         assert n_atoms == 8
 
     def test_get_gaussian_log_file_data(self):
-        full_path = self.get_fn("gaussian/CT_CT_C_OH/output/CT_CT_C_OH_multiplicity_1.log")
+        full_path = self.get_fn(
+            "gaussian/CT_CT_C_OH/output/CT_CT_C_OH_multiplicity_1.log"
+        )
         out_indices = []
         out = get_gaussian_log_file_data({full_path: out_indices})
         anglesList = out[0]
@@ -247,7 +249,9 @@ class TestFileReading(BaseTest):
         assert dihedral_atoms == [5, 1, 2, 3]
 
     def test_write_qm_data_files(self):
-        full_path = self.get_fn("gaussian/CT_CT_C_OH/output/CT_CT_C_OH_multiplicity_1.log")
+        full_path = self.get_fn(
+            "gaussian/CT_CT_C_OH/output/CT_CT_C_OH_multiplicity_1.log"
+        )
         out_indices = []
         write_qm_data_files({full_path: out_indices})
         assert os.path.exists("extracted_gaussian_data/dihedral.txt")

@@ -611,15 +611,14 @@ def fit_dihedral_with_gomc(
     # Set the VDWGeometricSigma variable from the combining_rule
     if combining_rule == None:
         VDWGeometricSigma = None
-    elif combining_rule == 'geometric':
+    elif combining_rule == "geometric":
         VDWGeometricSigma = True
-    elif combining_rule == 'lorentz':
+    elif combining_rule == "lorentz":
         VDWGeometricSigma = False
     else:
         raise ValueError(
             "ERROR: Please enter the 'combining_rule' file as a string of 'geometric' or 'lorentz' or None."
         )
-
 
     # test the 'atom_type_naming_style' input
     if isinstance(atom_type_naming_style, str):
@@ -637,9 +636,7 @@ def fit_dihedral_with_gomc(
 
     # test the 'r_squared_min' input
     if isinstance(r_squared_min, float):
-        if not (
-            r_squared_min > 0 and r_squared_min < 1
-        ):
+        if not (r_squared_min > 0 and r_squared_min < 1):
             raise ValueError(
                 f"ERROR: The 'r_squared_min'= {r_squared_min}, "
                 f"but it must be a 0<float<1."
@@ -653,10 +650,7 @@ def fit_dihedral_with_gomc(
 
     # test the 'r_squared_rtol' input
     if isinstance(r_squared_rtol, float):
-        if not (
-            r_squared_rtol > 0
-            and r_squared_rtol < 1
-        ):
+        if not (r_squared_rtol > 0 and r_squared_rtol < 1):
             raise ValueError(
                 f"ERROR: The 'r_squared_rtol' = {r_squared_rtol}, "
                 f"but it must be a 0<float<1."
