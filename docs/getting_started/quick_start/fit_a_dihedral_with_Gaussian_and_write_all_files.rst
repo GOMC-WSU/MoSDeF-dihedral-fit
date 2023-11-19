@@ -91,16 +91,25 @@ The most important output files:
 .. code:: ipython3
 
     # The OPLS dihedral fit constants
+    print('The OPLS dihedral fit constants:\n')
     os.system("cat opls_dihedral_k_constants_fit_energy.txt")
 
-    # The periodic dihedral fit constants
+    # The converted OPLS to periodic dihedral fit constants
+    print('The converted OPLS to periodic dihedral fit constants:\n')
     os.system("cat periodic_dihedral_k_constants_fit_energy.txt")
 
-    # The RB-torsions dihedral fit constants
+    # The converted OPLS to RB-torsions dihedral fit constants
+    print('The converted OPLS to RB-torsions dihedral fit constants:\n')
     os.system("cat RB_torsion_k_constants_fit_energy.txt")
 
-    # This file contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit) 
+    # This file contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit)
+    print('This file contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit):\n')
     os.system("cat all_normalized_energies_in_kcal_per_mol.txt")
+
+
+The plotted dihedral fits:
+   #. opls_all_single_fit_dihedral_k_constants_figure.pdf
+   #. opls_all_summed_dihedrals_k_constants_figure.pdf
 
 
 The plotted dihedral fits:
@@ -199,15 +208,19 @@ The most important output files:
 .. code:: ipython3
 
     # The OPLS dihedral fit constants
+    print('The OPLS dihedral fit constants:\n')
     os.system("cat opls_dihedral_k_constants_fit_energy.txt")
 
-    # The periodic dihedral fit constants
+    # The converted OPLS to periodic dihedral fit constants
+    print('The converted OPLS to periodic dihedral fit constants:\n')
     os.system("cat periodic_dihedral_k_constants_fit_energy.txt")
 
-    # The RB-torsions dihedral fit constants
+    # The converted OPLS to RB-torsions dihedral fit constants
+    print('The converted OPLS to RB-torsions dihedral fit constants:\n')
     os.system("cat RB_torsion_k_constants_fit_energy.txt")
 
-    # This file contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit) 
+    # This file contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit)
+    print('This file contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit):\n')
     os.system("cat all_normalized_energies_in_kcal_per_mol.txt")
 
 
