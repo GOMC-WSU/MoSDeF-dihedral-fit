@@ -92,7 +92,7 @@ The propionic acid CT-CT-C-OH dihedral fit example is provided below. This is an
 CT-CT-C-OH and CT-CT-C-O, by fitting the CT-CT-C-OH and zeroing the CT-CT-C-O, which makes it easier to fit.
 
 Additionally, one can perform the dihedral fit with QM calculations with any QM engine as long as they are in the
-`Gaussian style output files format <https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/tree/main/mosdef_dihedral_fit/utils/files/gaussian_style_output_files>`_
+`Gaussian style output files format <https://github.com/bc118/MoSDeF-dihedral-fit/tree/main/mosdef_dihedral_fit/tests/files/gaussian_style_output_files>`_
 together with the GOMC Molecular Mechanics (MM) engine, and write out all the viable dihedral fits via the standard
 OPLS equation.  It also outputs the periodic dihedral format and the RB torsions format,
 which are analytically converted from the standard OPLS dihedral fit.
