@@ -128,11 +128,11 @@ class TestFileReading(BaseTest):
         assert "dihedral_coords_position_2.coor" in os.listdir()
 
     def test_check_gaussian_angle_energy_file_correct(self):
-        full_path = self.get_fn("dihedral.txt")
+        full_path = self.get_fn("gaussian_style_output_files/CT_CT_C_OH/output/dihedral.txt")
         assert check_gaussian_angle_energy_file_correct(full_path)
 
     def test_check_gaussian_optimized_coordinate_file_correct(self):
-        full_path = self.get_fn("dihedral_coords_position_36.txt")
+        full_path = self.get_fn("gaussian_style_output_files/CT_CT_C_OH/output/dihedral_coords_position_36.txt")
         assert check_gaussian_optimized_coordinate_file_correct(full_path)
 
     def test_get_final_gaussian_output_file_data(self):
