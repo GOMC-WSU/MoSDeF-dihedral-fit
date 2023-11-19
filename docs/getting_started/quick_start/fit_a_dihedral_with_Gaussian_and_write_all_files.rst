@@ -118,7 +118,7 @@ Select the desired variables, file, and set the temperature.
     mol2_file = 'path_to_file/CT_CT_C_3_OH.mol2'
 
     # The temperature of the Molecular Mechanics (MM) simulation.
-    temperature_in_unyt_units = 298.15 * u.Kelvin
+    temperature_in_unyt_units = 25 * u.Celcius
 
 
     # Override the chosen mixing rule (combining_rule), 'geometric' or 'lorentz'), 
