@@ -22,6 +22,7 @@ Import the required packages.
 
     import unyt as u
     from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import fit_dihedral_with_gomc
+    import os
 
 Select the desired variables, file, and set the temperature.
 
@@ -85,6 +86,27 @@ Run the dihedral fit to fit to the MM simulations:
         r_squared_rtol=1e-03
     )
 
+The most important output files:
+
+.. code:: ipython3
+
+    # The OPLS dihedral fit constants
+    os.system("cat opls_dihedral_k_constants_fit_energy.txt")
+
+    # The periodic dihedral fit constants
+    os.system("cat periodic_dihedral_k_constants_fit_energy.txt")
+
+    # The RB-torsions dihedral fit constants
+    os.system("cat RB_torsion_k_constants_fit_energy.txt")
+
+    # The OPLS fit constants
+    os.system("cat all_normalized_energies_in_kcal_per_mol.txt") # contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit)
+
+
+The plotted dihedral fits:
+   #. opls_all_single_fit_dihedral_k_constants_figure.pdf
+   #. opls_all_summed_dihedrals_k_constants_figure.pdf
+
 
 Fit a dihedral for propionic acid using Gaussian-style output files
 -------------------------------------------------------------------
@@ -106,6 +128,7 @@ Import the required packages.
 
     import unyt as u
     from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import fit_dihedral_with_gomc
+    import os
 
 Select the desired variables, file, and set the temperature.
 
@@ -170,3 +193,24 @@ Run the dihedral fit to fit to the MM simulations:
     	r_squared_min=0.99,
     	r_squared_rtol=5e-03
     )
+
+The most important output files:
+
+.. code:: ipython3
+
+    # The OPLS dihedral fit constants
+    os.system("cat opls_dihedral_k_constants_fit_energy.txt")
+
+    # The periodic dihedral fit constants
+    os.system("cat periodic_dihedral_k_constants_fit_energy.txt")
+
+    # The RB-torsions dihedral fit constants
+    os.system("cat RB_torsion_k_constants_fit_energy.txt")
+
+    # The OPLS fit constants
+    os.system("cat all_normalized_energies_in_kcal_per_mol.txt") # contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit)
+
+
+The plotted dihedral fits:
+   #. opls_all_single_fit_dihedral_k_constants_figure.pdf
+   #. opls_all_summed_dihedrals_k_constants_figure.pdf
