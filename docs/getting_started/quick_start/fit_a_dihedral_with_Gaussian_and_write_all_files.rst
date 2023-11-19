@@ -99,8 +99,8 @@ The most important output files:
     # The RB-torsions dihedral fit constants
     os.system("cat RB_torsion_k_constants_fit_energy.txt")
 
-    # The OPLS fit constants
-    os.system("cat all_normalized_energies_in_kcal_per_mol.txt") # contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit)
+    # This file contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit) 
+    os.system("cat all_normalized_energies_in_kcal_per_mol.txt")
 
 
 The plotted dihedral fits:
@@ -207,8 +207,8 @@ The most important output files:
     # The RB-torsions dihedral fit constants
     os.system("cat RB_torsion_k_constants_fit_energy.txt")
 
-    # The OPLS fit constants
-    os.system("cat all_normalized_energies_in_kcal_per_mol.txt") # contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit)
+    # This file contains the raw points used in the fits (QM - MM_less_dihedral(s)_energy being fit) 
+    os.system("cat all_normalized_energies_in_kcal_per_mol.txt")
 
 
 The plotted dihedral fits:
