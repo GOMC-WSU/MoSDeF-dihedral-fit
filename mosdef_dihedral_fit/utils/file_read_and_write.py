@@ -444,7 +444,7 @@ def check_gaussian_optimized_coordinate_file_correct(
 
 
 def get_final_gaussian_output_file_data(
-    qm_log_files_and_entries_to_remove_dict, manual_dihedral_atom_numbers_list
+    qm_log_file_dict, manual_dihedral_atom_numbers_list
 ):
     """Get the gaussian/Gausview file data from the existing gaussian/Gausview files.
 
@@ -457,7 +457,7 @@ def get_final_gaussian_output_file_data(
 
     Parameters
     ----------
-    qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
+    qm_log_file_dict: dict, {str: [int, ..., int]}
         This is a dictionary comprised of a key (string) of the QM gaussian/Gausview file
         data path and name,
         and a list of integers, which are the QM optimization parameters to remove from
@@ -481,46 +481,46 @@ def get_final_gaussian_output_file_data(
     list of:
         all_dihedral_angle_degrees_list: list (nested list)
             This is the list of the optimized Gaussian dihedral angles (degrees) with the
-            specific angles removed per the 'qm_log_files_and_entries_to_remove_dict' list
+            specific angles removed per the 'qm_log_file_dict' list
             (value) input. This is a nested list, with an inner list for every
-            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
+            Gaussian log file or 'qm_log_file_dict' (key).
         all_energy_hartree_list: list (nested list)
             This is the list of the optimized Gaussian energies with the specific energies
-            (hartree) removed per the 'qm_log_files_and_entries_to_remove_dict' list
+            (hartree) removed per the 'qm_log_file_dict' list
             (value) input. This is a nested list, with an inner list for every
-            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
+            Gaussian log file or 'qm_log_file_dict' (key).
         all_coordinates_ang_list: list (nested list)
             This is the list of the optimized Gaussian energies with the specific energies
-            (hartree) removed per the 'qm_log_files_and_entries_to_remove_dict' list
+            (hartree) removed per the 'qm_log_file_dict' list
             (value) input. This is a nested list, with an inner list for every
-            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
+            Gaussian log file or 'qm_log_file_dict' (key).
         element_names_list: list
             This is the list of the Gaussian element names per the
-            'qm_log_files_and_entries_to_remove_dict' list (value) input.
+            'qm_log_file_dict' list (value) input.
             The list length is dependant on the number of elements in the Gaussian log file
             These values are confirmed to be the same for all entered Gaussian log files.
         number_of_atoms: int
             This is the number of atoms in the Gaussian
-            'qm_log_files_and_entries_to_remove_dict' list (value) input.
+            'qm_log_file_dict' list (value) input.
             These values are confirmed to be the same for all entered Gaussian log files.
         manual_dihedral_atom_numbers_list: list, list of four (4) int (example: [3,2,1,5])
         This is a list of the dihedral atom numbers in order that were used for the dihedral
         fit. This information needs to be correct and in order to produce correct results.
         The values must be the same in all the combined files.
     """
-    if not isinstance(qm_log_files_and_entries_to_remove_dict, dict):
+    if not isinstance(qm_log_file_dict, dict):
         raise TypeError(
             f"ERROR: In the 'get_final_gaussian_output_file_data' function, "
             f"the Gaussian 'log_files_and_entries_to_remove_dict' variable "
-            f"is a {type(qm_log_files_and_entries_to_remove_dict)} not a dict."
+            f"is a {type(qm_log_file_dict)} not a dict."
         )
 
     else:
-        for key_j, value_j in qm_log_files_and_entries_to_remove_dict.items():
+        for key_j, value_j in qm_log_file_dict.items():
             if not isinstance(key_j, str):
                 raise ValueError(
                     f"ERROR: In the 'get_final_gaussian_output_file_data' function, "
-                    f"the 'qm_log_files_and_entries_to_remove_dict' key "
+                    f"the 'qm_log_file_dict' key "
                     f"'{key_j}' is a {type(key_j)} not a string."
                 )
             if isinstance(value_j, list):
@@ -528,13 +528,13 @@ def get_final_gaussian_output_file_data(
                     if not isinstance(r_i, (int, np.int64)) or r_i < 0:
                         raise TypeError(
                             f"ERROR: In the 'get_final_gaussian_output_file_data' function, "
-                            f"the 'qm_log_files_and_entries_to_remove_dict' values '{value_j}' "
+                            f"the 'qm_log_file_dict' values '{value_j}' "
                             f"are all not integers and >=0."
                         )
             else:
                 raise TypeError(
                     f"ERROR: In the 'get_final_gaussian_output_file_data' function, "
-                    f"the 'qm_log_files_and_entries_to_remove_dict' "
+                    f"the 'qm_log_file_dict' "
                     f"'{value_j}' is a {type(value_j)} not a list."
                 )
 
@@ -568,7 +568,7 @@ def get_final_gaussian_output_file_data(
     for (
         direct_gaussian_folder_iter,
         entries_to_remove_list_iter,
-    ) in qm_log_files_and_entries_to_remove_dict.items():
+    ) in qm_log_file_dict.items():
         # reset the dihedral used per file
         all_used_and_unused_dihedral_angle_degrees_list = []
 
@@ -733,7 +733,7 @@ def get_final_gaussian_output_file_data(
 
 
 def get_gaussian_log_file_data(
-    qm_log_files_and_entries_to_remove_dict,
+    qm_log_file_dict,
 ):
     """Get the gaussian/Gausview file data from the log filefor all the optimized configurations.
 
@@ -746,7 +746,7 @@ def get_gaussian_log_file_data(
 
     Parameters
     ----------
-    qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
+    qm_log_file_dict: dict, {str: [int, ..., int]}
         This is a dictionary comprised of a key (string) of the QM log file path and name,
         and a list of integers, which are the QM optimization parameters to remove from
         the written data, in order of reading from each file. These can be seen in the
@@ -765,48 +765,48 @@ def get_gaussian_log_file_data(
     list of:
         all_dihedral_angle_degrees_list: list (nested list)
             This is the list of the optimized Gaussian dihedral angles (degrees) with the
-            specific angles removed per the 'qm_log_files_and_entries_to_remove_dict' list
+            specific angles removed per the 'qm_log_file_dict' list
             (value) input. This is a nested list, with an inner list for every
-            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
+            Gaussian log file or 'qm_log_file_dict' (key).
         all_energy_hartree_list: list (nested list)
             This is the list of the optimized Gaussian energies with the specific energies
-            (hartree) removed per the 'qm_log_files_and_entries_to_remove_dict' list
+            (hartree) removed per the 'qm_log_file_dict' list
             (value) input. This is a nested list, with an inner list for every
-            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
+            Gaussian log file or 'qm_log_file_dict' (key).
         all_coordinates_ang_list: list (nested list)
             This is the list of the optimized Gaussian energies with the specific energies
-            (hartree) removed per the 'qm_log_files_and_entries_to_remove_dict' list
+            (hartree) removed per the 'qm_log_file_dict' list
             (value) input. This is a nested list, with an inner list for every
-            Gaussian log file or 'qm_log_files_and_entries_to_remove_dict' (key).
+            Gaussian log file or 'qm_log_file_dict' (key).
         element_names_list: list
             This is the list of the Gaussian element names per the
-            'qm_log_files_and_entries_to_remove_dict' list (value) input.
+            'qm_log_file_dict' list (value) input.
             The list length is dependant on the number of elements in the Gaussian log file
             These values are confirmed to be the same for all entered Gaussian log files.
         number_of_atoms: int
             This is the number of atoms in the Gaussian
-            'qm_log_files_and_entries_to_remove_dict' list (value) input.
+            'qm_log_file_dict' list (value) input.
             These values are confirmed to be the same for all entered Gaussian log files.
         dihedral_atom_numbers_list: list of 4 integers
             This is the list of the dihedral atom numbers used in the Gaussian
             dihedral scan, which are taken from the Gaussian
-            'qm_log_files_and_entries_to_remove_dict' list (value) input.
+            'qm_log_file_dict' list (value) input.
             These values are confirmed to be the same for all entered Gaussian log files.
 
     """
-    if not isinstance(qm_log_files_and_entries_to_remove_dict, dict):
+    if not isinstance(qm_log_file_dict, dict):
         raise TypeError(
             f"ERROR: In the 'get_gaussian_log_file_data' function, "
             f"the Gaussian 'log_files_and_entries_to_remove_dic' variable "
-            f"is a {type(qm_log_files_and_entries_to_remove_dict)} not a dict."
+            f"is a {type(qm_log_file_dict)} not a dict."
         )
 
     else:
-        for key_j, value_j in qm_log_files_and_entries_to_remove_dict.items():
+        for key_j, value_j in qm_log_file_dict.items():
             if not isinstance(key_j, str):
                 raise ValueError(
                     f"ERROR: In the 'get_gaussian_log_file_data' function, "
-                    f"the 'qm_log_files_and_entries_to_remove_dict' key "
+                    f"the 'qm_log_file_dict' key "
                     f"'{key_j}' is a {type(key_j)} not a string."
                 )
             if isinstance(value_j, list):
@@ -814,13 +814,13 @@ def get_gaussian_log_file_data(
                     if not isinstance(r_i, int) or r_i < 0:
                         raise TypeError(
                             f"ERROR: In the 'get_gaussian_log_file_data' function, "
-                            f"the 'qm_log_files_and_entries_to_remove_dict' values '{value_j}' "
+                            f"the 'qm_log_file_dict' values '{value_j}' "
                             f"are all not integers and >=0."
                         )
             else:
                 raise TypeError(
                     f"ERROR: In the 'get_gaussian_log_file_data' function, "
-                    f"the 'qm_log_files_and_entries_to_remove_dict' "
+                    f"the 'qm_log_file_dict' "
                     f"'{value_j}' is a {type(value_j)} not a list."
                 )
 
@@ -837,7 +837,7 @@ def get_gaussian_log_file_data(
     for (
         log_file_iter,
         entries_to_remove_list_iter,
-    ) in qm_log_files_and_entries_to_remove_dict.items():
+    ) in qm_log_file_dict.items():
         # run each log file
         with open(log_file_iter, "r") as fp:
             dihedral_scan_line = None
@@ -1167,7 +1167,7 @@ def get_gaussian_log_file_data(
 
 
 def write_qm_data_files(
-    qm_log_files_and_entries_to_remove_dict,
+    qm_log_file_dict,
     manual_dihedral_atom_numbers_list=None,
     qm_engine="gaussian",
 ):
@@ -1177,7 +1177,7 @@ def write_qm_data_files(
 
     Parameters
     ----------
-    qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
+    qm_log_file_dict: dict, {str: [int, ..., int]}
         * qm_engine="gaussian"
             This is a dictionary comprised of a key (string) of the QM log file path and name,
             and a list of integers, which are the QM optimization parameters to remove from
@@ -1277,7 +1277,7 @@ def write_qm_data_files(
             element_names_list,
             number_of_atoms,
             dihedral_atom_numbers_list,
-        ] = get_gaussian_log_file_data(qm_log_files_and_entries_to_remove_dict)
+        ] = get_gaussian_log_file_data(qm_log_file_dict)
 
     elif qm_engine == "gaussian_style_final_files":
         if manual_dihedral_atom_numbers_list == None:
@@ -1293,7 +1293,7 @@ def write_qm_data_files(
             number_of_atoms,
             dihedral_atom_numbers_list,
         ] = get_final_gaussian_output_file_data(
-            qm_log_files_and_entries_to_remove_dict,
+            qm_log_file_dict,
             manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
         )
 
@@ -1365,8 +1365,8 @@ def write_qm_data_files(
 def get_matching_dihedral_info_and_opls_fitting_data(
     fit_dihedral_atom_types,
     psf_path_and_filename,
-    qm_log_files_and_entries_to_remove_dict,
-    mol2_selection,
+    qm_log_file_dict,
+    mol2_file,
     qm_engine="gaussian",
     manual_dihedral_atom_numbers_list=None,
 ):
@@ -1396,12 +1396,12 @@ def get_matching_dihedral_info_and_opls_fitting_data(
     psf_path_and_filename: str
         The path and filename of the PSF file, which shall be used to extract and map the
         dihedrals atom types/classes and all their associated atom number.
-    mol2_selection: str
+    mol2_file: str
         The mol2 file which matches the element, atom type, bonded connnections,
         the 'EXACT ATOM ORDER AND CONFIGURATION AS IN THE QM SIMULATION INPUT FILES'.
         This is required to know the MM bonding in the atoms, because QM simulations
         do not explictly specify the system bonds.
-    qm_log_files_and_entries_to_remove_dict: dict, {str: [int, ..., int]}
+    qm_log_file_dict: dict, {str: [int, ..., int]}
         * qm_engine="gaussian"
             This is a dictionary comprised of a key (string) of the QM log file path and name,
             and a list of integers, which are the QM optimization parameters to remove from
@@ -1723,9 +1723,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                 all_element_names_list,
                 number_of_atoms_list,
                 dihedral_atom_numbers_list,
-            ] = get_gaussian_log_file_data(
-                qm_log_files_and_entries_to_remove_dict
-            )
+            ] = get_gaussian_log_file_data(qm_log_file_dict)
 
         elif qm_engine == "gaussian_style_final_files":
             if manual_dihedral_atom_numbers_list == None:
@@ -1741,7 +1739,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                 number_of_atoms_list,
                 dihedral_atom_numbers_list,
             ] = get_final_gaussian_output_file_data(
-                qm_log_files_and_entries_to_remove_dict,
+                qm_log_file_dict,
                 manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
             )
         else:
@@ -1754,7 +1752,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
         [
             atom_name_mol2_list,
             element_name_mol2_list,
-        ] = get_atom_names_and_elements_from_mol2(mol2_selection)
+        ] = get_atom_names_and_elements_from_mol2(mol2_file)
         if all_element_names_list != element_name_mol2_list:
             raise ValueError(
                 f"ERROR: The QM elements do not match the mol2 file elements, in order. \n"
@@ -1856,17 +1854,17 @@ def change_gomc_ff_file_dihedral_values(
     new_gomc_ff_filename,
     fit_dihedral_atom_types,
     fit_dihedral_opls_k_0_1_2_3_4_values=[0, 0, 0, 0, 0],
-    zeroed_dihedral_atom_types=None,
+    zero_dihedral_atom_types=None,
 ):
     """Rewrite the GOMC/CHARMM style force field file with modified fit dihedral values and other zeroed dihedrals.
 
     This rewrites the the GOMC/CHARMM style force field file with modified/entered values
     for the dihedral being fit ('fit_dihedral_opls_k_0_1_2_3_4_values'). It also allows
-    other dihedrals to be set to zero (via 'zeroed_dihedral_atom_types'), allowing
+    other dihedrals to be set to zero (via 'zero_dihedral_atom_types'), allowing
     proper dihedral fitting procedures, such as in COOH and amide groups.  This
     function replaces the fit dihedral ('fit_dihedral_atom_types') values in
     with their new set values ('fit_dihedral_opls_k_0_1_2_3_4_values'), and
-    zeros all the other selected dihedrals ('zeroed_dihedral_atom_types').
+    zeros all the other selected dihedrals ('zero_dihedral_atom_types').
 
 
     Parameters
@@ -1874,7 +1872,7 @@ def change_gomc_ff_file_dihedral_values(
     read_gomc_ff_filename: str
         The GOMC FF file name that will be modified with the new settable dihedral values
         (via 'fit_dihedral_atom_types' and 'fit_dihedral_opls_k_0_1_2_3_4_values'), and other
-        dihedrals which will be zeroed ('zeroed_dihedral_atom_types').
+        dihedrals which will be zeroed ('zero_dihedral_atom_types').
     fit_dihedral_atom_types: list of four (4) strings (Example: ['HC', 'CT, 'CT, 'HC'])
         The atom types/classes (strings in the list) of the dihedral which is
         being fitted with non-zero k-values.
@@ -1882,7 +1880,7 @@ def change_gomc_ff_file_dihedral_values(
         The OPLS k-values (k0, k1, k2, k3, k4) that the 'fit_dihedral_atom_types' are changed too.
         NOTE: These need input in their correct unit form (i.e., kcal/mol or K) for the
         given GOMC force file outputs (i.e., kcal/mol for LJ and K for Mie or Exp6).
-    zeroed_dihedral_atom_types: nest list with lists of four (4) strings, default=None
+    zero_dihedral_atom_types: nest list with lists of four (4) strings, default=None
         The nests list(s) of the other dihedrals, that need to have their k-values zeroed to
         properly fit the the 'fit_dihedral_atom_types' dihedral.
 
@@ -1894,7 +1892,7 @@ def change_gomc_ff_file_dihedral_values(
         Force files are written copied from the existing force field file
         (Example: MoSDeF-GOMC force file (.inp) file), and rewritten with the
         fit new dihedral values 'fit_dihedral_opls_k_0_1_2_3_4_values', and any other
-        dihedrals that need to be zeroed out ('zeroed_dihedral_atom_types') for
+        dihedrals that need to be zeroed out ('zero_dihedral_atom_types') for
         the 'fit_dihedral_atom_types' dihedral to be fit.
     """
 
@@ -1914,29 +1912,29 @@ def change_gomc_ff_file_dihedral_values(
         )
 
     # check if the other dihedral which need zeroed are input correctly
-    zeroed_dihedral_atom_types_error = (
-        f"ERROR: The zeroed_dihedral_atom_types' variable need to be 'None, "
+    zero_dihedral_atom_types_error = (
+        f"ERROR: The zero_dihedral_atom_types' variable need to be 'None, "
         f"a list of strings, "
         f"or a nested list containing 1 or more list(s) of 4 strings, "
         f"where the strings are the atom types/classes."
     )
-    if isinstance(zeroed_dihedral_atom_types, list):
+    if isinstance(zero_dihedral_atom_types, list):
         if (
-            len(zeroed_dihedral_atom_types) == 4
-            and isinstance(zeroed_dihedral_atom_types[0], str)
-            and isinstance(zeroed_dihedral_atom_types[1], str)
-            and isinstance(zeroed_dihedral_atom_types[2], str)
-            and isinstance(zeroed_dihedral_atom_types[3], str)
+            len(zero_dihedral_atom_types) == 4
+            and isinstance(zero_dihedral_atom_types[0], str)
+            and isinstance(zero_dihedral_atom_types[1], str)
+            and isinstance(zero_dihedral_atom_types[2], str)
+            and isinstance(zero_dihedral_atom_types[3], str)
         ):
             # make it a nested list for the other files input
-            zeroed_dihedral_atom_types = [zeroed_dihedral_atom_types]
+            zero_dihedral_atom_types = [zero_dihedral_atom_types]
 
-        elif len(zeroed_dihedral_atom_types) >= 1 and isinstance(
-            zeroed_dihedral_atom_types, list
+        elif len(zero_dihedral_atom_types) >= 1 and isinstance(
+            zero_dihedral_atom_types, list
         ):
-            for list_i in zeroed_dihedral_atom_types:
+            for list_i in zero_dihedral_atom_types:
                 if not len(list_i) == 4:
-                    raise TypeError(zeroed_dihedral_atom_types_error)
+                    raise TypeError(zero_dihedral_atom_types_error)
 
                     if (
                         isinstance(list_i[0], str)
@@ -1944,10 +1942,10 @@ def change_gomc_ff_file_dihedral_values(
                         and isinstance(list_i[2], str)
                         and isinstance(list_i[3], str)
                     ):
-                        raise TypeError(zeroed_dihedral_atom_types_error)
+                        raise TypeError(zero_dihedral_atom_types_error)
 
-    elif not isinstance(zeroed_dihedral_atom_types, type(None)):
-        raise TypeError(zeroed_dihedral_atom_types_error)
+    elif not isinstance(zero_dihedral_atom_types, type(None)):
+        raise TypeError(zero_dihedral_atom_types_error)
 
     # check fit_dihedral_opls_k_0_1_2_3_4_values if all are zero
     all_k_values_zero_fit_dihedral_atom_types_bool = True
@@ -1955,11 +1953,11 @@ def change_gomc_ff_file_dihedral_values(
         if k_i != 0:
             all_k_values_zero_fit_dihedral_atom_types_bool = False
 
-    # ensure 'fit_dihedral_atom_types' are not in the 'zeroed_dihedral_atom_types'
-    if zeroed_dihedral_atom_types is not None:
-        if fit_dihedral_atom_types in zeroed_dihedral_atom_types:
+    # ensure 'fit_dihedral_atom_types' are not in the 'zero_dihedral_atom_types'
+    if zero_dihedral_atom_types is not None:
+        if fit_dihedral_atom_types in zero_dihedral_atom_types:
             raise ValueError(
-                "ERROR: The 'fit_dihedral_atom_types' can not also be in the 'zeroed_dihedral_atom_types'."
+                "ERROR: The 'fit_dihedral_atom_types' can not also be in the 'zero_dihedral_atom_types'."
             )
 
     # create dictionary for fitted dihedral types and its status of being written to the ff file
@@ -1968,16 +1966,16 @@ def change_gomc_ff_file_dihedral_values(
     }
 
     # create dictionary for fitted dihedral types to be zeroed and its status of being written to the ff file
-    status_written_zeroed_dihedral_atom_types_dict = {}
-    if zeroed_dihedral_atom_types is not None:
-        for other_i in zeroed_dihedral_atom_types:
-            status_written_zeroed_dihedral_atom_types_dict.update(
+    status_written_zero_dihedral_atom_types_dict = {}
+    if zero_dihedral_atom_types is not None:
+        for other_i in zero_dihedral_atom_types:
+            status_written_zero_dihedral_atom_types_dict.update(
                 {str(other_i): False}
             )
 
     # write the new GOMC force field file with the selected dihedrals zeroed out
     gomc_modified_kvalues_ff_file = open(f"{new_gomc_ff_filename}", "w")
-    if zeroed_dihedral_atom_types is None:
+    if zero_dihedral_atom_types is None:
         gomc_modified_kvalues_ff_file.write(
             f"* This file was modified from the original GOMC FF file, by zeroing out the "
             f"fitted dihedral = {fit_dihedral_atom_types}.\n"
@@ -1986,7 +1984,7 @@ def change_gomc_ff_file_dihedral_values(
         gomc_modified_kvalues_ff_file.write(
             f"* This file was modified from the original GOMC FF file, by zeroing out the "
             f"fitted dihedral = {fit_dihedral_atom_types} "
-            f"and the other selected dihedrals = {zeroed_dihedral_atom_types}.\n"
+            f"and the other selected dihedrals = {zero_dihedral_atom_types}.\n"
         )
     gomc_modified_kvalues_ff_file.write(
         f"* NOTE: The selected dihedrals may have been zeroed out in the original force "
@@ -2240,13 +2238,13 @@ def change_gomc_ff_file_dihedral_values(
             # set the zeroed dihedral types to zero in the GOMC/CHARMM style FF file
             elif (
                 (str(dih_m) or str(dih_m_reverse))
-                in list(status_written_zeroed_dihedral_atom_types_dict.keys())
-                and zeroed_dihedral_atom_types is not None
-                and status_written_zeroed_dihedral_atom_types_dict[str(dih_m)]
+                in list(status_written_zero_dihedral_atom_types_dict.keys())
+                and zero_dihedral_atom_types is not None
+                and status_written_zero_dihedral_atom_types_dict[str(dih_m)]
                 is False
                 and (
-                    dih_m in zeroed_dihedral_atom_types
-                    or dih_m_reverse in zeroed_dihedral_atom_types
+                    dih_m in zero_dihedral_atom_types
+                    or dih_m_reverse in zero_dihedral_atom_types
                 )
             ):
                 # get the opls dihedrals and convert them to CHARMM style periodic
@@ -2281,9 +2279,7 @@ def change_gomc_ff_file_dihedral_values(
                     )
                 )
 
-                status_written_zeroed_dihedral_atom_types_dict[
-                    str(dih_m)
-                ] = True
+                status_written_zero_dihedral_atom_types_dict[str(dih_m)] = True
 
             elif (
                 str(dih_m)
@@ -2292,13 +2288,9 @@ def change_gomc_ff_file_dihedral_values(
                 not in list(status_written_fit_dihedral_atom_types_dict.keys())
             ) and (
                 str(dih_m)
-                not in list(
-                    status_written_zeroed_dihedral_atom_types_dict.keys()
-                )
+                not in list(status_written_zero_dihedral_atom_types_dict.keys())
                 and str(dih_m_reverse)
-                not in list(
-                    status_written_zeroed_dihedral_atom_types_dict.keys()
-                )
+                not in list(status_written_zero_dihedral_atom_types_dict.keys())
             ):
                 gomc_modified_kvalues_ff_file.write(f"{line_m}")
 

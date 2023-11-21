@@ -4,7 +4,7 @@ Citing
 
 If you use this code for your research, please cite for following sources:
 
-`The GitHub repository <https://github.com/GOMC-WSU/MoSDeF-GOMC>`_:
+`The GitHub repository <https://github.com/GOMC-WSU/MoSDeF-dihedral-fit>`_:
 
 **ACS**
 

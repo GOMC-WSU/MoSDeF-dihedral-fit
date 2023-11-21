@@ -25,19 +25,19 @@ warnings.filterwarnings("ignore")
 
 def fit_dihedral_with_gomc(
     fit_dihedral_atom_types,
-    mol2_selection,
-    forcefield_selection,
+    mol2_file,
+    forcefield_file,
     temperature_unyt_units,
     gomc_binary_path,
-    qm_log_files_and_entries_to_remove_dict,
+    qm_log_file_dict,
     manual_dihedral_atom_numbers_list=None,
-    zeroed_dihedral_atom_types=None,
+    zero_dihedral_atom_types=None,
     qm_engine="gaussian",
-    VDWGeometricSigma=None,
+    combining_rule=None,
     atom_type_naming_style="general",
     gomc_cpu_cores=1,
-    fit_min_validated_r_squared=0.98,
-    fit_validation_r_squared_rtol=2.5e-02,
+    r_squared_min=0.98,
+    r_squared_rtol=2.5e-02,
 ):
     """Fit the desired dihedral to a MM force field, based on QM data.
 
@@ -79,12 +79,12 @@ def fit_dihedral_with_gomc(
         'GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp' files in the
         'GOMC_simulations' folder. These files can also be checked to
         confirm it is zeroing the correct dihedrals.
-    mol2_selection: str
+    mol2_file: str
         The mol2 file which matches the element, atom type, bonded connnections,
         the 'EXACT ATOM ORDER AND CONFIGURATION AS IN THE QM SIMULATION INPUT FILES'.
         This is required to know the MM bonding in the atoms, because QM simulations
         do not explictly specify the system bonds.
-    forcefield_selection: str
+    forcefield_file: str
         Apply a foyer or gmso forcefield to the output file by selecting a
         force field XML file with its path or by using the standard force
         field name provided the `foyer` package. This force field file must
@@ -101,7 +101,7 @@ def fit_dihedral_with_gomc(
         This does not include the "GOMC_CPU_NVT" in this variable.
 
         Example: '/home/brad/Programs/GOMC/GOMC_2_76/bin'
-    qm_log_files_and_entries_to_remove_dict: dict, {str: [int>=0, ..., int>=0]}
+    qm_log_file_dict: dict, {str: [int>=0, ..., int>=0]}
         * qm_engine="gaussian"
             This is a dictionary comprised of a key (string) of the QM log file path and name
             (Gaussian 16 log file only), and a list of integers, which are the QM optimization
@@ -170,7 +170,7 @@ def fit_dihedral_with_gomc(
         This is a list of the dihedral atom numbers in order that were used for the dihedral
         fit. This information needs to be correct and in order to produce correct results.
         The values must be the same in all the combined files.
-    zeroed_dihedral_atom_types: nest list with lists of four (4) strings, default=None
+    zero_dihedral_atom_types: nest list with lists of four (4) strings, default=None
         The nests list(s) of the other dihedrals, that need to have their k-values zeroed to
         properly fit the the 'fit_dihedral_atom_types' dihedral.
 
@@ -181,23 +181,33 @@ def fit_dihedral_with_gomc(
         'GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp' files in the
         'GOMC_simulations' folder. These files can also be checked to
         confirm it is zeroing the correct dihedrals.
-    qm_engine: str (currently only 'gaussian'), default='gaussian'
+    qm_engine: str ('gaussian' or 'gaussian_style_final_files'), default='gaussian'
         The Quantum Mechanics (QM) simulation engine utilized to produce the files listed
-        in the 'qm_log_files_and_entries_to_remove_dict' variable(s).
-    VDWGeometricSigma: boolean, default = None
-        Override the VDWGeometricSigma in the foyer or GMSO XML file.
+        in the 'qm_log_file_dict' variable(s).
+
+        'gaussian' is used for the QM Gaussian 16 log files.
+
+        'gaussian_style_final_files' are the file paths to the Gaussian 16 style final
+        formatted files, which are the QM optimization parameters, in order of reading
+        from each folder.
+        NOTE: The energy and dihedral angle file in this directory need to be
+        named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
+
+    combining_rule: str ('geometric' or 'lorentz'), default = None
+        The combining_rule in the foyer or GMSO XML file.
         If this is None, it will use whatever is specified in the XML file, or the
         default foyer or GMSO values. BEWARE, if it is not specified XML file, it has a default.
         If this is None, it will use whatever is specified in the XML file,
         or the default foyer or GMSO values.
 
-        The VDWGeometricSigma is the geometric mean, as required by OPLS force field,
-        to combining Lennard-Jones sigma parameters for different atom types.
-        If set to True, GOMC uses geometric mean to combine Lennard-Jones or VDW sigmas.
-        Note: The default setting is pulled from the force field XML, if not present it
-        defaults to geometric via MoSDeF's default setting of VDWGeometricSigma is True,
-        which uses the arithmetic mean when combining Lennard-Jones or "
-        VDW sigma parameters for different atom types.
+        'geometric' is the geometric mean used to combine the
+        Lennard-Jones or VDW sigmas, as required by OPLS force field.
+
+        'lorentz' is the arithmetic mean used to combine the
+        Lennard-Jones or VDW sigmas, as required by TraPPE, Amber, or CHARMM force fields.
+
+        'None', the default setting, is pulled from the force field XML, but if it is
+        not present it defaults to 'geometric' via MoSDeF's default settings.
     atom_type_naming_style: str, optional, default='all_unique', ('general' or 'all_unique')
         * 'general'
 
@@ -259,7 +269,7 @@ def fit_dihedral_with_gomc(
     gomc_cpu_cores: int>0, default=1
         The number of CPU-cores that are used to perform the GOMC simulations, required
         for the Molecular Mechanics (MM) energy calulations.
-    fit_min_validated_r_squared: float (0 < fit_min_validated_r_squared < 1), default=0.98
+    r_squared_min: float (0 < r_squared_min < 1), default=0.98
         The minimum R**2 (R-squared) value to test the validity of the fit with the
         new dihedral fitted constants, as fitted in the
         QM - MM energy data vs. the dihedral function fit, mentioned below.
@@ -271,17 +281,17 @@ def fit_dihedral_with_gomc(
 
         QM - MM energy data vs. the dihedral function fit:
         For the MM calculations, the 'fit_dihedral_atom_types' and
-        'zeroed_dihedral_atom_types' are dihedral energies are set to zero, which is
+        'zero_dihedral_atom_types' are dihedral energies are set to zero, which is
         during the fitting process with 1 or more of the same dihedrals being fit simultaneously.
 
         QM vs. the MM energy data:
         For the MM calculations, the 'fit_dihedral_atom_types' are set to the values which were
         fit for the specific cosine combinations during the fitting process with 1 or more of the
-        same dihedrals being fit simultaneously, and the 'zeroed_dihedral_atom_types' are
+        same dihedrals being fit simultaneously, and the 'zero_dihedral_atom_types' are
         dihedral energies are set to zero.
 
         NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
-    fit_validation_r_squared_rtol: float (0 < fit_min_validated_r_squared < 1), default=2.5e-02
+    r_squared_rtol: float (0 < r_squared_min < 1), default=2.5e-02
         Where the QM data is defined as the actual data; this is the difference
         of the dihedral's calculated R-squared values between:
         * The QM-MM fitting process, where the fit MM dihedral k-values are zero (0).
@@ -308,25 +318,25 @@ def fit_dihedral_with_gomc(
     GOMC_simulations/GOMC_pdb_psf_ff_files_OPLS_fit_XXX_dihedral.inp
         The modified force field file with the fit is set to the fitted k-values
         ('fit_dihedral_atom_types') with all the other selected dihedrals
-        ('zeroed_dihedral_atom_types') being zeroed out, where the XXX
+        ('zero_dihedral_atom_types') being zeroed out, where the XXX
         in the file name being the different  possibilities of cos power combinations
         of the dihedral fit. These may be 1 or more of these files/cos power
         combinations.
     GOMC_simulations/GOMC_zeroed_dihedral_coords_XXX.conf
         The GOMC control files for all the phi dihedral angles selected
         from the QM simulations where the 'fit_dihedral_atom_types' and the
-        'zeroed_dihedral_atom_types' k-values are all set to zero.  The XXX is the
+        'zero_dihedral_atom_types' k-values are all set to zero.  The XXX is the
         integer number of the dihedrals starting at 1, adding 1 for every
         additional phi dihedral angles selected from the QM simulations.
 
         These are simulations are to get the total energy difference between
         QM and MM simulation with all the 'fit_dihedral_atom_types' and the
-        'zeroed_dihedral_atom_types' k-values are all set to zero.
+        'zero_dihedral_atom_types' k-values are all set to zero.
     GOMC_simulations/GOMC_OPLS_fit_YYY_dihedral_coords_XXX.conf
         The GOMC control files for all the phi dihedral angles selected
         from the QM simulations where the 'fit_dihedral_atom_types' are set to
         the solved k-values for the cos power equation combination, which is listed
-        as the variable YYY, and the 'zeroed_dihedral_atom_types' k-values are all set
+        as the variable YYY, and the 'zero_dihedral_atom_types' k-values are all set
         to zero.  The XXX is the integer number of the dihedrals starting at 1, adding
         1 for every additional phi dihedral angles selected from the QM simulations.
 
@@ -377,7 +387,7 @@ def fit_dihedral_with_gomc(
     all_normalized_energies_in_kcal_per_mol.txt
         For each dihedral angle (degrees), the QM, MM, and difference in dihedral
         energies (kcal/mol) when the 'fit_dihedral_atom_types' and the
-        'zeroed_dihedral_atom_types' k-values are all set to zero. This also
+        'zero_dihedral_atom_types' k-values are all set to zero. This also
         contains the sum of all the C1, C2, C3, and C4 values for every
         'fit_dihedral_atom_types' in the system, where there may be multiple of the
         same dihedral in the same molecule.
@@ -461,7 +471,7 @@ def fit_dihedral_with_gomc(
         For each valid cosine power combinations, the total OPLS dihedral energies
         between QM and MM simulations are plotted, where the MM simulation's fitted
         k-values ('fit_dihedral_atom_types') and all the other selected dihedrals
-        ('zeroed_dihedral_atom_types') are zeroed out.
+        ('zero_dihedral_atom_types') are zeroed out.
         This is the total energy difference in QM vs MM energy
         for all the 'fit_dihedral_atom_types' summed together, as there can
         be 1 or multiple of this dihedral type in a molecule, which were
@@ -479,38 +489,38 @@ def fit_dihedral_with_gomc(
         or more of the nearly perfect R-squared fitted values, or fitting procedure
         itself.
     """
-    # check if 'mol2_selection' file is correct format
-    if not isinstance(mol2_selection, str):
+    # check if 'mol2_file' file is correct format
+    if not isinstance(mol2_file, str):
         raise TypeError(
-            "ERROR: Please enter mol2 file ('mol2_selection') as a string."
+            "ERROR: Please enter mol2 file ('mol2_file') as a string."
         )
 
-    extension_ff_name = os.path.splitext(mol2_selection)[-1]
+    extension_ff_name = os.path.splitext(mol2_file)[-1]
     if extension_ff_name != ".mol2":
         raise ValueError(
-            "ERROR: Please enter enter mol2 file ('mol2_selection') name with the .mol2 extension."
+            "ERROR: Please enter enter mol2 file ('mol2_file') name with the .mol2 extension."
         )
 
-    if not os.path.exists(mol2_selection):
+    if not os.path.exists(mol2_file):
         raise ValueError(
-            f"ERROR: The {mol2_selection} file ('mol2_selection') does not exists."
+            f"ERROR: The {mol2_file} file ('mol2_file') does not exists."
         )
 
-    # check if 'forcefield_selection' file is correct format
-    if not isinstance(forcefield_selection, str):
+    # check if 'forcefield_file' file is correct format
+    if not isinstance(forcefield_file, str):
         raise TypeError(
-            "ERROR: Please enter xml file ('forcefield_selection') as a string."
+            "ERROR: Please enter xml file ('forcefield_file') as a string."
         )
 
-    extension_ff_name = os.path.splitext(forcefield_selection)[-1]
+    extension_ff_name = os.path.splitext(forcefield_file)[-1]
     if extension_ff_name != ".xml":
         raise ValueError(
-            "ERROR: Please enter enter xml file ('forcefield_selection') name with the .xml extension."
+            "ERROR: Please enter enter xml file ('forcefield_file') name with the .xml extension."
         )
 
-    if not os.path.exists(forcefield_selection):
+    if not os.path.exists(forcefield_file):
         raise ValueError(
-            f"ERROR: The {forcefield_selection} file ('forcefield_selection') does not exists."
+            f"ERROR: The {forcefield_file} file ('forcefield_file') does not exists."
         )
 
     if (
@@ -536,18 +546,18 @@ def fit_dihedral_with_gomc(
     else:
         raise TypeError(print_error_value)
 
-    # test the qm_log_files_and_entries_to_remove_dict input
+    # test the qm_log_file_dict input
     print_error_value = (
-        "ERROR: The 'qm_log_files_and_entries_to_remove_dict' is not a dict "
+        "ERROR: The 'qm_log_file_dict' is not a dict "
         "with a string keys and list of int>=0 as the values. Example: "
         "{'path/HC_CT_CT_HC_part_1.log'): [], 'path/HC_CT_CT_HC_part_2.log'): [0, 5]}"
     )
-    if isinstance(qm_log_files_and_entries_to_remove_dict, dict):
-        for key_j, value_j in qm_log_files_and_entries_to_remove_dict.items():
+    if isinstance(qm_log_file_dict, dict):
+        for key_j, value_j in qm_log_file_dict.items():
             if isinstance(key_j, str):
                 if not os.path.exists(key_j):
                     raise ValueError(
-                        f"ERROR: The {key_j} file ('qm_log_files_and_entries_to_remove_dict') does not exists."
+                        f"ERROR: The {key_j} file ('qm_log_file_dict') does not exists."
                     )
 
             else:
@@ -577,15 +587,15 @@ def fit_dihedral_with_gomc(
             f"ERROR: The 'gomc_binary_path' file does not exist or contain the GOMC 'GOMC_CPU_NVT' file."
         )
 
-    # test the 'zeroed_dihedral_atom_types' input
+    # test the 'zero_dihedral_atom_types' input
     print_error_value = (
-        "ERROR: The 'zeroed_dihedral_atom_types' is not None or a list containing "
+        "ERROR: The 'zero_dihedral_atom_types' is not None or a list containing "
         "lists with 4 strings each. Example: "
         "[['CT', 'CT, 'CT, 'HC'], ['NT', 'CT, 'CT, 'HC']]."
     )
-    if isinstance(zeroed_dihedral_atom_types, (list, type(None))):
-        if isinstance(zeroed_dihedral_atom_types, list):
-            for list_j in zeroed_dihedral_atom_types:
+    if isinstance(zero_dihedral_atom_types, (list, type(None))):
+        if isinstance(zero_dihedral_atom_types, list):
+            for list_j in zero_dihedral_atom_types:
                 if isinstance(list_j, list) and len(list_j) == 4:
                     for str_j in list_j:
                         if not isinstance(str_j, str):
@@ -596,6 +606,19 @@ def fit_dihedral_with_gomc(
 
     else:
         raise TypeError(print_error_value)
+
+    # Check if 'combining_rule' is correct
+    # Set the VDWGeometricSigma variable from the combining_rule
+    if combining_rule == None:
+        VDWGeometricSigma = None
+    elif combining_rule == "geometric":
+        VDWGeometricSigma = True
+    elif combining_rule == "lorentz":
+        VDWGeometricSigma = False
+    else:
+        raise ValueError(
+            "ERROR: Please enter the 'combining_rule' file as a string of 'geometric' or 'lorentz' or None."
+        )
 
     # test the 'atom_type_naming_style' input
     if isinstance(atom_type_naming_style, str):
@@ -611,36 +634,31 @@ def fit_dihedral_with_gomc(
             f"ERROR: The 'atom_type_naming_style' is a {type(atom_type_naming_style)}, but it needs to be a str."
         )
 
-    # test the 'fit_min_validated_r_squared' input
-    if isinstance(fit_min_validated_r_squared, float):
-        if not (
-            fit_min_validated_r_squared > 0 and fit_min_validated_r_squared < 1
-        ):
+    # test the 'r_squared_min' input
+    if isinstance(r_squared_min, float):
+        if not (r_squared_min > 0 and r_squared_min < 1):
             raise ValueError(
-                f"ERROR: The 'fit_min_validated_r_squared'= {fit_min_validated_r_squared}, "
+                f"ERROR: The 'r_squared_min'= {r_squared_min}, "
                 f"but it must be a 0<float<1."
             )
 
     else:
         raise TypeError(
-            f"ERROR: The 'fit_min_validated_r_squared' is a {type(fit_min_validated_r_squared)}, "
+            f"ERROR: The 'r_squared_min' is a {type(r_squared_min)}, "
             f"but it must be a 0<float<1."
         )
 
-    # test the 'fit_validation_r_squared_rtol' input
-    if isinstance(fit_validation_r_squared_rtol, float):
-        if not (
-            fit_validation_r_squared_rtol > 0
-            and fit_validation_r_squared_rtol < 1
-        ):
+    # test the 'r_squared_rtol' input
+    if isinstance(r_squared_rtol, float):
+        if not (r_squared_rtol > 0 and r_squared_rtol < 1):
             raise ValueError(
-                f"ERROR: The 'fit_validation_r_squared_rtol' = {fit_validation_r_squared_rtol}, "
+                f"ERROR: The 'r_squared_rtol' = {r_squared_rtol}, "
                 f"but it must be a 0<float<1."
             )
 
     else:
         raise TypeError(
-            f"ERROR: The 'fit_validation_r_squared_rtol' is a {type( fit_validation_r_squared_rtol)}, "
+            f"ERROR: The 'r_squared_rtol' is a {type( r_squared_rtol)}, "
             f"but it must be a 0<float<1."
         )
 
@@ -660,13 +678,13 @@ def fit_dihedral_with_gomc(
     if isinstance(qm_engine, str):
         if qm_engine == "gaussian":
             mdf_frw.write_qm_data_files(
-                qm_log_files_and_entries_to_remove_dict,
+                qm_log_file_dict,
                 manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
                 qm_engine=qm_engine,
             )
         elif qm_engine == "gaussian_style_final_files":
             mdf_frw.write_qm_data_files(
-                qm_log_files_and_entries_to_remove_dict,
+                qm_log_file_dict,
                 manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
                 qm_engine=qm_engine,
             )
@@ -720,7 +738,7 @@ def fit_dihedral_with_gomc(
     seed_no = 12345
 
     # load bis(ethylhexylamido) with Gd
-    fragment = mb.load(mol2_selection, smiles=False)
+    fragment = mb.load(mol2_file, smiles=False)
     fragment.name = "TMP"
 
     residues_list = [fragment.name]
@@ -760,7 +778,7 @@ def fit_dihedral_with_gomc(
         structure_box_1=None,
         filename_box_1=None,
         ff_filename=f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}_dihedrals_per_xml",
-        forcefield_selection=forcefield_selection,
+        forcefield_selection=forcefield_file,
         residues=residues_list,
         bead_to_atom_name_dict=None,
         fix_residue=fix_residues,
@@ -797,7 +815,7 @@ def fit_dihedral_with_gomc(
         f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}_dihedrals_zeroed.inp",
         fit_dihedral_atom_types,
         fit_dihedral_opls_k_0_1_2_3_4_values=[0, 0, 0, 0, 0],
-        zeroed_dihedral_atom_types=zeroed_dihedral_atom_types,
+        zero_dihedral_atom_types=zero_dihedral_atom_types,
     )
     # **************************************************************
     # make the GOMC control file with the selected dihedral angles set to zero (END)
@@ -1217,8 +1235,8 @@ def fit_dihedral_with_gomc(
         ] = mdf_frw.get_matching_dihedral_info_and_opls_fitting_data(
             fit_dihedral_atom_types,
             f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}.psf",
-            qm_log_files_and_entries_to_remove_dict,
-            mol2_selection,
+            qm_log_file_dict,
+            mol2_file,
             qm_engine=qm_engine,
         )
 
@@ -1232,8 +1250,8 @@ def fit_dihedral_with_gomc(
         ] = mdf_frw.get_matching_dihedral_info_and_opls_fitting_data(
             fit_dihedral_atom_types,
             f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}.psf",
-            qm_log_files_and_entries_to_remove_dict,
-            mol2_selection,
+            qm_log_file_dict,
+            mol2_file,
             qm_engine=qm_engine,
             manual_dihedral_atom_numbers_list=manual_dihedral_atom_numbers_list,
         )
@@ -2542,7 +2560,7 @@ def fit_dihedral_with_gomc(
                 f"{gomc_runs_folder_name}/{output_gomc_pdb_psf_ff_file_name_str}_OPLS_fit_{opls_fit_q}_dihedral.inp",
                 fit_dihedral_atom_types,
                 fit_dihedral_opls_k_0_1_2_3_4_values=opls_k_constant_fitted_q_list_for_ff_modifications,
-                zeroed_dihedral_atom_types=zeroed_dihedral_atom_types,
+                zero_dihedral_atom_types=zero_dihedral_atom_types,
             )
 
             # **************************************************************
@@ -2762,18 +2780,18 @@ def fit_dihedral_with_gomc(
         # Compare original fit vs run through GOMC as a validation test case
         if opls_fit_data_r_squared_list[
             opls_q
-        ] >= fit_min_validated_r_squared and not np.isclose(
+        ] >= r_squared_min and not np.isclose(
             opls_r_squared_fitted_data_via_gomc_list[opls_q],
             opls_fit_data_r_squared_list[opls_q],
-            rtol=fit_validation_r_squared_rtol,
+            rtol=r_squared_rtol,
         ):
             raise ValueError(
                 f"ERROR: The calculated R-squared energy values from the fit type "
                 f"{opls_fit_data_non_zero_k_constants_list[opls_q]} "
-                f"does not match the validated case for 'fit_min_validated_r_squared' >= "
-                f"{mdf_math.round_to_sig_figs(fit_min_validated_r_squared,sig_figs=3)}, "
-                f"within the relative tolerance or 'fit_validation_r_squared_rtol' = "
-                f"{mdf_math.round_to_sig_figs(fit_validation_r_squared_rtol,sig_figs=3)}. \n"
+                f"does not match the validated case for 'r_squared_min' >= "
+                f"{mdf_math.round_to_sig_figs(r_squared_min,sig_figs=3)}, "
+                f"within the relative tolerance or 'r_squared_rtol' = "
+                f"{mdf_math.round_to_sig_figs(r_squared_rtol,sig_figs=3)}. \n"
                 f"- Fit via the individual or multi-dihedral fit, when "
                 f"Gaussian minus GOMC with the selected dihedral set to zero \n"
                 f"--> R-squared = "
@@ -2782,7 +2800,7 @@ def fit_dihedral_with_gomc(
                 f"Gaussian minus GOMC with the selected individual dihedral added in GOMC \n"
                 f"-- >R-squared = "
                 f"{mdf_math.round_to_sig_figs(opls_r_squared_fitted_data_via_gomc_list[opls_q],sig_figs=3)} \n"
-                f"The 'fit_min_validated_r_squared' and 'fit_validation_r_squared_rtol' "
+                f"The 'r_squared_min' and 'r_squared_rtol' "
                 f"variables may need to be adjusted, \n"
                 f"there is likely something wrong with the fitting procedure, the "
                 f"software parameters need tuned, or there is a bug in the software. \n\n "

@@ -128,11 +128,15 @@ class TestFileReading(BaseTest):
         assert "dihedral_coords_position_2.coor" in os.listdir()
 
     def test_check_gaussian_angle_energy_file_correct(self):
-        full_path = self.get_fn("dihedral.txt")
+        full_path = self.get_fn(
+            "gaussian_style_output_files/CT_CT_C_OH/output/dihedral.txt"
+        )
         assert check_gaussian_angle_energy_file_correct(full_path)
 
     def test_check_gaussian_optimized_coordinate_file_correct(self):
-        full_path = self.get_fn("dihedral_coords_position_36.txt")
+        full_path = self.get_fn(
+            "gaussian_style_output_files/CT_CT_C_OH/output/dihedral_coords_position_36.txt"
+        )
         assert check_gaussian_optimized_coordinate_file_correct(full_path)
 
     def test_get_final_gaussian_output_file_data(self):
@@ -169,7 +173,9 @@ class TestFileReading(BaseTest):
         assert n_atoms == 8
 
     def test_get_gaussian_log_file_data(self):
-        full_path = self.get_fn("CT_CT_C_OH_multiplicity_1.log")
+        full_path = self.get_fn(
+            "gaussian/CT_CT_C_OH/output/CT_CT_C_OH_multiplicity_1.log"
+        )
         out_indices = []
         out = get_gaussian_log_file_data({full_path: out_indices})
         anglesList = out[0]
@@ -247,7 +253,9 @@ class TestFileReading(BaseTest):
         assert dihedral_atoms == [5, 1, 2, 3]
 
     def test_write_qm_data_files(self):
-        full_path = self.get_fn("CT_CT_C_OH_multiplicity_1.log")
+        full_path = self.get_fn(
+            "gaussian/CT_CT_C_OH/output/CT_CT_C_OH_multiplicity_1.log"
+        )
         out_indices = []
         write_qm_data_files({full_path: out_indices})
         assert os.path.exists("extracted_gaussian_data/dihedral.txt")
@@ -258,12 +266,12 @@ class TestFileReading(BaseTest):
             psf_path_and_filename=self.get_fn(
                 "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files.psf"
             ),
-            qm_log_files_and_entries_to_remove_dict={
+            qm_log_file_dict={
                 self.get_fn(
                     "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
                 ): []
             },
-            mol2_selection=self.get_fn(
+            mol2_file=self.get_fn(
                 "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
             ),
             qm_engine="gaussian",
