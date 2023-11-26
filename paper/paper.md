@@ -93,4 +93,3 @@ $$\psi = \theta - 180^o$$
 <u>Periodic-dihedral</u>:
 
 $$Periodic_{Energy} = K_0 * (1 + cos(n_0*\theta - 90^o)) + K_1 * (1 + cos(n_1*\theta - 180^o)) + K_2 * (1 + cos(n_2*\theta)) +  K_3 * (1 + cos(n_3*\theta - 180^o)) +  K_4 * (1 + cos(n_4*\theta))$$
-
