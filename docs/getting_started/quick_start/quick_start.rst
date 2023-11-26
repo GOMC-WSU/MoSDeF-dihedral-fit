@@ -14,4 +14,5 @@ These examples are provided as a python files, which the user can run and modifi
 .. toctree::
 
    	fit_a_dihedral_with_Gaussian_and_write_all_files
+	dihedral_angle_calculation
    	gomc_examples_repository
