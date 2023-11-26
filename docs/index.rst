@@ -36,6 +36,42 @@ Additionally, the 1-4 interactions for the force fields can be explicitly set in
 allowing the flexibility that some other dihedral fitters lack. Lastly, the dihedral fits are compared by recalculating
 the dihedral in **GOMC >= v2.75** and comparing it to the original **Gaussian 16** energies, ensuring a correct dihedral fit.
 
+**Dihedral Equations**:
+
+OPLS-dihedral:
+
+.. math:: 
+    OPLS_{Energy} = \frac{f_0}{2} 
+                    + \frac{f_1}{2}*(1+cos(\theta)) 
+                    + \frac{f_2}{2}*(1-cos(2*\theta)) 
+
+.. math:: 
+                        + \frac{f_3}{2}*(1+cos(3*\theta)) 
+                        + \frac{f_4}{2}*(1-cos(4*\theta))
+
+Ryckaert-Bellemans (RB)-torsions:
+
+.. math:: 
+    RB_{Energy} = C_0 + C_1*cos(\psi) 
+                  + C_2*cos(\psi)^2 
+                  + C_3*cos(\psi)^3 
+                  + C_4*cos(\psi)^4
+
+.. math:: 
+   \psi = \theta - 180^o
+
+Periodic-dihedral:   
+
+.. math:: 
+    Periodic_{Energy} = K_0 * (1 + cos(n_0*\theta - 90^o)) 
+
+.. math:: 
+                            + K_1 * (1 + cos(n_1*\theta - 180^o)) 
+                            + K_2 * (1 + cos(n_2*\theta))  
+
+.. math:: 
+                            + K_3 * (1 + cos(n_3*\theta - 180^o)) 
+                            + K_4 * (1 + cos(n_4*\theta))  
 
 **MoSDeF-dihedral-fit Highlights**:
    #. With a **Gaussian 16** log file and a few user inputs, the user can easily fit a dihedral.
