@@ -22,7 +22,7 @@ authors:
     equal-contrib: true
     affiliation: "1, 2"
   - name: Co D. Quach
-    orcid:
+    orcid: 0000-0002-1255-4161
     affiliation: "3, 4"
   - name: Nicholas C. Craven
     orcid:
