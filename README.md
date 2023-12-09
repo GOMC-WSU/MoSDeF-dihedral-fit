@@ -50,17 +50,17 @@ chmod u+x metamake.sh
 
 $$OPLS_{Energy} = \frac{f_0}{2}$$
 
-$$+ \frac{f_1}{2}*(1+cos(\theta)) + \frac{f_2}{2}*(1-cos(2*\theta))$$
+$$+ \frac{f_1}{2} * (1 + cos(\theta)) + \frac{f_2}{2} * (1-cos(2 * \theta))$$
 
-$$+ \frac{f_3}{2}*(1+cos(3*\theta)) + \frac{f_4}{2}*(1-cos(4*\theta))$$
+$$+ \frac{f_3}{2} * (1 + cos(3 * \theta)) + \frac{f_4}{2}  *(1-cos(4 * \theta))$$
 
 <u>Ryckaert-Bellemans (RB)-torsions</u>:
 
 $$RB_{Energy} = C_0$$
 
-$$+ C_1*cos(\psi) + C_2*cos(\psi)^2$$
+$$+ C_1 * cos(\psi) + C_2 * cos(\psi)^2$$
 
-$$+ C_3*cos(\psi)^3 + C_4*cos(\psi)^4$$
+$$+ C_3 * cos(\psi)^3 + C_4 * cos(\psi)^4$$
 
 $$\psi = \theta - 180^o$$
 
