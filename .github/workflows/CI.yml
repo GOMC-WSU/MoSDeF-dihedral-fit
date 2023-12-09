@@ -32,6 +32,7 @@ jobs:
     steps:
       - name: create dir
         run: sudo mkdir /opt/gomc_build
+
       - name: clone the GOMC repositrory version 2.75a
         run: sudo git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a /opt/gomc_build/GOMC
 
@@ -46,8 +47,10 @@ jobs:
 
       - name: Add space to bashrc file
         run: echo "" >> ~/.bashrc 
+
       - name: Add GOMC header to bashrc file
         run: echo "# Add the GOMC binary files to the path" >> ~/.bashrc
+
       - name: Add GOMC path to bashrc file
         run: echo "export PATH=/opt/gomc_build/GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc      
 
@@ -108,3 +111,4 @@ jobs:
         with:
           push: true
           tags: ${{ env.DOCKER_TAGS }}
+          
