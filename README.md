@@ -50,22 +50,26 @@ chmod u+x metamake.sh
 
 $$OPLS_{Energy} = \frac{f_0}{2}$$
 
-$$+ \frac{f_1}{2}*(1+cos(\theta)) + \frac{f_2}{2}*(1-cos(2*\theta))$$
-$$+ \frac{f_3}{2}*(1+cos(3*\theta)) + \frac{f_4}{2}*(1-cos(4*\theta))$$
+$$+ \frac{f_1}{2} * (1 + cos(\theta)) + \frac{f_2}{2} * (1-cos(2 * \theta))$$
+
+$$+ \frac{f_3}{2} * (1 + cos(3 * \theta)) + \frac{f_4}{2}  *(1-cos(4 * \theta))$$
 
 <u>Ryckaert-Bellemans (RB)-torsions</u>:
 
 $$RB_{Energy} = C_0$$
-$$+ C_1*cos(\psi) + C_2*cos(\psi)^2$$
-$$+ C_3*cos(\psi)^3 + C_4*cos(\psi)^4$$
-$$ $$
+
+$$+ C_1 * cos(\psi) + C_2 * cos(\psi)^2$$
+
+$$+ C_3 * cos(\psi)^3 + C_4 * cos(\psi)^4$$
 
 $$\psi = \theta - 180^o$$
 
 <u>Periodic-dihedral</u>:
 
 $$Periodic_{Energy} = K_0 * (1 + cos(n_0*\theta - 90^o))$$
+
 $$+ K_1 * (1 + cos(n_1*\theta - 180^o)) + K_2 * (1 + cos(n_2*\theta))$$
+
 $$+  K_3 * (1 + cos(n_3*\theta - 180^o)) +  K_4 * (1 + cos(n_4*\theta))$$
 
 ## Examples
