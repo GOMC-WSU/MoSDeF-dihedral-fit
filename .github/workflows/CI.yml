@@ -30,16 +30,24 @@ jobs:
         shell: bash -l {0}
 
     steps:
-      - name: install GOMC and add Binary path to bashrc
-        run: 
-          - mkdir /opt  cd /opt 
-          - git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a      
-          - cd GOMC
-          - chmod u+x metamake.sh
-          - ./metamake.sh 
-          - echo "" >> ~/.bashrc
-          - echo "# Add the GOMC binary files to the path" >> ~/.bashrc
-	        - echo "export PATH=/opt/GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc       
+      - name: make /opt directory
+        run: mkdir /opt  
+      - name: cd to opt directory
+        run: cd /opt 
+      - name: clone the GOMC repositrory version 2.75a
+        run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a    
+      - name: go to GOMC directory
+        run: cd GOMC
+      - name: change permission on GOMC make file
+        run: chmod u+x metamake.sh
+      - name: run GOMC makefile 
+        run: ./metamake.sh 
+      - name: Add space to bashrc file
+        run: echo "" >> ~/.bashrc
+      - name: Add GOMC header to bashrc file
+        run: echo "# Add the GOMC binary files to the path" >> ~/.bashrc
+      - name: Add GOMC path to bashrc file
+        run: echo "export PATH=/opt/GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc      
 
       - name: Checkout Branch / Pull Request
         uses: actions/checkout@v3
