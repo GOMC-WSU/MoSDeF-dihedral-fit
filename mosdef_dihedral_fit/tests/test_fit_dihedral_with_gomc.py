@@ -19,10 +19,11 @@ gomc_binary_directory = "/opt/gomc_build/GOMC/bin"
 # gomc_binary_directory = "/Users/brad/Programs/GOMC/GOMC_2_75/bins"
 # gomc_binary_directory = "/Users/calcraven/Documents/Vanderbilt/Research/MoSDeF/Dihedral_Fitter/GOMC/bin"
 
+
 class TestFitDihedralWithGomc(BaseTest):
     def test_check_if_gomc_binary_exists(self):
         assert os.path.isfile(f"{gomc_binary_directory}/GOMC_CPU_NVT") is True
-    
+
     def test_gaussian_log_file_fit_oplsaa_fit_ethane_HC_CT_CT_HC(self):
         fit_dihedral_with_gomc(
             ["HC", "CT", "CT", "HC"],
