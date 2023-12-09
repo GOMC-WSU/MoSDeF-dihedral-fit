@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu-latest", "macOs-latest"]
+        os: ["bc118/gomc_2_75a", "macOs-latest"]
         python-version: ["3.9", "3.10"]
 
     defaults:
@@ -52,7 +52,7 @@ jobs:
           verbose: true
 
   docker:
-    runs-on: 'bc118/gomc_2_75a'
+    runs-on: 'ubuntu-latest'
     needs: test
     name: 'Build Docker Image'
     if: github.event_name != 'pull_request'
