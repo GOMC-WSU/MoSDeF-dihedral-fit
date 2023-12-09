@@ -12,7 +12,7 @@ from mosdef_dihedral_fit.tests.base_test import BaseTest
 
 # user changable variable, as it needs to be run locally
 # May try to get a way to automatically detect the binary using `shutil.which()`
-gomc_binary_directory = "./"
+gomc_binary_directory = ""
 # gomc_binary_directory = "/Users/brad/Programs/GOMC/GOMC_2_75/bin"
 # gomc_binary_directory = "/Users/calcraven/Documents/Vanderbilt/Research/MoSDeF/Dihedral_Fitter/GOMC/bin"
 
