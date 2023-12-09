@@ -24,7 +24,6 @@ jobs:
         os: ["ubuntu-latest", "macOs-latest"]
         python-version: ["3.9", "3.10"]
 
-
     defaults:
       run:
         shell: bash -l {0}
@@ -111,4 +110,3 @@ jobs:
         with:
           push: true
           tags: ${{ env.DOCKER_TAGS }}
-          
