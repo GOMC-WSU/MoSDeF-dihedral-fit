@@ -36,6 +36,8 @@ jobs:
         run: sudo git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a /opt/gomc_build/GOMC
       - name: install cmake
         run: pip install cmake & ls -a # sudo apt-get install -y wget pip cmake #cd GOMC & pip install cmake
+      - name: pip show cmake
+        run: pip show cmake
       - name: change permission on GOMC make file
         run: sudo chmod u+x /opt/gomc_build/GOMC/metamake.sh
       - name: run GOMC makefile 
