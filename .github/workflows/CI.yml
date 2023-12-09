@@ -34,24 +34,22 @@ jobs:
         run: sudo mkdir /opt/gomc_build
       - name: clone the GOMC repositrory version 2.75a
         run: sudo git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a /opt/gomc_build/GOMC
-      - name: Add space to GOMC github to path file
-        run: echo "" >> ~/.bashrc
-      - name: Add GOMC github directory to bashrc file
-        run: echo "# Add the GOMC github directory to the path" >> ~/.bashrc
-      - name: Add the GOMC github directory to bashrc file
-        run: echo "export PATH=/opt/gomc_build/GOMC${PATH:+:${PATH}}" >> ~/.bashrc 
+
       - name: install cmake
         run: pip install cmake & ls -a # sudo apt-get install -y wget pip cmake #cd GOMC & pip install cmake
       - name: pip show cmake
         run: pip show cmake
-      - name: change permission on GOMC make file
-        run: sudo chmod u+x /opt/gomc_build/GOMC/metamake.sh
+      
+      - name: which python  
+        run: which python  
+
+      - name: change permission on GOMC make file and run it
+        run: cd /opt/gomc_build/GOMC/ && sudo chmod u+x metamake.sh  && ./metamake.sh
       - name: echo gomc cloned directory
         run: echo $(pwd)
-      - name: run GOMC makefile 
-        run: cd /opt/gomc_build/GOMC/ && ./metamake.sh  #cd /opt/gomc_build/GOMC/
+
       - name: Add space to bashrc file
-        run: echo "" >> ~/.bashrc
+        run: echo "" >> ~/.bashrc 
       - name: Add GOMC header to bashrc file
         run: echo "# Add the GOMC binary files to the path" >> ~/.bashrc
       - name: Add GOMC path to bashrc file
