@@ -38,6 +38,14 @@ jobs:
         run: pip install cmake & ls -a # sudo apt-get install -y wget pip cmake #cd GOMC & pip install cmake
       - name: pip show cmake
         run: pip show cmake
+      - name: Add space to bashrc file
+        run: echo "" >> ~/.bashrc
+      - name: Add cmake directory to bashrc
+        run: echo "# Add the cmake to the path" >> ~/.bashrc
+      - name: Add GOMC path to bashrc file
+        run: echo "export PATH=/home/runner/.local/lib/python3.10/site-packages${PATH:+:${PATH}}" >> ~/.bashrc 
+      - name: Add GOMC path to bashrc file
+        run: echo "export PATH=/home/runner/.local/lib/python3.9/site-packages${PATH:+:${PATH}}" >> ~/.bashrc 
       - name: change permission on GOMC make file
         run: sudo chmod u+x /opt/gomc_build/GOMC/metamake.sh
       - name: run GOMC makefile 
