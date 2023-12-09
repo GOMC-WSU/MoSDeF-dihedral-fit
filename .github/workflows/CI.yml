@@ -39,7 +39,7 @@ jobs:
       - name: change permission on GOMC make file
         run: chmod u+x /opt/gomc_build/GOMC/metamake.sh
       - name: run GOMC makefile 
-        run: ./opt/gomc_build/GOMC/metamake.sh 
+        run: bash /opt/gomc_build/GOMC/metamake.sh 
       - name: Add space to bashrc file
         run: echo "" >> ~/.bashrc
       - name: Add GOMC header to bashrc file
