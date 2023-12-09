@@ -49,7 +49,7 @@ jobs:
       - name: echo gomc cloned directory
         run: echo $(pwd)
       - name: run GOMC makefile 
-        run: ./metamake.sh  #cd /opt/gomc_build/GOMC/
+        run: ./opt/gomc_build/GOMC/metamake.sh  #cd /opt/gomc_build/GOMC/
       - name: Add space to bashrc file
         run: echo "" >> ~/.bashrc
       - name: Add GOMC header to bashrc file
