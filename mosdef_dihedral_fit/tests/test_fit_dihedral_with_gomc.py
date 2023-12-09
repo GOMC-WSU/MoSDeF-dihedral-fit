@@ -17,7 +17,7 @@ gomc_binary_directory = "/opt/gomc_build/GOMC/bin"
 
 # User changable variable, as it needs to be run locally
 # Examples
-# gomc_binary_directory = "/Users/brad/Programs/GOMC/GOMC_2_75/bins"
+# gomc_binary_directory = "/Users/brad/Programs/GOMC/GOMC_2_75/bin"
 # gomc_binary_directory = "/Users/calcraven/Documents/Vanderbilt/Research/MoSDeF/Dihedral_Fitter/GOMC/bin"
 
 
