@@ -30,6 +30,8 @@ jobs:
         shell: bash -l {0}
 
     steps:
+      - name: install cmake
+        run: pip install cmake
       - name: clone the GOMC repositrory version 2.75a
         run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a ./GOMC
       - name: change permission on GOMC make file
