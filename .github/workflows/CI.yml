@@ -33,17 +33,17 @@ jobs:
       - name: clone the GOMC repositrory version 2.75a
         run: mkdir ~/opt
       - name: clone the GOMC repositrory version 2.75a
-        run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a ~/opt/gomc_build   
+        run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a ~/opt/GOMC   
       - name: change permission on GOMC make file
-        run: chmod u+x ~/opt/gomc_build/GOMC/metamake.sh
+        run: chmod u+x ~/opt/GOMC/metamake.sh
       - name: run GOMC makefile 
-        run: .~/opt/gomc_build/GOMC/metamake.sh 
+        run: .~/opt/GOMC/metamake.sh 
       - name: Add space to bashrc file
         run: echo "" >> ~/.bashrc
       - name: Add GOMC header to bashrc file
         run: echo "# Add the GOMC binary files to the path" >> ~/.bashrc
       - name: Add GOMC path to bashrc file
-        run: echo "export PATH=~/opt/gomc_build/GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc      
+        run: echo "export PATH=~/opt/GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc      
 
       - name: Checkout Branch / Pull Request
         uses: actions/checkout@v3
