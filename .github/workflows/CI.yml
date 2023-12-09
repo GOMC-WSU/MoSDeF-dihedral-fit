@@ -39,7 +39,7 @@ jobs:
           - ./metamake.sh 
           - echo "" >> ~/.bashrc
           - echo "# Add the GOMC binary files to the path" >> ~/.bashrc
-	  - echo "export PATH=/opt/GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc       
+	        - echo "export PATH=/opt/GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc       
 
       - name: Checkout Branch / Pull Request
         uses: actions/checkout@v3
