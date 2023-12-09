@@ -47,9 +47,9 @@ jobs:
       - name: change permission on GOMC make file
         run: sudo chmod u+x /opt/gomc_build/GOMC/metamake.sh
       - name: echo gomc cloned directory
-        run: echo "pwd"
+        run: echo $(pwd)
       - name: run GOMC makefile 
-        run: cd /opt/gomc_build/GOMC/ & ./opt/gomc_build/GOMC/metamake.sh 
+        run: ./metamake.sh  #cd /opt/gomc_build/GOMC/
       - name: Add space to bashrc file
         run: echo "" >> ~/.bashrc
       - name: Add GOMC header to bashrc file
