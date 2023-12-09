@@ -11,21 +11,18 @@ from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import (
 from mosdef_dihedral_fit.tests.base_test import BaseTest
 
 # The below "gomc_binary_directory = "/opt/gomc_build/GOMC/bin"" is the
-# automated test binary path
+# automated GitHub test binary path. It has to be fully specified, even if it is in the bashrc file.
 gomc_binary_directory = "/opt/gomc_build/GOMC/bin"
 
-# user changable variable, as it needs to be run locally
+# User changable variable, as it needs to be run locally
 # Examples
-# gomc_binary_directory = "/Users/brad/Programs/GOMC/GOMC_2_75/bin"
+# gomc_binary_directory = "/Users/brad/Programs/GOMC/GOMC_2_75/bins"
 # gomc_binary_directory = "/Users/calcraven/Documents/Vanderbilt/Research/MoSDeF/Dihedral_Fitter/GOMC/bin"
 
-
-# NOTE: When comparing fitted values with reference value, we are using numpy.isclose() with absolute tolerance of 0.02 and relative tolerance of 0.08 (8%) to account for difference that incur across operating system.
-@pytest.mark.skipif(
-    not os.path.isfile(f"{gomc_binary_directory}/GOMC_CPU_NVT"),
-    reason="GOMC binary not deteced.",
-)
 class TestFitDihedralWithGomc(BaseTest):
+    def test_check_if_gomc_binary_exists(self):
+        assert os.path.isfile(f"{gomc_binary_directory}/GOMC_CPU_NVT") is True
+    
     def test_gaussian_log_file_fit_oplsaa_fit_ethane_HC_CT_CT_HC(self):
         fit_dihedral_with_gomc(
             ["HC", "CT", "CT", "HC"],
