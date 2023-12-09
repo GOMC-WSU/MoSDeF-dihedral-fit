@@ -42,7 +42,7 @@ jobs:
         run: which python  
 
       - name: change permission on GOMC make file and run it
-        run: cd /opt/gomc_build/GOMC/ && sudo chmod u+x metamake.sh  && ./metamake.sh
+        run: cd /opt/gomc_build/GOMC/ && sudo chmod u+x metamake.sh  && sudo ./metamake.sh
       - name: echo gomc cloned directory
         run: echo $(pwd)
 
