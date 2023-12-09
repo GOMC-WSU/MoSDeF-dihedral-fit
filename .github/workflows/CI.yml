@@ -37,8 +37,6 @@ jobs:
 
       - name: install cmake
         run: pip install cmake & ls -a # sudo apt-get install -y wget pip cmake #cd GOMC & pip install cmake
-      - name: pip show cmake
-        run: pip show cmake
       
       - name: which python  
         run: which python  
