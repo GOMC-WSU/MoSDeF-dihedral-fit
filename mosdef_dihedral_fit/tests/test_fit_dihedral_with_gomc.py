@@ -10,7 +10,7 @@ from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import (
 )
 from mosdef_dihedral_fit.tests.base_test import BaseTest
 
-# The below "gomc_binary_directory = "/opt/gomc_build/GOMC/bin"" is the 
+# The below "gomc_binary_directory = "/opt/gomc_build/GOMC/bin"" is the
 # automated test binary path
 gomc_binary_directory = "/opt/gomc_build/GOMC/bin"
 
