@@ -33,9 +33,7 @@ jobs:
       - name: clone the GOMC repositrory version 2.75a
         run: mkdir ~/opt
       - name: clone the GOMC repositrory version 2.75a
-        run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a ~/opt/GOMC   
-      - name: change permission on GOMC make file
-        run: chmod u+x ~/opt/GOMC/metamake.sh
+        run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a ~/opt/GOMC \ chmod u+x ~/opt/GOMC/metamake.sh
       - name: run GOMC makefile 
         run: cd ~/opt/GOMC/ & ./metamake.sh 
       - name: Add space to bashrc file
