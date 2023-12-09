@@ -20,9 +20,10 @@ gomc_binary_directory = "/opt/gomc_build/GOMC/bin"
 # gomc_binary_directory = "/Users/brad/Programs/GOMC/GOMC_2_75/bin"
 # gomc_binary_directory = "/Users/calcraven/Documents/Vanderbilt/Research/MoSDeF/Dihedral_Fitter/GOMC/bin"
 
-# NOTE: When comparing fitted values with reference value, 
-# we are using numpy.isclose() with absolute tolerance of 
-# 0.02 and relative tolerance of 0.08 (8%) to account for 
+
+# NOTE: When comparing fitted values with reference value,
+# we are using numpy.isclose() with absolute tolerance of
+# 0.02 and relative tolerance of 0.08 (8%) to account for
 # difference that incur across operating system.
 class TestFitDihedralWithGomc(BaseTest):
     def test_check_if_gomc_binary_exists(self):
