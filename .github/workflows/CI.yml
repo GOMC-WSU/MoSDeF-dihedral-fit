@@ -52,7 +52,7 @@ jobs:
           verbose: true
 
   docker:
-    runs-on: 'ubuntu-latest'
+    runs-on: 'bc118/gomc_2_75a'
     needs: test
     name: 'Build Docker Image'
     if: github.event_name != 'pull_request'
