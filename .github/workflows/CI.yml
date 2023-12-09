@@ -21,7 +21,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["bc118/gomc_2_75a", "macOs-latest"]
+        os: ["ubuntu-latest", "macOs-latest"]
         python-version: ["3.9", "3.10"]
 
     defaults:
@@ -29,6 +29,17 @@ jobs:
         shell: bash -l {0}
 
     steps:
+      - name: install GOMC and add Binary path to bashrc
+        run: mkdir /opt
+        run: cd /opt 
+        run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a      
+        run: cd GOMC
+        run: chmod u+x metamake.sh
+        run: ./metamake.sh 
+        run: echo "" >> ~/.bashrc
+        run: echo "# Add the GOMC binary files to the path" >> ~/.bashrc
+	run: echo "export PATH=/opt/GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc       
+
       - name: Checkout Branch / Pull Request
         uses: actions/checkout@v3
 
