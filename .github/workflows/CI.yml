@@ -30,20 +30,22 @@ jobs:
         shell: bash -l {0}
 
     steps:
+      - name: create dir
+        run: sudo mkdir /opt/gomc_build
       - name: clone the GOMC repositrory version 2.75a
-        run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a ./GOMC
+        run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a /opt/gomc_build/GOMC
       - name: install cmake
-        run: sudo apt-get install -y wget pip cmake #cd GOMC & pip install cmake
+        run: pip install cmake # sudo apt-get install -y wget pip cmake #cd GOMC & pip install cmake
       - name: change permission on GOMC make file
-        run: chmod u+x GOMC/metamake.sh
+        run: chmod u+x /opt/gomc_build/GOMC/metamake.sh
       - name: run GOMC makefile 
-        run: ./GOMC/metamake.sh 
+        run: ./opt/gomc_build/GOMC/metamake.sh 
       - name: Add space to bashrc file
         run: echo "" >> ~/.bashrc
       - name: Add GOMC header to bashrc file
         run: echo "# Add the GOMC binary files to the path" >> ~/.bashrc
       - name: Add GOMC path to bashrc file
-        run: echo "export PATH=GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc      
+        run: echo "export PATH=/opt/gomc_build/GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc      
 
       - name: Checkout Branch / Pull Request
         uses: actions/checkout@v3
