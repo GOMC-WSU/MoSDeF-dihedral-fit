@@ -30,16 +30,12 @@ jobs:
         shell: bash -l {0}
 
     steps:
-      - name: cd to usr directory
-        run: cd /usr 
       - name: clone the GOMC repositrory version 2.75a
-        run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a    
-      - name: go to GOMC directory
-        run: cd GOMC
+        run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a /usr   
       - name: change permission on GOMC make file
-        run: chmod u+x metamake.sh
+        run: chmod u+x /usr/GOMC/metamake.sh
       - name: run GOMC makefile 
-        run: ./metamake.sh 
+        run: ./usr/GOMC/metamake.sh 
       - name: Add space to bashrc file
         run: echo "" >> ~/.bashrc
       - name: Add GOMC header to bashrc file
