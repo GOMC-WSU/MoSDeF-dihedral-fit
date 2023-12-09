@@ -34,14 +34,20 @@ jobs:
         run: sudo mkdir /opt/gomc_build
       - name: clone the GOMC repositrory version 2.75a
         run: sudo git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a /opt/gomc_build/GOMC
+      - name: Add space to GOMC github to path file
+        run: echo "" >> ~/.bashrc
+      - name: Add GOMC github directory to bashrc file
+        run: echo "# Add the GOMC github directory to the path" >> ~/.bashrc
+      - name: Add the GOMC github directory to bashrc file
+        run: echo "export PATH=/opt/gomc_build/GOMC${PATH:+:${PATH}}" >> ~/.bashrc 
       - name: install cmake
         run: pip install cmake & ls -a # sudo apt-get install -y wget pip cmake #cd GOMC & pip install cmake
       - name: pip show cmake
         run: pip show cmake
-      - name: Add space to bashrc file
-        run: echo "" >> ~/.bashrc
       - name: change permission on GOMC make file
         run: sudo chmod u+x /opt/gomc_build/GOMC/metamake.sh
+      - name: echo gomc cloned directory
+        run: echo "pwd"
       - name: run GOMC makefile 
         run: cd /opt/gomc_build/GOMC/ & ./opt/gomc_build/GOMC/metamake.sh 
       - name: Add space to bashrc file
