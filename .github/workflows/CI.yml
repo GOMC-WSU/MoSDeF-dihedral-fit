@@ -33,7 +33,7 @@ jobs:
       - name: clone the GOMC repositrory version 2.75a
         run: git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a ./GOMC
       - name: install cmake
-        run: cd GOMC & pip install cmake
+        run: apt-get install -y wget pip cmake #cd GOMC & pip install cmake
       - name: change permission on GOMC make file
         run: chmod u+x GOMC/metamake.sh
       - name: run GOMC makefile 
