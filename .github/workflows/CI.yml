@@ -37,9 +37,9 @@ jobs:
       - name: install cmake
         run: cd /opt/gomc_build/GOMC & pip install cmake # sudo apt-get install -y wget pip cmake #cd GOMC & pip install cmake
       - name: change permission on GOMC make file
-        run: chmod u+x /opt/gomc_build/GOMC/metamake.sh
+        run: sudochmod u+x /opt/gomc_build/GOMC/metamake.sh
       - name: run GOMC makefile 
-        run: bash /opt/gomc_build/GOMC/metamake.sh 
+        run: sudo bash /opt/gomc_build/GOMC/metamake.sh 
       - name: Add space to bashrc file
         run: echo "" >> ~/.bashrc
       - name: Add GOMC header to bashrc file
