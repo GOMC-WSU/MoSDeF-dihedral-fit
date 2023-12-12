@@ -3,7 +3,8 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python>=3.8,<=3.9
+  - python>=3.9,<=3.10
+  - vmd-python
   - ipython
   - numpydoc
   - mock
@@ -13,8 +14,10 @@ dependencies:
   - pycifrw
   - pytest
   - pytest-cov
+  - mosdef-gomc
+  - pydantic=1.10.10
   - pre-commit
-  - sphinx
+  - sphinx=6.1.1
   - pip
   - pip:
       - bump2version
