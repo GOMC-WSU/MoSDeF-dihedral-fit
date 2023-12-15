@@ -74,7 +74,7 @@ if __name__ == "__main__":
         },
         package_dir={"MoSDeF-dihedral-fit": "MoSDeF-dihedral-fit"},
         include_package_data=True,
-        license="MIT and  Theoretical and Computational Biophysics Group at the Beckman Institute for Advanced Science and Technology at the University of Illinois at Urbana-Champaign",
+        license="MIT",
         zip_safe=False,
         keywords="MoSDeF-dihedral-fit",
         classifiers=[

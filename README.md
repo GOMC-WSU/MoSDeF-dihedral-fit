@@ -44,6 +44,8 @@ chmod u+x metamake.sh
 
 ## Documentation
 
+The MoSDeF-dihedral-fit documentation can be found [here](https://mosdef-dihedral-fit.readthedocs.io/en/latest/).
+
 ## Dihedral Equations
 
 <u>OPLS-dihedral</u>:
