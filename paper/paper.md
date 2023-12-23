@@ -42,7 +42,7 @@ authors:
     affiliation: 2
 
 affiliations:
- - name: Atomfold LLC, PA, USA
+ - name: Atomfold, PA, USA
    index: 1
  - name: Department of Chemical Engineering, Wayne State University, Detroit, MI 48202-4050, USA
    index: 2
