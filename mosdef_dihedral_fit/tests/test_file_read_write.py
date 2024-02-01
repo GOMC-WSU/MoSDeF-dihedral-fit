@@ -121,7 +121,7 @@ class TestFileReading(BaseTest):
         )
         assert "dihedral_coords_position_1.xyz" in os.listdir()
         assert "dihedral_coords_position_2.xyz" in os.listdir()
-        
+
         write_restart_coor_from_xyz_file("./", 2)
         assert "dihedral_coords_position_1.coor" in os.listdir()
         assert "dihedral_coords_position_2.coor" in os.listdir()
