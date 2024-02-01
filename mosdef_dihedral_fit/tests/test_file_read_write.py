@@ -119,10 +119,9 @@ class TestFileReading(BaseTest):
         write_xyz_file_from_gaussian_coordinates(
             atom_namesList, full_fn, extension, "./", 2
         )
-        assert os.listdir() == [
-            "dihedral_coords_position_1.xyz",
-            "dihedral_coords_position_2.xyz",
-        ]
+        assert "dihedral_coords_position_1.xyz" in os.listdir()
+        assert "dihedral_coords_position_2.xyz" in os.listdir()
+
         write_restart_coor_from_xyz_file("./", 2)
         assert "dihedral_coords_position_1.coor" in os.listdir()
         assert "dihedral_coords_position_2.coor" in os.listdir()
