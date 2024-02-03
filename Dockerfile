@@ -17,12 +17,8 @@ WORKDIR /mosdef_dihedral_fit
 # Create a group and user
 RUN addgroup -S anaconda && adduser -S anaconda -G anaconda
 
-# install basic Ubuntu packages
-RUN apt-get update \
-  && apt-get install -y wget pip
-
-# Install Ubuntu libraries (libarchive13 required for mamba install)
-RUN apt-get install -y libarchive13
+# install the libarchive package needed by mamba
+RUN apk update && apk add libarchive
 
 RUN conda update conda -yq && \
   conda config --set always_yes yes --set changeps1 no && \
