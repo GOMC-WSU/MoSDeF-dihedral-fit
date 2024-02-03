@@ -2231,9 +2231,9 @@ def change_gomc_ff_file_dihedral_values(
                             )
                         )
 
-                    status_written_fit_dihedral_atom_types_dict[
-                        str(dih_m)
-                    ] = True
+                    status_written_fit_dihedral_atom_types_dict[str(dih_m)] = (
+                        True
+                    )
 
             # set the zeroed dihedral types to zero in the GOMC/CHARMM style FF file
             elif (

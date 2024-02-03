@@ -1,4 +1,5 @@
 """General module for IO operations in MOSDEF-dihedral-fit."""
+
 import os
 
 from pkg_resources import resource_filename
