@@ -10,7 +10,7 @@ from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import fit_dihedral
 fit_dihedral_with_gomc(
         ["HC", "CT", "CT", "HC"], #atomclass names of the dihedral
         "molecule.mol2" # mol2 file with relevant structure
-        "compound.xml", # xml file with other atomtyped parameters in foyer format
+        "compound.xml", # xml file with other atom typed parameters in foyer format
         298.15 * u.Kelvin, # relevant temperature
         gomc_binary_directory, # path to binary command from GOMC install
         {"HC_CT_CT_HC_multiplicity_1.log": []}, # log file to store info
