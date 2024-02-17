@@ -85,7 +85,6 @@ The **MoSDeF-dihedral-fit** software acts as manager between
 providing a user-friendly package that automatically produces one or more reproducible
 dihedral fits, with visualizations, which the user can then select the best fit for their system.
 
-
 The **MoSDeF** software consists of the following core packages:
 	* `mBuild <https://mbuild.mosdef.org/en/stable/>`_ -- A hierarchical, component based molecule builder
 
@@ -95,7 +94,9 @@ The **MoSDeF** software consists of the following core packages:
 
 	* `forcefield-utilities <https://github.com/mosdef-hub/forcefield-utilities/>`_
 
-
+**MoSDeF-dihedral-fit with United-Atom (UA) force fields**:
+   #.  For the QM All-Atom (AA) and UA atoms parameterization to work together, the UA atoms must be entered as single atoms in the sudo UA force field XML and mol2 files.
+   #. The individual atoms in the force field XML and mol2 files used to fit the dihedral shall have force field parameters for the central atoms (i.e., C or CH_3 in CH3) and other non-UA force field atoms alike (atoms with zero nonbonded interactions in a UA force field). The user should enter zeros for the force field terms wherever possible for the atoms not part of the UA forcefield (Example: atoms with zero nonbonded interactions in a UA force field), as setting the non-central atoms parameters to zero is especially true and critically important for the nonbonded interactions.
 
 **MoSDeF-dihedral-fit License**:
 
