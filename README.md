@@ -1,3 +1,6 @@
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/GOMC-WSU/MoSDeF-dihedral-fit/master.svg)](https://results.pre-commit.ci/latest/github/GOMC-WSU/MoSDeF-dihedral-fit/master)
+[![CI](https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/actions/workflows/CI.yml/badge.svg)](https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/actions/workflows/CI.yml)
+
 # MoSDeF-dihedral-fit
 The MoSDeF-dihedral-fit: an open-source, transparent, and lightweight Python software package capable
 of fitting dihedrals with QM calculations for existing forces fields. This software fits the [Optimized Potentials for Liquid Simulations (OPLS)](https://pubs.acs.org/doi/10.1021/ja9621760) style
