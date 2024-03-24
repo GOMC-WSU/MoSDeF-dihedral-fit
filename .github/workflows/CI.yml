@@ -75,8 +75,6 @@ jobs:
           echo "tests finished"
 
       - name: Upload Converage Report
-        uses: actions/checkout@v2
-        uses: conda-incubator/setup-miniconda@v2
         uses: codecov/codecov-action@v3
 
         with:
