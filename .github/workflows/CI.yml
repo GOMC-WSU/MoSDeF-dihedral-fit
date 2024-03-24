@@ -73,7 +73,7 @@ jobs:
       
       - shell: bash -l {0}
         run: |
-          python -m pytest -v --color yes mosdef_dihedral_fit/tests --cov
+          python -m pytest -v --color yes mosdef_gomc/tests --cov
           coverage xml
           echo "tests finished"
 
