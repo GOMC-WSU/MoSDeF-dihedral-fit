@@ -14,7 +14,7 @@ dependencies:
   - pycifrw
   - pytest
   - pytest-cov
-  - mosdef-gomc>1.3.0
+  - mosdef-gomc>=1.3.0
   - pre-commit
   - sphinx=6.1.1
   - pip
