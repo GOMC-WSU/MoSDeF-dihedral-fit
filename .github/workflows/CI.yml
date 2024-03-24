@@ -29,6 +29,9 @@ jobs:
         shell: bash -l {0}
 
     steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+
       - name: create dir
         run: sudo mkdir /opt/gomc_build
 
@@ -68,8 +71,6 @@ jobs:
       - name: Test (OS -> ${{ matrix.os }} / Python -> ${{ matrix.python-version }})
         run: python -m pytest -v --cov=mosdef_dihedral_fit --cov-append --cov-config=setup.cfg --color yes --pyargs mosdef_dihedral_fit
 
-      - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
       - name: Upload Converage Report
         uses: codecov/codecov-action@v3
         with:
