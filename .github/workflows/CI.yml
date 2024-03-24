@@ -29,9 +29,6 @@ jobs:
         shell: bash -l {0}
 
     steps:
-      - uses: actions/checkout@v2
-      - uses: conda-incubator/setup-miniconda@v2
-
       - name: create dir
         run: sudo mkdir /opt/gomc_build
 
@@ -78,7 +75,10 @@ jobs:
           echo "tests finished"
 
       - name: Upload Converage Report
+         uses: actions/checkout@v2
+        uses: conda-incubator/setup-miniconda@v2
         uses: codecov/codecov-action@v3
+
         with:
           name: mosdef_dihedral_fit-Coverage
           verbose: true
