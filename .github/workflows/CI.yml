@@ -68,6 +68,12 @@ jobs:
       - name: Test (OS -> ${{ matrix.os }} / Python -> ${{ matrix.python-version }})
         run: python -m pytest -v --cov=mosdef_dihedral_fit --cov-append --cov-config=setup.cfg --color yes --pyargs mosdef_dihedral_fit
 
+      - shell: bash -l {0}
+        run: |
+          python -m pytest -v --color yes mosdef_gomc/tests --cov
+          coverage xml
+          echo "tests finished"
+          
       - name: Upload Converage Report
         uses: codecov/codecov-action@v3
         with:
