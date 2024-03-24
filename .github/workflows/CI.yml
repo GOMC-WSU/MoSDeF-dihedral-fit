@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macOs-latest"]
-        python-version: ["3.9", "3.10"]
+        python-version: ["3.10", "3.11"]
 
     defaults:
       run:
@@ -69,7 +69,7 @@ jobs:
         run: python -m pytest -v --cov=mosdef_dihedral_fit --cov-append --cov-config=setup.cfg --color yes --pyargs mosdef_dihedral_fit
 
       - name: Upload Converage Report
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v3
         with:
           name: mosdef_dihedral_fit-Coverage
           verbose: true
