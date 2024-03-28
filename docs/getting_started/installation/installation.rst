@@ -59,18 +59,31 @@ Testing your installation
 
 The ``MoSDeF-dihedral-fit`` software uses `pytest <https://docs.pytest.org/en/stable/>`_ to analyze the code for
 errors, bugs, code changes, accuracy, and to verify that the existing implementation is correct.
-This software auto-installs the ``pytest`` package with the ``mosdef_gomc`` environment.
+This software auto-installs the ``pytest`` package with the ``MoSDeF-dihedral-fit`` environment.
 
 To conduct these unit tests via ``pytest``, perform the following command from the base directory::
 
     $ pytest -v
 
+.. note::
+    In the ``MoSDeF-dihedral-fit/mosdef_dihedral_fit/tests/test_fit_dihedral_with_gomc.py`` file, 
+    you will have to set the ``gomc_binary_directory`` variable (near the top of the file) 
+    equal to your full and local GOMC binary directory in order for the 
+    ``test_fit_dihedral_with_gomc.py`` file not to fail all the unit tests (``pytest``).
+    
+    Example: **gomc_binary_directory = /Users/brad/Programs/GOMC/GOMC_2_75a/bin**  
+    
+
 Building the documentation
 --------------------------
 
-``MoSDeF-dihedral`` fit documentation was constructed using `sphinx <https://www.sphinx-doc.org/en/master/index.html>`_.
-This software auto-installs the ``sphinx`` package with the ``mosdef_gomc`` environment.
+``MoSDeF-dihedral-fit`` documentation was constructed using `sphinx <https://www.sphinx-doc.org/en/master/index.html>`_.
+The ``sphinx`` software may need to be installed separately to avoid dependency conflicts. 
+If ``sphinx`` is not automatically provided, the correct ``sphinx`` package can be build after creating 
+a new conda environment using the ``environment_docs.yml`` file in the ``MoSDeF-dihedral-fit/docs`` 
+directory, located on ``MoSDeF-dihedral-fit`` GitHub's main repository or GitHub's releases for a specific version.
 
-The ``docs`` can be built locally with the following commands when in the ``docs`` directory::
+Once the correct ``sphinx`` package is installed, 
+the ``docs`` can be built locally with the following commands when in the ``docs`` directory::
 
     $ make html
