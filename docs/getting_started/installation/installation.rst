@@ -59,7 +59,7 @@ Testing your installation
 
 The ``MoSDeF-dihedral-fit`` software uses `pytest <https://docs.pytest.org/en/stable/>`_ to analyze the code for
 errors, bugs, code changes, accuracy, and to verify that the existing implementation is correct.
-This software auto-installs the ``pytest`` package with the ``mosdef_gomc`` environment.
+This software auto-installs the ``pytest`` package with the ``MoSDeF-dihedral-fit`` environment.
 
 To conduct these unit tests via ``pytest``, perform the following command from the base directory::
 
