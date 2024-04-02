@@ -1,4 +1,4 @@
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/GOMC-WSU/MoSDeF-dihedral-fit/master.svg)](https://results.pre-commit.ci/latest/github/GOMC-WSU/MoSDeF-dihedral-fit/master)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/GOMC-WSU/MoSDeF-dihedral-fit/main.svg)](https://results.pre-commit.ci/latest/github/GOMC-WSU/MoSDeF-dihedral-fit/main)
 [![CI](https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/actions/workflows/CI.yml/badge.svg)](https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/actions/workflows/CI.yml)
 
 # MoSDeF-dihedral-fit
