@@ -3,7 +3,7 @@ NOTE
 
 There are three (3) different licenses, one (1) for MoSDeF-dihedral-fit,
 one (1) for vmd-python, and
-one (1) the VMD, which you must follow and agree to manually (see below).
+one (1) for VMD, which you must follow and agree to manually (see below).
 
 
 MoSDeF-dihedral-fit
