@@ -1,9 +1,10 @@
-NOTE
-----
+Important Information:
+----------------------
 
 There are three (3) different licenses, one (1) for MoSDeF-dihedral-fit,
-one (1) for vmd-python, and
-one (1) for VMD, which you must follow and agree to manually (see below).
+one (1) for vmd-python (a derivative or modified version of the original VMD software - also see VMD license below), and
+one (1) for VMD (the original VMD code was not used in this work), which you must follow and agree to manually (see below).
+
 
 
 MoSDeF-dihedral-fit
@@ -30,8 +31,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 
-vmd-python
-----------
+vmd-python (a derivative or modified version of the original VMD software (see VMD license below)
+-------------------------------------------------------------------------------------------------
 
 This software is classified as a "derivative work" of the original Visual Molecular Dynamics software. It uses the main VMD source code and Python compilation options as well as code I have written for simple compilation and installation, as well as several patches I have applied.
 
@@ -42,9 +43,8 @@ As such, this is a MODIFIED VERSION of VMD and is not the original software dist
 Official VMD web page: http://www.ks.uiuc.edu/Research/vmd
 
 
-
-VMD
----
+VMD (the original VMD code was not used in this work)
+-----------------------------------------------------
 Official VMD license: https://www.ks.uiuc.edu/Research/vmd/current/LICENSE.html
 
 University of Illinois

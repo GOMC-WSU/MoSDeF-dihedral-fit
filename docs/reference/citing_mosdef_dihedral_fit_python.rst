@@ -58,6 +58,6 @@ Please also cite the following software:
 
 	* `forcefield-utilities <https://github.com/mosdef-hub/forcefield-utilities/>`_
 
-	* `Visual Molecular Dynamics (VMD) <https://www.ks.uiuc.edu/Research/vmd/>`_
+	* `vmd-python <https://github.com/Eigenstate/vmd-python>`_, a "derivative work" of the original `Visual Molecular Dynamics (VMD) <https://www.ks.uiuc.edu/Research/vmd/>`_ software. 
 
-	* `vmd-python <https://github.com/Eigenstate/vmd-python>`_
+	* `Visual Molecular Dynamics (VMD) <https://www.ks.uiuc.edu/Research/vmd/>`_ software. However, the original VMD code was not used in this work.
