@@ -1,10 +1,10 @@
 Important Information:
 ----------------------
 
-There are three (3) different licenses, one (1) for MoSDeF-dihedral-fit,
-one (1) for vmd-python (a derivative or modified version of the original VMD software - also see VMD license below), and
-one (1) for VMD (the original VMD code was not used in this work), which you must follow and agree to manually (see below).
-
+There are three (3) different licenses to follow:
+  - One (1) for MoSDeF-dihedral-fit
+  - One (1) for vmd-python (a derivative or modified version of the original VMD software - also see VMD license below).
+  - One (1) for VMD. The original VMD code was not used in this work; however, please see the VMD license below for more information on derivative or modified versions (i.e., vmd-python) of the original VMD software.
 
 
 MoSDeF-dihedral-fit
