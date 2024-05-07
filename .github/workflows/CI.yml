@@ -92,12 +92,12 @@ jobs:
 
       - name: Get Tagged Version
         run: |
-          echo "DOCKER_TAGS=${{ secrets.DOCKERHUB_USERNAME }}/MoSDeF-dihedral-fit:${GITHUB_REF_NAME}, ${{ secrets.DOCKERHUB_USERNAME }}/MoSDeF-dihedral-fit:stable" >> $GITHUB_ENV
+          echo "DOCKER_TAGS=${{ secrets.DOCKERHUB_USERNAME }}/mosdef-dihedral-fit:${GITHUB_REF_NAME}, ${{ secrets.DOCKERHUB_USERNAME }}/mosdef-dihedral-fit:stable" >> $GITHUB_ENV
         if: github.ref_type == 'tag'
 
       - name: Get Push Version
         run: |
-          echo "DOCKER_TAGS=${{ secrets.DOCKERHUB_USERNAME }}/MoSDeF-dihedral-fit:${GITHUB_REF_NAME}, ${{ secrets.DOCKERHUB_USERNAME }}/MoSDeF-dihedral-fit:latest" >> $GITHUB_ENV
+          echo "DOCKER_TAGS=${{ secrets.DOCKERHUB_USERNAME }}/mosdef-dihedral-fit:${GITHUB_REF_NAME}, ${{ secrets.DOCKERHUB_USERNAME }}/mosdef-dihedral-fit:latest" >> $GITHUB_ENV
         if: github.ref_type == 'branch'
 
       - name: Docker Image Info
