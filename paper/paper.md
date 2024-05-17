@@ -44,7 +44,7 @@ authors:
 affiliations:
  - name: Atomfold, PA, USA
    index: 1
- - name: Department of Chemical Engineering, Wayne State University, Detroit, MI 48202-4050, USA
+ - name: Department of Chemical Engineering and Materials Science, Wayne State University, Detroit, MI 48202-4050, USA
    index: 2
  - name: Department of Chemical and Biomolecular Engineering, Vanderbilt University, Nashville, TN 37235-1604, USA
    index: 3
