@@ -1,6 +1,6 @@
 
 ---
-title: 'MoSDeF-dihedral-fit: A simple software package to fit dihedrals via the MoSDeF software'
+title: 'MoSDeF-dihedral-fit: A lightweight software to fit dihedrals via the MoSDeF software'
 
 tags:
   - Python
