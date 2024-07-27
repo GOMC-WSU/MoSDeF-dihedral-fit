@@ -194,8 +194,8 @@ def fit_dihedral_with_gomc(
         named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
 
     combining_rule: str ('geometric' or 'lorentz'), default = None
-        The Lennard-Jones or VDW sigmas 'combining_rule'. in the foyer or GMSO XML file. 
-        
+        The Lennard-Jones or VDW sigmas 'combining_rule'. in the foyer or GMSO XML file.
+
         The 'combining_rule' in the foyer or GMSO XML file for the Lennard-Jones or VDW sigmas
         (Rmin --> sigmas for Exp6). If this is None, it will use whatever is specified in
         the XML file, or the default foyer or GMSO values. BEWARE, if it is not specified
