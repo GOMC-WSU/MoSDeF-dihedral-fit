@@ -194,20 +194,33 @@ def fit_dihedral_with_gomc(
         named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
 
     combining_rule: str ('geometric' or 'lorentz'), default = None
-        The combining_rule in the foyer or GMSO XML file.
-        If this is None, it will use whatever is specified in the XML file, or the
-        default foyer or GMSO values. BEWARE, if it is not specified XML file, it has a default.
-        If this is None, it will use whatever is specified in the XML file,
-        or the default foyer or GMSO values.
+        The combining_rule in the foyer or GMSO XML file for the  Lennard-Jones or VDW sigmas 
+        (Rmin --> sigmas for Exp6). If this is None, it will use whatever is specified in 
+        the XML file, or the default foyer or GMSO values. BEWARE, if it is not specified 
+        XML file, it has a default. If this is None, it will use whatever is specified in 
+        the XML file, or the default foyer or GMSO values.
 
         'geometric' is the geometric mean used to combine the
-        Lennard-Jones or VDW sigmas, as required by OPLS force field.
+        Lennard-Jones or VDW sigmas (Rmin --> sigmas for Exp6), as required by OPLS force field.
 
         'lorentz' is the arithmetic mean used to combine the
-        Lennard-Jones or VDW sigmas, as required by TraPPE, Amber, or CHARMM force fields.
+        Lennard-Jones or VDW sigmas (Rmin --> sigmas for Exp6), as required by 
+        TraPPE, Amber, or CHARMM force fields.
 
-        'None', the default setting, is pulled from the force field XML, but if it is
+        'None', the default setting used to combine the Lennard-Jones or VDW sigmas 
+        (Rmin --> sigmas for Exp6), is pulled from the force field XML, but if it is 
         not present it defaults to 'geometric' via MoSDeF's default settings.
+
+        NOTE: The mixing rules for the other non-Lennard-Jones or non-VDW sigmas forces are
+        listed below for reference, which applicable in GOMC and here:
+
+        "NOTE: epsilon_ij = 'geometric' for All FFs  --> epsilon_ij = (epsilon_ii * epsilon_jj)**0.5."
+        
+        "NOTE: n_ij = 'lorentz' for Mie FFs --> n_ij = (n_ii + n_jj)/2."
+        
+        "NOTE: alpha_ij = 'geometric' for Exp FFs --> alpha_ij = (alpha_ii * alpha_jj)**0.5."
+        
+        
     atom_type_naming_style: str, optional, default='all_unique', ('general' or 'all_unique')
         * 'general'
 
