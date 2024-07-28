@@ -59,8 +59,24 @@ if __name__ == "__main__":
         version=__version__,
         description=__doc__.split("\n"),
         long_description=__doc__,
-        author="",
-        author_email="",
+        author="""
+            Brad Crawford,
+            Co D. Quach,
+            Nicholas C. Craven,
+            Christopher R. Iacovella,
+            Clare McCabe,
+            Peter T. Cummings,
+            Jeffrey J. Potoff,
+        """,
+        author_email="""
+            crawfordb118@gmail.com,
+            daico007@gmail.com,
+            triplec.craven96@gmail.com,
+            chirs.iacovella@gmail.com,
+            c.mccabe@hw.ac.uk,
+            p.cummings@hw.ac.uk,
+            jpotoff@wayne.edu,
+        """,
         url="https://github.com/GOMC-WSU/MoSDeF-dihedral-fit",
         download_url="https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/tarball/{}".format(
             __version__
