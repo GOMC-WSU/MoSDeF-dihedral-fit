@@ -69,7 +69,7 @@ if __name__ == "__main__":
             Jeffrey J. Potoff,
         """,
         author_email="""
-            crawfordb118@gmail.com,
+            brad.crawford.atomfold@gmail.com,
             daico007@gmail.com,
             triplec.craven96@gmail.com,
             chirs.iacovella@gmail.com,
