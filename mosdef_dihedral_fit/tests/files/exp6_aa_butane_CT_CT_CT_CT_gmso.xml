@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<ForceField name="exp6-ua_gmso_butane_only - Note: this is not the exact Williams FF as the mixing rules are used not NB Fix for C-H Non-bonded VDW interactions" version="0.0.0">
+<ForceField name="exp6-aa_gmso_butane_only - Note: this is not the exact Williams FF as the mixing rules are used not NB Fix for C-H Non-bonded VDW interactions" version="0.0.0">
   <FFMetaData combiningRule="geometric" electrostatics14Scale="0" nonBonded14Scale="0">
     <Units energy="K" mass="amu" charge="elementary_charge" distance="angstrom"/>
   </FFMetaData>
