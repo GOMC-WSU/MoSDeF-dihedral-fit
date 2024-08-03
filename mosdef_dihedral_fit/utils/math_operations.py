@@ -378,7 +378,7 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
 
     .. math::
     opls_dihedral_n_1 &= 1/2 *(
-        &= k0 
+        &= k0
         &= + k1 * (1 + cos(1 * phi))
         &= + k2 * (1 - cos(2 * phi))
         &= + k3 * (1 + cos(3 * phi))
@@ -413,7 +413,7 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
                 the same atom typed/classed atoms in the test molecule/fragment.
 
         all_sum_opls_const_1_plus_or_minus_cos_n_list: list or tuple, default=None
-            
+
             all_sum_opls_const_1_plus_or_minus_cos_n_list = [
             const_1_minus_Cos_0_phi,
             const_1_plus_Cos_1_phi,
@@ -423,7 +423,7 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
             ]
 
             A list of the OPLS k0 data, which is always 0 or 1 in this case.
-            If all 0 values --> (0, 0, .., 0), then k0=0.  
+            If all 0 values --> (0, 0, .., 0), then k0=0.
             If all 1 values --> (1, 1, .., 1), then 0=constant
 
             # It is critical that 'const_1_minus_Cos_0_phi' be all (0, 0, .., 0) for k0=0
@@ -434,7 +434,7 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
             atom types/classes exist in the molecule that the dihedral is fit too.
 
             Example 0:
-            const_1_minus_Cos_0_phi  = k0 
+            const_1_minus_Cos_0_phi  = k0
 
             Example 1:
             const_1_plus_Cos_1_phi  = sum of all phi values in the list
@@ -568,7 +568,6 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
         else:
             use_const_1_plus_minus_Cos_x_values_bool = True
 
-
     # check for acceptable cos_powers
     if isinstance(cos_powers, (str, int, float)):
         cos_powers_idential_value = cos_powers
@@ -689,93 +688,63 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
             f" 1., 2., 3., 4., 13., 24., 12., 34., 123., 1234.]"
         )
 
-    # check if using k0=0 ('opls_force_k0_zero'=True) by summing 
+    # check if using k0=0 ('opls_force_k0_zero'=True) by summing
     # 'sorted_const_1_minus_Cos_0_phi_data_lists'
     # It is critical that 'const_1_minus_Cos_0_phi_data' be all (0, 0, .., 0) for k0=0
     # and all (1, 1, .., 1) 'const_1_minus_Cos_0_phi_data' for k0=constant
-    if ( 
-        const_1_minus_Cos_0_phi_data is not None 
-        and sum(const_1_minus_Cos_0_phi_data) == 0 
-        # or const_1_minus_Cos_0_phi_data is None 
-               ):
-        k0=0
+    if (
+        const_1_minus_Cos_0_phi_data is not None
+        and sum(const_1_minus_Cos_0_phi_data) == 0
+        # or const_1_minus_Cos_0_phi_data is None
+    ):
+        k0 = 0
 
     if cos_powers_modified in ["1", 1, 1.0]:
         # NOTE: THE ALL BUT THE 'kx' VALUES ARE REPLACES WITH A CONSTANT,
 
         if use_const_1_plus_minus_Cos_x_values_bool is False:
             dihedral_energy = (
-                1 / 2 * (
-                    k0 
-                    + k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
-                    )
+                1 / 2 * (k0 + k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180)))
             )
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = (
-                1 / 2 * (
-                    k0 
-                    + k1 * const_1_plus_Cos_1_phi_data
-                    )
-            )
+            dihedral_energy = 1 / 2 * (k0 + k1 * const_1_plus_Cos_1_phi_data)
 
     elif cos_powers_modified in ["2", 2, 2.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
             dihedral_energy = (
-                1 / 2 * (
-                    k0 
-                    + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
-                    )
+                1 / 2 * (k0 + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180)))
             )
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = (
-                1 / 2 * (
-                    k0 
-                    + k2 * const_1_minus_Cos_2_phi_data
-                    )
-            )
+            dihedral_energy = 1 / 2 * (k0 + k2 * const_1_minus_Cos_2_phi_data)
 
     elif cos_powers_modified in ["3", 3, 3.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
             dihedral_energy = (
-                1 / 2 * (
-                    k0 
-                    + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
-                    )
+                1 / 2 * (k0 + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180)))
             )
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
- 
-                dihedral_energy = (
-                    1 / 2 * (
-                        k0 
-                        + k3 * const_1_plus_Cos_3_phi_data
-                        )
-                )
+
+            dihedral_energy = 1 / 2 * (k0 + k3 * const_1_plus_Cos_3_phi_data)
 
     elif cos_powers_modified in ["4", 4, 4.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
             dihedral_energy = (
-                1 / 2 * (
-                    k0 
-                    + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180))
-                    )
+                1 / 2 * (k0 + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180)))
             )
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
-            dihedral_energy = (
-                1 / 2 * (
-                    k0 
-                    + k4 * const_1_minus_Cos_4_phi_data
-                    )
-            )
+            dihedral_energy = 1 / 2 * (k0 + k4 * const_1_minus_Cos_4_phi_data)
 
     elif cos_powers_modified in ["1_3", 13, 13.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
             dihedral_energy = (
-                1/2 * (
-                    k0 
+                1
+                / 2
+                * (
+                    k0
                     + k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
                     + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
                 )
@@ -783,9 +752,11 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
             dihedral_energy = (
-                1/2 * (
-                    k0 + 
-                    + k1 * const_1_plus_Cos_1_phi_data
+                1
+                / 2
+                * (
+                    k0
+                    + +k1 * const_1_plus_Cos_1_phi_data
                     + k3 * const_1_plus_Cos_3_phi_data
                 )
             )
@@ -793,46 +764,55 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
     elif cos_powers_modified in ["2_4", 24, 24.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
             dihedral_energy = (
-                1/2 * (
-                    k0 + 
-                    + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
+                1
+                / 2
+                * (
+                    k0
+                    + +k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
                     + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180))
                 )
             )
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
             dihedral_energy = (
-                1/2 * (
-                    k0 + 
-                    + k2 * const_1_minus_Cos_2_phi_data
+                1
+                / 2
+                * (
+                    k0
+                    + +k2 * const_1_minus_Cos_2_phi_data
                     + k4 * const_1_minus_Cos_4_phi_data
                 )
             )
 
     elif cos_powers_modified in ["3_4", 34, 34.0]:
-        if use_const_1_plus_minus_Cos_x_values_bool is False:       
+        if use_const_1_plus_minus_Cos_x_values_bool is False:
             dihedral_energy = (
-                1/2 * (
-                    k0 + 
-                    + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
+                1
+                / 2
+                * (
+                    k0
+                    + +k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
                     + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180))
                 )
             )
-            
+
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
             dihedral_energy = (
-                1/2 * (
-                    k0 + 
-                    + k3 * const_1_plus_Cos_3_phi_data
+                1
+                / 2
+                * (
+                    k0
+                    + +k3 * const_1_plus_Cos_3_phi_data
                     + k4 * const_1_minus_Cos_4_phi_data
                 )
             )
 
-
     elif cos_powers_modified in ["1_2", 12, 12.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
             dihedral_energy = (
-                1/2 * (
+                1
+                / 2
+                * (
                     k0
                     + k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
                     + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
@@ -841,8 +821,10 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
             dihedral_energy = (
-                1/2 * (
-                    k0    * const_1_minus_Cos_0_phi_data
+                1
+                / 2
+                * (
+                    k0 * const_1_minus_Cos_0_phi_data
                     + k1 * const_1_plus_Cos_1_phi_data
                     + k2 * const_1_minus_Cos_2_phi_data
                 )
@@ -851,18 +833,22 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
     elif cos_powers_modified in ["1_2_3", 123, 123.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
             dihedral_energy = (
-                1/2 * (
-                    k0 + 
-                    + k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
+                1
+                / 2
+                * (
+                    k0
+                    + +k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
                     + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
                     + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
                 )
             )
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
             dihedral_energy = (
-                1/2 * (
-                    k0 + 
-                    + k1 * const_1_plus_Cos_1_phi_data
+                1
+                / 2
+                * (
+                    k0
+                    + +k1 * const_1_plus_Cos_1_phi_data
                     + k2 * const_1_minus_Cos_2_phi_data
                     + k3 * const_1_plus_Cos_3_phi_data
                 )
@@ -871,9 +857,11 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
     elif cos_powers_modified in ["1_2_3_4", 1234, 1234.0]:
         if use_const_1_plus_minus_Cos_x_values_bool is False:
             dihedral_energy = (
-                1/2 * (
-                    k0 + 
-                    + k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
+                1
+                / 2
+                * (
+                    k0
+                    + +k1 * (1 + np.cos(1 * scanned_phi * np.pi / 180))
                     + k2 * (1 - np.cos(2 * scanned_phi * np.pi / 180))
                     + k3 * (1 + np.cos(3 * scanned_phi * np.pi / 180))
                     + k4 * (1 - np.cos(4 * scanned_phi * np.pi / 180))
@@ -882,9 +870,11 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
 
         elif use_const_1_plus_minus_Cos_x_values_bool is True:
             dihedral_energy = (
-                1/2 * (
-                    k0 + 
-                    + k1 * const_1_plus_Cos_1_phi_data
+                1
+                / 2
+                * (
+                    k0
+                    + +k1 * const_1_plus_Cos_1_phi_data
                     + k2 * const_1_minus_Cos_2_phi_data
                     + k3 * const_1_plus_Cos_3_phi_data
                     + k4 * const_1_minus_Cos_4_phi_data
@@ -1011,7 +1001,8 @@ def RB_torsion_n_1_2_3_4_5(phi_data, k_0, k_1, k_2, k_3, k_4, k_5):
     )
 
     return torsion_energy
-    
+
+
 # OPLS dihedral energy only function using
 def opls_dihedral_n_1_2_3_4(phi_data, k_0, k_1, k_2, k_3, k_4):
     """OPLS dihedral energy calculation with only the selected k-values.
@@ -1028,7 +1019,7 @@ def opls_dihedral_n_1_2_3_4(phi_data, k_0, k_1, k_2, k_3, k_4):
 
     .. math::
     opls_dihedral_n_1 &= 1/2 *(
-        &= k0 
+        &= k0
         &= + k1 * (1 + cos(1 * phi))
         &= + k2 * (1 - cos(2 * phi))
         &= + k3 * (1 + cos(3 * phi))
@@ -1069,15 +1060,20 @@ def opls_dihedral_n_1_2_3_4(phi_data, k_0, k_1, k_2, k_3, k_4):
         The OPLS dihedral energy from the valid phi_data and k-values
         (i.e., k1 in this case).
     """
-    dihedral_energy = 1/2* (
-        k_0 
-        + k_1 * (1 + np.cos(1 * (phi_data * np.pi / 180)))
-        + k_2 * (1 - np.cos(2 * (phi_data * np.pi / 180)))
-        + k_3 * (1 + np.cos(3 * (phi_data * np.pi / 180)))
-        + k_4 * (1 - np.cos(4 * (phi_data * np.pi / 180)))
+    dihedral_energy = (
+        1
+        / 2
+        * (
+            k_0
+            + k_1 * (1 + np.cos(1 * (phi_data * np.pi / 180)))
+            + k_2 * (1 - np.cos(2 * (phi_data * np.pi / 180)))
+            + k_3 * (1 + np.cos(3 * (phi_data * np.pi / 180)))
+            + k_4 * (1 - np.cos(4 * (phi_data * np.pi / 180)))
+        )
     )
 
     return dihedral_energy
+
 
 def get_r_squared(data_points, fitted_values):
     """Get the R**2 (R squared) values from the fitted equation.

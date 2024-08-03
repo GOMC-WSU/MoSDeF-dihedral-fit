@@ -50,7 +50,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.99,
             r_squared_rtol=1e-03,
-            opls_force_k0_zero=True
+            opls_force_k0_zero=True,
         )
 
         assert (
@@ -336,7 +336,7 @@ class TestFitDihedralWithGomc(BaseTest):
                             ) == mdf_math.round_to_sig_figs(
                                 correct_line_values[i][j], number_sig_i
                             )
-    
+
     def test_gaussian_log_file_fit_oplsaa_fit_ethane_HC_CT_CT_HC_with_2_log_files(
         self,
     ):
@@ -363,7 +363,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.99,
             r_squared_rtol=1e-03,
-            opls_force_k0_zero=True
+            opls_force_k0_zero=True,
         )
 
         assert (
@@ -649,7 +649,7 @@ class TestFitDihedralWithGomc(BaseTest):
                             ) == mdf_math.round_to_sig_figs(
                                 correct_line_values[i][j], number_sig_i
                             )
-    
+
     def test_gaussian_log_file_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH(
         self,
     ):
@@ -673,7 +673,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.99,
             r_squared_rtol=1e-03,
-            opls_force_k0_zero=True
+            opls_force_k0_zero=True,
         )
 
         assert (
@@ -857,7 +857,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         0,
                         0.925047594422,
                         1.32819621359,
-                        0.290365264694, 
+                        0.290365264694,
                         0,
                         0.998573206243,
                     ],
@@ -941,7 +941,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        -0.371866278201 ,
+                        -0.371866278201,
                     ],
                     [
                         str("0_2"),
@@ -1139,7 +1139,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.999295535579 ,
+                        0.999295535579,
                     ],
                 ]
 
@@ -1301,7 +1301,7 @@ class TestFitDihedralWithGomc(BaseTest):
                             ) == mdf_math.round_to_sig_figs(
                                 correct_line_values[i][j], number_sig_i
                             )
-    
+
     def test_gaussian_style_files_fit_oplsaa_fit_CT_CT_C_OH_in_COOH_missing_1st_point(
         self,
     ):
@@ -1326,7 +1326,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.99,
             r_squared_rtol=0.02,
-            opls_force_k0_zero=True
+            opls_force_k0_zero=True,
         )
 
         assert (
@@ -1969,7 +1969,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-    
+
     def test_gaussian_style_files_fit_oplsaa_fit_CT_CT_C_OH_in_COOH(self):
         fit_dihedral_with_gomc(
             ["CT", "CT", "C", "OH"],
@@ -1992,7 +1992,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.99,
             r_squared_rtol=5e-03,
-            opls_force_k0_zero=True
+            opls_force_k0_zero=True,
         )
 
         assert (
@@ -2663,7 +2663,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.99,
             r_squared_rtol=0.02,
-            opls_force_k0_zero=True
+            opls_force_k0_zero=True,
         )
 
         assert (
@@ -3344,7 +3344,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_gaussian_style_files_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH_bad_element_order_mol2(
@@ -3385,9 +3385,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=5e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
-    
+
     def test_gaussian_log_file_variable_VDWGeometricSigma_default(self):
         fit_dihedral_with_gomc(
             ["HC", "CT", "CT", "HC"],
@@ -3409,7 +3409,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.99,
             r_squared_rtol=1e-03,
-            opls_force_k0_zero=True
+            opls_force_k0_zero=True,
         )
 
         with open(
@@ -3452,7 +3452,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.99,
             r_squared_rtol=1e-03,
-            opls_force_k0_zero=True
+            opls_force_k0_zero=True,
         )
 
         with open(
@@ -3495,7 +3495,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.99,
             r_squared_rtol=1e-03,
-            opls_force_k0_zero=True
+            opls_force_k0_zero=True,
         )
 
         with open(
@@ -3544,7 +3544,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_bad_fit_opls_force_k0_zero_not_bool(self):
@@ -3572,7 +3572,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero='x'
+                opls_force_k0_zero="x",
             )
 
     def test_bad_fit_dihedral_atom_types_input_list_of_4_with_int_at_0(self):
@@ -3602,7 +3602,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_bad_fit_dihedral_atom_types_input_list_of_4_with_int_at_1(self):
@@ -3632,7 +3632,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_bad_fit_dihedral_atom_types_input_list_of_4_with_int_at_2(self):
@@ -3662,7 +3662,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_bad_fit_dihedral_atom_types_input_list_of_4_with_int_at_3(self):
@@ -3692,7 +3692,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_mol2_file_file_does_not_exist(self):
@@ -3720,7 +3720,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_mol2_file_file_no_mol2_extention(self):
@@ -3747,9 +3747,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
-    
+
     def test_mol2_file_file_not_a_string(self):
         value_path_mol2 = 1
         with pytest.raises(
@@ -3774,7 +3774,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_xml_selection_file_does_not_exist(self):
@@ -3804,7 +3804,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_xml_selection_file_no_xml_extention(self):
@@ -3834,7 +3834,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_xml_selection_file_not_a_string(self):
@@ -3863,7 +3863,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_temperature_unyt_units_not_a_temperture_but_pressure(self):
@@ -3891,7 +3891,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_temperature_unyt_units_not_in_unyt_units(self):
@@ -3919,7 +3919,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_qm_log_files_and_entries_not_a_dict(self):
@@ -3945,7 +3945,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_qm_log_files_and_entries_key_1_not_a_string(self):
@@ -3976,7 +3976,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_qm_log_files_and_entries_key_2_not_a_string(self):
@@ -4007,7 +4007,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_qm_log_files_and_entries_value_1_not_a_list(self):
@@ -4040,9 +4040,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
-    
+
     def test_qm_log_files_and_entries_value_2_not_a_list(self):
         with pytest.raises(
             TypeError,
@@ -4073,7 +4073,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_qm_log_files_and_entries_list_1_not_all_int(self):
@@ -4106,7 +4106,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_qm_log_files_and_entries_list_2_not_all_int(self):
@@ -4139,7 +4139,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_qm_log_files_and_entries_list_1_int_less_than_0(self):
@@ -4172,7 +4172,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_qm_log_files_and_entries_list_2_int_less_than_0(self):
@@ -4205,7 +4205,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_gomc_binary_path_not_a_string(self):
@@ -4233,7 +4233,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_gomc_binary_path_containing_the_GOMC_CPU_NVT_file_does_not_exist(
@@ -4263,7 +4263,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1e-03,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_zero_dihedral_atom_types_not_list(self):
@@ -4297,7 +4297,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_zero_dihedral_atom_types_list_1_str(self):
@@ -4331,7 +4331,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_zero_dihedral_atom_types_list_2_str(self):
@@ -4365,7 +4365,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_zero_dihedral_atom_types_list_1_not_4_strings(self):
@@ -4402,7 +4402,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_zero_dihedral_atom_types_list_2_not_4_strings(self):
@@ -4439,7 +4439,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_zero_dihedral_atom_types_list_1_not_lenght_4(self):
@@ -4476,7 +4476,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_zero_dihedral_atom_types_list_2_not_lenght_4(self):
@@ -4513,7 +4513,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_qm_engine_not_correct_value(self):
@@ -4550,7 +4550,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_qm_engine_not_a_string(self):
@@ -4585,7 +4585,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_combining_rule_not_correct_value_is_list(self):
@@ -4620,7 +4620,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_combining_rule_not_correct_value_wrong_string(self):
@@ -4655,7 +4655,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_atom_type_naming_style_not_correct_value(self):
@@ -4692,7 +4692,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_atom_type_naming_style_not_a_string(self):
@@ -4727,7 +4727,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_gomc_cpu_cores_not_correct_value(self):
@@ -4762,7 +4762,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=0,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_gomc_cpu_cores_not_a_int(self):
@@ -4797,9 +4797,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1.000,
                 r_squared_min=0.99,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
-    
+
     def test_r_squared_min_not_correct_value_is_0(self):
         with pytest.raises(
             ValueError,
@@ -4833,7 +4833,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.00,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_r_squared_min_not_correct_value_is_1(self):
@@ -4869,7 +4869,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=1.00,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_r_squared_min_not_a_float(self):
@@ -4905,7 +4905,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=2,
                 r_squared_rtol=0.02,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_r_squared_rtol_not_correct_value_is_0(self):
@@ -4941,7 +4941,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=0.00,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_r_squared_rtol_not_correct_value_is_1(self):
@@ -4977,9 +4977,9 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=1.00,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
-    
+
     def test_r_squared_rtol_not_a_float(self):
         with pytest.raises(
             TypeError,
@@ -5013,7 +5013,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
                 r_squared_rtol=2,
-                opls_force_k0_zero=True
+                opls_force_k0_zero=True,
             )
 
     def test_error_r_squared_min_and_r_squared_rtol_need_adjusted(
@@ -5048,7 +5048,7 @@ class TestFitDihedralWithGomc(BaseTest):
             f"software parameters need tuned, or there is a bug in the software. \n\n "
             f"NOTE: Since the R-squared values are calculated via different parameters, \n"
             f"the compared R-squared values could be very different if they are not nearly \n"
-            f"a perfect fit \(R-squared --> ~0.98 to 0.99999999\)."
+            f"a perfect fit \(R-squared --> ~0.98 to 0.99999999\).",
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
@@ -5099,7 +5099,7 @@ class TestFitDihedralWithGomc(BaseTest):
             f"software parameters need tuned, or there is a bug in the software. \n\n "
             f"NOTE: Since the R-squared values are calculated via different parameters, \n"
             f"the compared R-squared values could be very different if they are not nearly \n"
-            f"a perfect fit \(R-squared --> ~0.98 to 0.99999999\)."
+            f"a perfect fit \(R-squared --> ~0.98 to 0.99999999\).",
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
@@ -5793,8 +5793,10 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-    '''
-    '''
+
+    """
+    """
+
     def test_gaussian_style_files_fit_amber_aa_fit_CT_CT_CT_CT_in_butane_files(
         self,
     ):
@@ -5819,7 +5821,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.98,
             r_squared_rtol=0.02,
-            opls_force_k0_zero=False
+            opls_force_k0_zero=False,
         )
 
         assert (
@@ -5960,7 +5962,15 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [str("1"), 0, 2.13492829593, 0, 0, 0, -0.851303269629],
                     [str("2"), 0, 0, 2.25256162343, 0, 0, -0.690454186065],
-                    [str("3"), 6.12246736014, 0, 0, -3.06123368007, 0, 0.960991418867],
+                    [
+                        str("3"),
+                        6.12246736014,
+                        0,
+                        0,
+                        -3.06123368007,
+                        0,
+                        0.960991418867,
+                    ],
                     [str("4"), 0, 0, 0, 0, 2.0884153941, -0.91251897505],
                     [
                         str("1_3"),
@@ -6098,7 +6108,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         str("0_2"),
                         2.25256162343,
                         0,
-                         -1.12628081172,
+                        -1.12628081172,
                         0,
                         0,
                         0,
@@ -6184,7 +6194,7 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [
                         str("0_2_4"),
-                        2.60458715708 ,
+                        2.60458715708,
                         0,
                         -0.774255087765,
                         0,
@@ -6374,7 +6384,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         0,
                         -8.3536615764,
                         0,
-                        -0.91251897505 ,
+                        -0.91251897505,
                     ],
                     [
                         str("0_1_3"),
@@ -6462,7 +6472,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-    
+
     def test_gaussian_style_files_fit_opls_ua_fit_CT_CT_CT_CT_in_butane_files(
         self,
     ):
@@ -6487,7 +6497,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.97,
             r_squared_rtol=0.02,
-            opls_force_k0_zero=True
+            opls_force_k0_zero=True,
         )
 
         assert (
@@ -6848,7 +6858,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.957438274954 ,
+                        0.957438274954,
                     ],
                     [
                         str("0_2_4"),
@@ -7155,7 +7165,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.98,
             r_squared_rtol=0.02,
-            opls_force_k0_zero=False
+            opls_force_k0_zero=False,
         )
 
         assert (
@@ -7516,7 +7526,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.957438274954 ,
+                        0.957438274954,
                     ],
                     [
                         str("0_2_4"),
@@ -7823,7 +7833,7 @@ class TestFitDihedralWithGomc(BaseTest):
             gomc_cpu_cores=1,
             r_squared_min=0.98,
             r_squared_rtol=0.02,
-            opls_force_k0_zero=False
+            opls_force_k0_zero=False,
         )
 
         assert (
@@ -8184,7 +8194,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                         0.9846783871,
+                        0.9846783871,
                     ],
                     [
                         str("0_2_4"),
