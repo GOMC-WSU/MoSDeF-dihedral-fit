@@ -36,14 +36,32 @@ os.system("cat periodic_torsion_k_constants_fit_energy.txt")
     - "opls_all_summed_dihedrals_k_constants_figure.pdf"
 
 
-## Installation/Setup
-```
-conda install -c conda-forge mosdef-dihedral-fit
-git clone https://github.com/GOMC-WSU/GOMC.git
+## Quick Installation/Setup
+```bash
+mamba install -c conda-forge mosdef-dihedral-fit
+git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a
 cd GOMC
 chmod u+x metamake.sh
 ./metamake.sh
 ```
+Add GOMC your path so it is called automatically with path entereed as "".
+To so this, you must add the following to your ".bashrc" file or
+equivalent file (if Mac maybe ".zshrc" depending on how you set up your
+specific system). If a different than ".bashrc", replace ".bashrc" with ".XXXrc" file,
+where XXX is your scripting language of choice, and can be found by running "$ echo $0". The first 2 commands add a
+space and title to the command so it is known and traceable later.
+The commands are listed below:
+
+```bash
+echo "" >> ~/.bashrc # could be switched out for .zshrc
+echo "# Add the GOMC binary files to the path" >> ~/.bashrc
+cwd=$(pwd) # you should still be in the GOMC directory cloned from github.
+echo "export PATH=${cwd}/bin${PATH:+:${PATH}}" >> ~/.bashrc
+```
+
+#### More setup information
+For more complete setup information see the [full installation documentation](https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/blob/main/docs/getting_started/installation/installation.rst#installation)
+
 
 ## Documentation
 

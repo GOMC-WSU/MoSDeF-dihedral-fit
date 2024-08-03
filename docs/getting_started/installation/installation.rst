@@ -37,6 +37,31 @@ ensure all of the dependencies are installed::
     If ``Windows`` is being used, you need to use a virtual machine or the ``Linux`` subsystem,
     since some parts of this software or its dependencies could not be compatible with ``Windows``.
 
+Install `GOMC <https://gomc-wsu.org/>`_
+-----------------------------------------------------------------------------
+::
+
+    $ pip install cmake
+    $ mkdir GOMC_INSTALL
+    $ cd GOMC_INSTALL
+    $ git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a
+    $ cd GOMC
+    $ chmod u+x metamake.sh
+    $ ./metamake.sh
+
+.. note::
+   Add GOMC your path so it is called automatically with path entereed as "". 
+   To so this, you must add the following to your ".bashrc" file or 
+   equivalent file (if Mac maybe ".zshrc" depending on how you set up your 
+   specific system). If a different than ".bashrc", replace ".bashrc" with ".XXXrc" file, 
+   where XXX is your scripting language of choice, and can be found by running "$ echo $0". The first 2 commands add a 
+   space and title to the command so it is known and traceable later. 
+   The commands are listed below: ::
+
+   $ echo "" >> ~/.bashrc
+   $ echo "# Add the GOMC binary files to the path" >> ~/.bashrc
+   $ cwd=$(pwd) # you should still be in the GOMC directory cloned from github.
+   $ echo "export PATH=${cwd}/bin${PATH:+:${PATH}}" >> ~/.bashrc
 
 Install pre-commit
 ------------------
