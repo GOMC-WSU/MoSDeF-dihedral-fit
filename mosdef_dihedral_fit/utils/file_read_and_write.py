@@ -564,7 +564,7 @@ def get_final_gaussian_output_file_data(
     all_number_of_atoms_list = []
     all_element_names_list = []
 
-    dihedral_counter = 0  # start at 1 and add a +1 initially
+    dihedral_counter = 1  # start at 1 and add a +1 initially
     for (
         direct_gaussian_folder_iter,
         entries_to_remove_list_iter,
@@ -1836,7 +1836,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
             )
             all_sum_opls_const_1_plus_or_minus_cos_n_list.append(
                 mdf_math.sum_opls_const_1_plus_or_minus_cos_n_values(
-                    dih_phi_iter_list
+                    dih_phi_iter_list,
                 )
             )
 
