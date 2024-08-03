@@ -458,9 +458,9 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
 
     k0: int, or float, in energy units (i.e., kcal/mol, kJ/mol, Kelvin, ...)
         The 'k0' value is the k-value for the opls dihedral where n=0,
-        or the constant without a cosine multiple. The 'k0' can be a 
-        constant or zero (0). 
-        Please see 'all_sum_opls_const_1_plus_or_minus_cos_n_list' variable 
+        or the constant without a cosine multiple. The 'k0' can be a
+        constant or zero (0).
+        Please see 'all_sum_opls_const_1_plus_or_minus_cos_n_list' variable
         for more details.
     k1: int, or float, in energy units (i.e., kcal/mol, kJ/mol, Kelvin, ...)
         The 'k1' value is the k-value for the opls dihedral where n=1
@@ -1023,8 +1023,8 @@ def opls_dihedral_n_1_2_3_4(phi_data, k_0, k_1, k_2, k_3, k_4):
         The 'phi_data' angle of the dihedral is in degrees
     k_0: int, or float, in energy units (i.e., kcal/mol, kJ/mol, Kelvin, ...)
         The 'k0' value is the k-value for the opls dihedral where n=0,
-        or the constant without a cosine multiple. The 'k0' can be a 
-        constant or zero (0). 
+        or the constant without a cosine multiple. The 'k0' can be a
+        constant or zero (0).
         user entered value, because it is not in the equation form.
     k_1: int, or float, in energy units (i.e., kcal/mol, kJ/mol, Kelvin, ...)
         The 'k1' value is the k-value for the opls dihedral where n=1
