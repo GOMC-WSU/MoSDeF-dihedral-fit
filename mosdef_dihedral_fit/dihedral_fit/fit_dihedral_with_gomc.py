@@ -824,7 +824,7 @@ def fit_dihedral_with_gomc(
         atom_type_naming_style=atom_type_naming_style,
     )
 
-    # Started Writing the PDB, PSF, and FF files for the GOMC simulation with dihedral k values = 0"
+    # Started writing the PDB, PSF, and FF files for the GOMC simulation with dihedral k values = 0
     charmm.write_inp()
 
     charmm.write_psf()
