@@ -24,7 +24,7 @@ paths = os.environ["PATH"].split(":")
 for p in paths:
     print(p)
     # if "GOMC/bin" in p:
-    if "" in p:
+    if "GOMC_CPU_NVT" in p:
         gomc_binary_directory = p
         break
 if not gomc_binary_directory:
