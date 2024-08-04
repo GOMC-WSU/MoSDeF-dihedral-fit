@@ -23,7 +23,8 @@ gomc_binary_directory = ""
 paths = os.environ["PATH"].split(":")
 for p in paths:
     print(p)
-    if "GOMC/bin" in p:
+    #if "GOMC/bin" in p:
+    if "" in p:
         gomc_binary_directory = p
         break
 if not gomc_binary_directory:
