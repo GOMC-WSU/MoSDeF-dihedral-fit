@@ -743,7 +743,7 @@ def fit_dihedral_with_gomc(
     # check if opls_force_k0_zero' is a bool
     if not isinstance(opls_force_k0_zero, bool):
         raise TypeError(
-            "ERROR: Please enter the 'opls_force_k0_zero' file as a bool."
+            "ERROR: Please enter the 'opls_force_k0_zero' as a bool."
         )
 
     # **************************************************************
