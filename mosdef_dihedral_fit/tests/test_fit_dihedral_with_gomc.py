@@ -3550,7 +3550,7 @@ class TestFitDihedralWithGomc(BaseTest):
     def test_bad_fit_opls_force_k0_zero_not_bool(self):
         with pytest.raises(
             TypeError,
-            match=r"ERROR: Please enter the 'opls_force_k0_zero' file as a bool.",
+            match=r"ERROR: Please enter the 'opls_force_k0_zero' as a bool.",
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT"],
