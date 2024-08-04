@@ -1620,9 +1620,7 @@ def fit_dihedral_with_gomc(
     # and all (1, 1, .., 1) 'const_1_minus_Cos_0_phi_data' for k0=constant.
     k0_forced_to_0_list = []
     k0_is_constant_list = []
-    for determine_k0_m in range(
-        0, len(sorted_const_1_minus_Cos_0_phi_data_lists)
-    ):
+    for determine_k0_m in range(len(sorted_const_1_minus_Cos_0_phi_data_lists)):
         k0_forced_to_0_list.append(0)
         k0_is_constant_list.append(1)
 
