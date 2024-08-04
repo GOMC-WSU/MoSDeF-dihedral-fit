@@ -795,7 +795,7 @@ def fit_dihedral_with_gomc(
     # liquid_box_0_length_nm must be a value <= 999.8 nm and an interger value in angstroms <= 9998 Ang
     liquid_box_0_length_nm = 999.8
 
-    # Started Building the fragment for the GOMC simulation with dihedral k values = 0"
+    # Started building the fragment for the GOMC simulation with dihedral k values = 0
     box_0_liq = mb.fill_box(
         compound=[fragment],
         n_compounds=[1],
