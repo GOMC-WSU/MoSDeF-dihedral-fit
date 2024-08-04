@@ -807,7 +807,7 @@ def fit_dihedral_with_gomc(
         seed=seed_no,
     )
 
-    # Started Building the Charmm Object for the GOMC simulation with dihedral k values = 0"
+    # Started building the Charmm object for the GOMC simulation with dihedral k values = 0
     # build the charmm object
     charmm = mf_charmm.Charmm(
         box_0_liq,
