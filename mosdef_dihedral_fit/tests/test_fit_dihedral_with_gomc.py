@@ -15,7 +15,7 @@ from mosdef_dihedral_fit.tests.base_test import BaseTest
 # automated GitHub test binary path.
 # The automated GitHub test filename and location = "MoSDeF-dihedral-fit/.github/workflows/CI.yml"
 # set GOMC binary path here if you want to manually specify it
-gomc_binary_directory = ""  
+gomc_binary_directory = ""
 # User changable variable, if the binary is not in the environment variable "PATH"
 # Examples
 # gomc_binary_directory = "/Users/brad/Programs/GOMC/GOMC_2_75/bin"
