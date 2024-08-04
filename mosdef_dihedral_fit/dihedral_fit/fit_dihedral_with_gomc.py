@@ -944,7 +944,7 @@ def fit_dihedral_with_gomc(
         CrankShaftFreq = 0
         SwapFreq = 0
 
-        # NVT GOMC control file writing for the GOMC simulation with dihedral k values = 0"
+        # NVT GOMC control file writing for the GOMC simulation with dihedral k values = 0
         # calc MC steps for gomc equilb
         MC_steps = 2
         EqSteps = 1
