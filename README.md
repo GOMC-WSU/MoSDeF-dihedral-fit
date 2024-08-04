@@ -79,10 +79,14 @@ $$+ K_1 * (1 + cos(n_1*\theta - 180^o)) + K_2 * (1 + cos(n_2*\theta))$$
 $$+  K_3 * (1 + cos(n_3*\theta - 180^o)) +  K_4 * (1 + cos(n_4*\theta))$$
 
 ## Examples
-Some basic workflows that use this package</br>
+Some basic workflows that use this package and cover several force field (FF) types are [here](https://github.com/GOMC-WSU/GOMC_Examples/tree/main/MoSDeF-dihedral-fit).  A summary of the FFs covered in the examples are listed below.
 
- - [ethane dihedral](https://github.com/GOMC-WSU/GOMC_Examples/tree/main/MoSDeF-dihedral-fit/ethane_HC_CT_CT_HC)</br>
- - [propanoic acid dihedral](https://github.com/GOMC-WSU/GOMC_Examples/tree/main/MoSDeF-dihedral-fit/protonated_fragment_CT_CT_C_OH)</br>
+ - <b>OPLS-AA</b>: ethane dihedral
+ - <b>OPLS-AA</b>: propanoic acid dihedral
+ - <b>AMBER-AA</b>: butane dihedral
+ - <b>TraPPE-UA</b>: butane dihedral
+ - <b>Mie-UA</b>: butane dihedral
+ - <b>Exp6-AA</b>: butane dihedral
 
 ## Resources
 This package is made as an API with [MoSDeF](https://github.com/mosdef-hub) and [MoSDeF-GOMC](https://github.com/GOMC-WSU/MoSDeF-GOMC). For `mosdef_dihedral_fit` to function, the forcefield files must be in a supported MoSDeF format (preferably the GMSO force field format), and use MoSDeF-GOMC and GOMC to perform the simulation setup and simulations.
