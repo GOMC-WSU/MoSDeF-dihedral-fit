@@ -597,11 +597,16 @@ def fit_dihedral_with_gomc(
             "ERROR: Please enter the 'gomc_binary_path' file as a string."
         )
 
+    if gomc_binary_path == "":
+        gomc_binary_path = subprocess.check_output(
+            "echo ${CONDA_PREFIX}/bin", shell=True, text=True
+        ).strip()
+
     if not os.path.exists(f"{gomc_binary_path}/{'GOMC_CPU_NVT'}"):
-        raise ValueError(
+        raise OSError(
             f"ERROR: The 'gomc_binary_path' of {gomc_binary_path} does not exist or contain the GOMC 'GOMC_CPU_NVT' file."
             + " If the path is incorrect, please pass the correct absolute path for gomc_binary_path."
-            + " If GOMC is not installed, go to https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/tree/main?tab=readme-ov-file#installationsetup or the Read the Docs for this repository."
+            + " If GOMC is not installed, go to https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/blob/main/docs/getting_started/installation/installation.rst#install-gomc README.md for this repository."
         )
 
     # test the 'zero_dihedral_atom_types' input

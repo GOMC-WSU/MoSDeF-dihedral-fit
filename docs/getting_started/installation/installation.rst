@@ -42,26 +42,17 @@ Install `GOMC <https://gomc-wsu.org/>`_
 ::
 
     $ pip install cmake
-    $ mkdir GOMC_INSTALL
-    $ cd GOMC_INSTALL
+    $ conda activate mosdef_dihedral_fit # make sure this has been installed above
+    $ cd $CONDA_PREFIX
     $ git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a
     $ cd GOMC
     $ chmod u+x metamake.sh
-    $ ./metamake.sh
+    $ ./metamake.sh NVT
+    $ ln -s $CONDA_PREFIX/GOMC/bin/GOMC_CPU_NVT $CONDA_PREFIX/bin
+    $ # The above line creates a symlink that should be findable for the gomc_binary_directory
 
 .. note::
-   Add GOMC your path so it is called automatically with path entereed as "". 
-   To so this, you must add the following to your ".bashrc" file or 
-   equivalent file (if Mac maybe ".zshrc" depending on how you set up your 
-   specific system). If a different than ".bashrc", replace ".bashrc" with ".XXXrc" file, 
-   where XXX is your scripting language of choice, and can be found by running "$ echo $0". The first 2 commands add a 
-   space and title to the command so it is known and traceable later. 
-   The commands are listed below: ::
-
-   $ echo "" >> ~/.bashrc
-   $ echo "# Add the GOMC binary files to the path" >> ~/.bashrc
-   $ cwd=$(pwd) # you should still be in the GOMC directory cloned from github.
-   $ echo "export PATH=${cwd}/bin${PATH:+:${PATH}}" >> ~/.bashrc
+   GOMC will also be removed when the mosdef_dihedral_fit environment is removed. The installation can be placed anywhere though, that path will just have to manually be passed for the variable gomc_binary_directory.
 
 Install pre-commit
 ------------------
