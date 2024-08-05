@@ -38,6 +38,7 @@ def fit_dihedral_with_gomc(
     gomc_cpu_cores=1,
     r_squared_min=0.98,
     r_squared_rtol=2.5e-02,
+    opls_force_k0_zero=False,
 ):
     """Fit the desired dihedral to a MM force field, based on QM data.
 
@@ -67,6 +68,16 @@ def fit_dihedral_with_gomc(
     and recreated while running this function to ensure only the
     lasted data is in these folders.
 
+    NOTE: The OPLS dihedral equation
+
+    .. math::
+    opls_dihedral_n_1 &= 1/2 *(
+        &= k0
+        &= + k1 * (1 + cos(1 * phi))
+        &= + k2 * (1 - cos(2 * phi))
+        &= + k3 * (1 + cos(3 * phi))
+        &= + k4 * (1 - cos(4 * phi))
+        &= )
 
     Parameters
     ----------
@@ -314,6 +325,21 @@ def fit_dihedral_with_gomc(
         compared to the QM data.
 
         NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
+    opls_force_k0_zero: bool, default=False
+        The k0 constant is from the equation listed above.
+        If True, this is force sets the k0 constant in the opls equation to zero (0),
+        which is the original OPLS form. This means that the dihedral energy fit must
+        be zero (0) at dihedral angles of (-180 and 180 degrees), which could mean
+        the dihedral produces both positive (+) and negative energy values (-).
+        NOTE: Using this option may not allow some dihedrals to be fit properly.
+
+        If False, the k0 constant is allowed to be fitted to a non-zero constant.
+        This allows the k0 constant to be zero (0) or a scaler value. In this case,
+        the dihedral's k0 constant is shifted to make the minimum of the dihedral
+        equation equal to zero (0). This is the more standard overall dihedral form
+        (i.e. not forcing the equation k0 constant to be zero) as it allows more
+        dihedrals to be fit properly, and this energy shifting is in almost all newer
+        dihedral forms now.
 
     Outputs
     -------
@@ -578,8 +604,6 @@ def fit_dihedral_with_gomc(
             else:
                 raise TypeError(print_error_value)
 
-            print("*****************")
-            print(f"value_j = {str(value_j)}")
             if isinstance(value_j, list):
                 for int_j in value_j:
                     if not isinstance(int_j, int) or int_j < 0:
@@ -716,6 +740,12 @@ def fit_dihedral_with_gomc(
             f"ERROR: The 'qm_engine' is a {type(qm_engine)}, but it needs to be a str."
         )
 
+    # check if opls_force_k0_zero' is a bool
+    if not isinstance(opls_force_k0_zero, bool):
+        raise TypeError(
+            "ERROR: Please enter the 'opls_force_k0_zero' as a bool."
+        )
+
     # **************************************************************
     # **************************************************************
     # Use the existing Gaussian (QM) file for their energy data.
@@ -764,10 +794,8 @@ def fit_dihedral_with_gomc(
 
     # liquid_box_0_length_nm must be a value <= 999.8 nm and an interger value in angstroms <= 9998 Ang
     liquid_box_0_length_nm = 999.8
-    print(
-        "INFO: Started Building the fragment for the GOMC simulation with dihedral k values = 0"
-    )
 
+    # Started building the fragment for the GOMC simulation with dihedral k values = 0
     box_0_liq = mb.fill_box(
         compound=[fragment],
         n_compounds=[1],
@@ -779,13 +807,7 @@ def fit_dihedral_with_gomc(
         seed=seed_no,
     )
 
-    print(
-        "INFO: Finished Building the fragment for the GOMC simulation with dihedral k values = 0"
-    )
-
-    print(
-        "INFO: Started Building the Charmm Object for the GOMC simulation with dihedral k values = 0"
-    )
+    # Started building the Charmm object for the GOMC simulation with dihedral k values = 0
     # build the charmm object
     charmm = mf_charmm.Charmm(
         box_0_liq,
@@ -801,22 +823,13 @@ def fit_dihedral_with_gomc(
         gomc_fix_bonds_angles=None,
         atom_type_naming_style=atom_type_naming_style,
     )
-    print(
-        "INFO: Finished Building the Charmm Object for the GOMC simulation with dihedral k values = 0"
-    )
 
-    # Write the write the FF (.inp), psf, pdb, and GOMC control files
-    print(
-        "INFO: Started Writing the PDB, PSF, and FF files for the GOMC simulation with dihedral k values = 0"
-    )
+    # Started writing the PDB, PSF, and FF files for the GOMC simulation with dihedral k values = 0
     charmm.write_inp()
 
     charmm.write_psf()
 
     charmm.write_pdb()
-    print(
-        "INFO: Finished Writing the PDB, PSF, and FF files for the GOMC simulation with dihedral k values = 0"
-    )
 
     # **************************************************************
     # make the PDB, PSF and FF files for all the dihedral angles (END)
@@ -931,19 +944,13 @@ def fit_dihedral_with_gomc(
         CrankShaftFreq = 0
         SwapFreq = 0
 
-        print("#**********************")
-        print(
-            "Started: NVT GOMC control file writing for the GOMC simulation with dihedral k values = 0"
-        )
-        print("#**********************")
+        # NVT GOMC control file writing for the GOMC simulation with dihedral k values = 0
         # calc MC steps for gomc equilb
         MC_steps = 2
         EqSteps = 1
         AdjSteps = 1
         output_true_list_input = [True, 1]
         output_false_list_input = [False, 1]
-
-        print(f"charmm.combining_rule = {charmm.combining_rule}")
 
         gomc_control.write_gomc_control_file(
             charmm,
@@ -995,18 +1002,12 @@ def fit_dihedral_with_gomc(
                 "HistogramFreq": output_false_list_input,
                 "CoordinatesFreq": output_false_list_input,
                 "DCDFreq": output_false_list_input,
-                "Potential": "VDW",
                 "CBMC_First": 12,
                 "CBMC_Nth": 10,
                 "CBMC_Ang": 50,
                 "CBMC_Dih": 50,
             },
         )
-        print("#**********************")
-        print(
-            "Completed: NVT GOMC control file written for the GOMC simulation with dihedral k values = 0"
-        )
-        print("#**********************")
 
         # **************************************************************
         # make the GOMC control file for each dihedral angle (END)
@@ -1154,15 +1155,6 @@ def fit_dihedral_with_gomc(
         for i in GOMC_data_total_energy_kcal_per_mol_list
     ]
 
-    print(
-        f"GOMC_data_dihedral_degrees_list = {GOMC_data_dihedral_degrees_list}"
-    )
-    print(
-        f"GOMC_data_total_energy_kcal_per_mol_list = {GOMC_data_total_energy_kcal_per_mol_list}"
-    )
-    print(
-        f"GOMC_data_total_energy_kcal_per_mol_normalize_list = {GOMC_data_total_energy_kcal_per_mol_normalize_list}"
-    )
     # *********************************
     # get GOMC data (END)
     # *********************************
@@ -1192,17 +1184,6 @@ def fit_dihedral_with_gomc(
         for i in gaussian_data_total_energy_kcal_per_mol_list
     ]
 
-    print(
-        f"gaussian_data_dihedral_degrees_list = {gaussian_data_dihedral_degrees_list}"
-    )
-    print(
-        f"gaussian_data_total_energy_kcal_per_mol_list = {gaussian_data_total_energy_kcal_per_mol_list}"
-    )
-    print(
-        f"gaussian_data_total_energy_kcal_per_mol_normalize_list = "
-        f"{gaussian_data_total_energy_kcal_per_mol_normalize_list}"
-    )
-
     # get the Gaussian minus GOMC total energy and then it normalized
     Gaussian_minus_GOMC_data_dihedral_degrees_list = (
         GOMC_data_dihedral_degrees_list
@@ -1223,13 +1204,6 @@ def fit_dihedral_with_gomc(
         )
     ]
 
-    print(
-        f"Gaussian_minus_GOMC_data_dihedral_degrees_list = {Gaussian_minus_GOMC_data_dihedral_degrees_list}"
-    )
-    print(
-        f"Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list = \
-    {Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list}"
-    )
     # *********************************
     # get Gaussian data (END)
     # *********************************
@@ -1426,16 +1400,6 @@ def fit_dihedral_with_gomc(
                 const_1_minus_Cos_4_phi_data_lists,
             )
         )
-    )
-
-    print(
-        f"sorted_GOMC_data_total_energy_kcal_per_mol_normalize_list = {sorted_GOMC_data_total_energy_kcal_per_mol_normalize_list}"
-    )
-    print(
-        f"sorted_gaussian_data_total_energy_kcal_per_mol_normalize_list = {sorted_gaussian_data_total_energy_kcal_per_mol_normalize_list}"
-    )
-    print(
-        f"sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list = {sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list}"
     )
 
     plot_max = int(
@@ -1646,6 +1610,27 @@ def fit_dihedral_with_gomc(
     # (END)
     # **********************************
 
+    # modify 'sorted_const_1_minus_Cos_0_phi_data_lists' based on "opls_force_k0_zero"
+    # which allows k0=0 or a k0=constant.
+    # If 'sorted_const_1_minus_Cos_0_phi_data_lists' = all 0s, then k0=0,
+    # which is changed to 'k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists'.
+    # If 'sorted_const_1_minus_Cos_0_phi_data_lists' = all 1s, then k0=constant,
+    # which is changed to 'k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists'.
+    # It is critical that 'const_1_minus_Cos_0_phi_data' be all (0, 0, .., 0) for k0=0
+    # and all (1, 1, .., 1) 'const_1_minus_Cos_0_phi_data' for k0=constant.
+    k0_forced_to_0_list = []
+    k0_is_constant_list = []
+    for determine_k0_m in range(len(sorted_const_1_minus_Cos_0_phi_data_lists)):
+        k0_forced_to_0_list.append(0)
+        k0_is_constant_list.append(1)
+
+    k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists = tuple(
+        k0_forced_to_0_list
+    )
+    k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists = tuple(
+        k0_is_constant_list
+    )
+
     # Run the fitting for only the allowed power types
     for k_type_i in fit_k_list_allowed:
         # make the list of k_type_i for fitting in the data
@@ -1656,14 +1641,18 @@ def fit_dihedral_with_gomc(
             k_type_list_i.append(k_type_i)
 
         if k_type_i == "1":
-            parameters, covariance = curve_fit(
+            # ***** (k=0  -> forced) ****
+            # get parameeters and covariance the OPLS dihedral (k=0  -> forced)
+            parameters_k0_forced_to_0, covariance_k0_forced_to_0 = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
@@ -1675,41 +1664,97 @@ def fit_dihedral_with_gomc(
             )
 
             # fix parameters to zero for the unused values because we want the list length the same,
-            # and the unused ones are auto-set to 1.
-            parameters[0] = 0
-            parameters[2] = 0
-            parameters[3] = 0
-            parameters[4] = 0
+            # and the unused ones are auto-set to 1. (k=0  -> forced)
+            parameters_k0_forced_to_0[0] = 0
+            parameters_k0_forced_to_0[2] = 0
+            parameters_k0_forced_to_0[3] = 0
+            parameters_k0_forced_to_0[4] = 0
 
-            # fit the OPLS dihedral
-            fit_opls_dihedral = mdf_math.opls_dihedral(
+            # fit the OPLS dihedral  (k=0  -> forced)
+            fit_opls_dihedral_k0_forced_to_0 = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
                 ),
-                parameters[0],
-                parameters[1],
-                parameters[2],
-                parameters[3],
-                parameters[4],
+                parameters_k0_forced_to_0[0],
+                parameters_k0_forced_to_0[1],
+                parameters_k0_forced_to_0[2],
+                parameters_k0_forced_to_0[3],
+                parameters_k0_forced_to_0[4],
+            )
+
+            # ***** (k=constant) ****
+            # get parameeters and covariance the OPLS dihedral (k=constant)
+            parameters_k0_is_constant, covariance_k0_is_constant = curve_fit(
+                mdf_math.opls_dihedral,
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list
+                ),
+            )
+
+            # fix parameters to zero for the unused values because we want the list length the same,
+            # and the unused ones are auto-set to 1.  (k=constant)
+            parameters_k0_is_constant[2] = 0
+            parameters_k0_is_constant[3] = 0
+            parameters_k0_is_constant[4] = 0
+
+            # fit the OPLS dihedral  (k=constant)
+            fit_opls_dihedral_k0_is_constant = mdf_math.opls_dihedral(
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                parameters_k0_is_constant[0],
+                parameters_k0_is_constant[1],
+                parameters_k0_is_constant[2],
+                parameters_k0_is_constant[3],
+                parameters_k0_is_constant[4],
             )
 
         elif k_type_i == "2":
-            parameters, _ = curve_fit(
+            # ***** (k=0  -> forced) ****
+            # get parameeters and covariance the OPLS dihedral (k=0  -> forced)
+            parameters_k0_forced_to_0, covariance_k0_forced_to_0 = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
@@ -1720,41 +1765,97 @@ def fit_dihedral_with_gomc(
                 ),
             )
             # fix parameters to zero for the unused values because we want the list length the same,
-            # and the unused ones are auto-set to 1.
-            parameters[0] = 0
-            parameters[1] = 0
-            parameters[3] = 0
-            parameters[4] = 0
+            # and the unused ones are auto-set to 1.  (k=0  -> forced)
+            parameters_k0_forced_to_0[0] = 0
+            parameters_k0_forced_to_0[1] = 0
+            parameters_k0_forced_to_0[3] = 0
+            parameters_k0_forced_to_0[4] = 0
 
-            # fit the OPLS dihedral
-            fit_opls_dihedral = mdf_math.opls_dihedral(
+            # fit the OPLS dihedral (k=0  -> forced)
+            fit_opls_dihedral_k0_forced_to_0 = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
                 ),
-                parameters[0],
-                parameters[1],
-                parameters[2],
-                parameters[3],
-                parameters[4],
+                parameters_k0_forced_to_0[0],
+                parameters_k0_forced_to_0[1],
+                parameters_k0_forced_to_0[2],
+                parameters_k0_forced_to_0[3],
+                parameters_k0_forced_to_0[4],
+            )
+
+            # ***** (k=constant) ****
+            # get parameeters and covariance the OPLS dihedral (k=constant)
+            parameters_k0_is_constant, covariance_k0_is_constant = curve_fit(
+                mdf_math.opls_dihedral,
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list
+                ),
+            )
+
+            # fix parameters to zero for the unused values because we want the list length the same,
+            # and the unused ones are auto-set to 1. (k=constant)
+            parameters_k0_is_constant[1] = 0
+            parameters_k0_is_constant[3] = 0
+            parameters_k0_is_constant[4] = 0
+
+            # fit the OPLS dihedral (k=constant)
+            fit_opls_dihedral_k0_is_constant = mdf_math.opls_dihedral(
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                parameters_k0_is_constant[0],
+                parameters_k0_is_constant[1],
+                parameters_k0_is_constant[2],
+                parameters_k0_is_constant[3],
+                parameters_k0_is_constant[4],
             )
 
         elif k_type_i == "3":
-            parameters, _ = curve_fit(
+            # ***** (k=0  -> forced) ****
+            # get parameeters and covariance the OPLS dihedral (k=0  -> forced)
+            parameters_k0_forced_to_0, covariance_k0_forced_to_0 = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
@@ -1765,41 +1866,96 @@ def fit_dihedral_with_gomc(
                 ),
             )
             # fix parameters to zero for the unused values because we want the list length the same,
-            # and the unused ones are auto-set to 1.
-            parameters[0] = 0
-            parameters[1] = 0
-            parameters[2] = 0
-            parameters[4] = 0
+            # and the unused ones are auto-set to 1. (k=0  -> forced)
+            parameters_k0_forced_to_0[0] = 0
+            parameters_k0_forced_to_0[1] = 0
+            parameters_k0_forced_to_0[2] = 0
+            parameters_k0_forced_to_0[4] = 0
 
-            # fit the OPLS dihedral
-            fit_opls_dihedral = mdf_math.opls_dihedral(
+            # fit the OPLS dihedral (k=0  -> forced)
+            fit_opls_dihedral_k0_forced_to_0 = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
                 ),
-                parameters[0],
-                parameters[1],
-                parameters[2],
-                parameters[3],
-                parameters[4],
+                parameters_k0_forced_to_0[0],
+                parameters_k0_forced_to_0[1],
+                parameters_k0_forced_to_0[2],
+                parameters_k0_forced_to_0[3],
+                parameters_k0_forced_to_0[4],
+            )
+
+            # ***** (k=constant) ****
+            # get parameeters and covariance the OPLS dihedral (k=constant)
+            parameters_k0_is_constant, covariance_k0_is_constant = curve_fit(
+                mdf_math.opls_dihedral,
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list
+                ),
+            )
+            # fix parameters to zero for the unused values because we want the list length the same,
+            # and the unused ones are auto-set to 1. (k=constant)
+            parameters_k0_is_constant[1] = 0
+            parameters_k0_is_constant[2] = 0
+            parameters_k0_is_constant[4] = 0
+
+            # fit the OPLS dihedral (k=constant)
+            fit_opls_dihedral_k0_is_constant = mdf_math.opls_dihedral(
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                parameters_k0_is_constant[0],
+                parameters_k0_is_constant[1],
+                parameters_k0_is_constant[2],
+                parameters_k0_is_constant[3],
+                parameters_k0_is_constant[4],
             )
 
         elif k_type_i == "4":
-            parameters, _ = curve_fit(
+            # ***** (k=0  -> forced) ****
+            # # get parameeters and covariance the OPLS dihedral (k=0  -> forced)
+            parameters_k0_forced_to_0, covariance_k0_forced_to_0 = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
@@ -1810,41 +1966,96 @@ def fit_dihedral_with_gomc(
                 ),
             )
             # fix parameters to zero for the unused values because we want the list length the same,
-            # and the unused ones are auto-set to 1.
-            parameters[0] = 0
-            parameters[1] = 0
-            parameters[2] = 0
-            parameters[3] = 0
+            # and the unused ones are auto-set to 1. (k=0  -> forced)
+            parameters_k0_forced_to_0[0] = 0
+            parameters_k0_forced_to_0[1] = 0
+            parameters_k0_forced_to_0[2] = 0
+            parameters_k0_forced_to_0[3] = 0
 
-            # fit the OPLS dihedral
-            fit_opls_dihedral = mdf_math.opls_dihedral(
+            # fit the OPLS dihedral (k=0  -> forced)
+            fit_opls_dihedral_k0_forced_to_0 = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
                 ),
-                parameters[0],
-                parameters[1],
-                parameters[2],
-                parameters[3],
-                parameters[4],
+                parameters_k0_forced_to_0[0],
+                parameters_k0_forced_to_0[1],
+                parameters_k0_forced_to_0[2],
+                parameters_k0_forced_to_0[3],
+                parameters_k0_forced_to_0[4],
+            )
+
+            # ***** (k=constant) ****
+            # # get parameeters and covariance the OPLS dihedral (k=constant)
+            parameters_k0_is_constant, covariance_k0_is_constant = curve_fit(
+                mdf_math.opls_dihedral,
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list
+                ),
+            )
+            # fix parameters to zero for the unused values because we want the list length the same,
+            # and the unused ones are auto-set to 1. (k=constant)
+            parameters_k0_is_constant[1] = 0
+            parameters_k0_is_constant[2] = 0
+            parameters_k0_is_constant[3] = 0
+
+            # fit the OPLS dihedral (k=constant)
+            fit_opls_dihedral_k0_is_constant = mdf_math.opls_dihedral(
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                parameters_k0_is_constant[0],
+                parameters_k0_is_constant[1],
+                parameters_k0_is_constant[2],
+                parameters_k0_is_constant[3],
+                parameters_k0_is_constant[4],
             )
 
         elif k_type_i == "1_3":
-            parameters, _ = curve_fit(
+            # ***** (k=0  -> forced) ****
+            # # get parameeters and covariance the OPLS dihedral (k=0  -> forced)
+            parameters_k0_forced_to_0, covariance_k0_forced_to_0 = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
@@ -1855,40 +2066,94 @@ def fit_dihedral_with_gomc(
                 ),
             )
             # fix parameters to zero for the unused values because we want the list length the same,
-            # and the unused ones are auto-set to 1.
-            parameters[0] = 0
-            parameters[2] = 0
-            parameters[4] = 0
+            # and the unused ones are auto-set to 1. (k=0  -> forced)
+            parameters_k0_forced_to_0[0] = 0
+            parameters_k0_forced_to_0[2] = 0
+            parameters_k0_forced_to_0[4] = 0
 
-            # fit the OPLS dihedral
-            fit_opls_dihedral = mdf_math.opls_dihedral(
+            # fit the OPLS dihedral (k=0  -> forced)
+            fit_opls_dihedral_k0_forced_to_0 = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
                 ),
-                parameters[0],
-                parameters[1],
-                parameters[2],
-                parameters[3],
-                parameters[4],
+                parameters_k0_forced_to_0[0],
+                parameters_k0_forced_to_0[1],
+                parameters_k0_forced_to_0[2],
+                parameters_k0_forced_to_0[3],
+                parameters_k0_forced_to_0[4],
+            )
+
+            # ***** (k=constant) ****
+            # # get parameeters and covariance the OPLS dihedral (k=constant)
+            parameters_k0_is_constant, covariance_k0_is_constant = curve_fit(
+                mdf_math.opls_dihedral,
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list
+                ),
+            )
+            # fix parameters to zero for the unused values because we want the list length the same,
+            # and the unused ones are auto-set to 1. (k=constant)
+            parameters_k0_is_constant[2] = 0
+            parameters_k0_is_constant[4] = 0
+
+            # fit the OPLS dihedral (k=constant)
+            fit_opls_dihedral_k0_is_constant = mdf_math.opls_dihedral(
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                parameters_k0_is_constant[0],
+                parameters_k0_is_constant[1],
+                parameters_k0_is_constant[2],
+                parameters_k0_is_constant[3],
+                parameters_k0_is_constant[4],
             )
 
         elif k_type_i == "2_4":
-            parameters, _ = curve_fit(
+            # ***** (k=0  -> forced) ****
+            # # get parameeters and covariance the OPLS dihedral (k=0  -> forced)
+            parameters_k0_forced_to_0, covariance_k0_forced_to_0 = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
@@ -1899,40 +2164,94 @@ def fit_dihedral_with_gomc(
                 ),
             )
             # fix parameters to zero for the unused values because we want the list length the same,
-            # and the unused ones are auto-set to 1.
-            parameters[0] = 0
-            parameters[1] = 0
-            parameters[3] = 0
+            # and the unused ones are auto-set to 1. (k=0  -> forced)
+            parameters_k0_forced_to_0[0] = 0
+            parameters_k0_forced_to_0[1] = 0
+            parameters_k0_forced_to_0[3] = 0
 
-            # fit the OPLS dihedral
-            fit_opls_dihedral = mdf_math.opls_dihedral(
+            # fit the OPLS dihedral (k=0  -> forced)
+            fit_opls_dihedral_k0_forced_to_0 = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
                 ),
-                parameters[0],
-                parameters[1],
-                parameters[2],
-                parameters[3],
-                parameters[4],
+                parameters_k0_forced_to_0[0],
+                parameters_k0_forced_to_0[1],
+                parameters_k0_forced_to_0[2],
+                parameters_k0_forced_to_0[3],
+                parameters_k0_forced_to_0[4],
+            )
+
+            # ***** (k=constant) ****
+            # # get parameeters and covariance the OPLS dihedral (k=constant)
+            parameters_k0_is_constant, covariance_k0_is_constant = curve_fit(
+                mdf_math.opls_dihedral,
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list
+                ),
+            )
+            # fix parameters to zero for the unused values because we want the list length the same,
+            # and the unused ones are auto-set to 1. (k=constant)
+            parameters_k0_is_constant[1] = 0
+            parameters_k0_is_constant[3] = 0
+
+            # fit the OPLS dihedral (k=constant)
+            fit_opls_dihedral_k0_is_constant = mdf_math.opls_dihedral(
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                parameters_k0_is_constant[0],
+                parameters_k0_is_constant[1],
+                parameters_k0_is_constant[2],
+                parameters_k0_is_constant[3],
+                parameters_k0_is_constant[4],
             )
 
         elif k_type_i == "1_2":
-            parameters, _ = curve_fit(
+            # ***** (k=0  -> forced) ****
+            # # get parameeters and covariance the OPLS dihedral (k=0  -> forced)
+            parameters_k0_forced_to_0, covariance_k0_forced_to_0 = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
@@ -1943,40 +2262,94 @@ def fit_dihedral_with_gomc(
                 ),
             )
             # fix parameters to zero for the unused values because we want the list length the same,
-            # and the unused ones are auto-set to 1.
-            parameters[0] = 0
-            parameters[3] = 0
-            parameters[4] = 0
+            # and the unused ones are auto-set to 1. (k=0  -> forced)
+            parameters_k0_forced_to_0[0] = 0
+            parameters_k0_forced_to_0[3] = 0
+            parameters_k0_forced_to_0[4] = 0
 
-            # fit the OPLS dihedral
-            fit_opls_dihedral = mdf_math.opls_dihedral(
+            # fit the OPLS dihedral (k=0  -> forced)
+            fit_opls_dihedral_k0_forced_to_0 = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
                 ),
-                parameters[0],
-                parameters[1],
-                parameters[2],
-                parameters[3],
-                parameters[4],
+                parameters_k0_forced_to_0[0],
+                parameters_k0_forced_to_0[1],
+                parameters_k0_forced_to_0[2],
+                parameters_k0_forced_to_0[3],
+                parameters_k0_forced_to_0[4],
+            )
+
+            # ***** (k=constant) ****
+            # # get parameeters and covariance the OPLS dihedral (k=constant)
+            parameters_k0_is_constant, covariance_k0_is_constant = curve_fit(
+                mdf_math.opls_dihedral,
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list
+                ),
+            )
+            # fix parameters to zero for the unused values because we want the list length the same,
+            # and the unused ones are auto-set to 1. (k=constant)
+            parameters_k0_is_constant[3] = 0
+            parameters_k0_is_constant[4] = 0
+
+            # fit the OPLS dihedral (k=constant)
+            fit_opls_dihedral_k0_is_constant = mdf_math.opls_dihedral(
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                parameters_k0_is_constant[0],
+                parameters_k0_is_constant[1],
+                parameters_k0_is_constant[2],
+                parameters_k0_is_constant[3],
+                parameters_k0_is_constant[4],
             )
 
         elif k_type_i == "3_4":
-            parameters, _ = curve_fit(
+            # ***** (k=0  -> forced) ****
+            # # get parameeters and covariance the OPLS dihedral (k=0  -> forced)
+            parameters_k0_forced_to_0, covariance_k0_forced_to_0 = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
@@ -1987,40 +2360,94 @@ def fit_dihedral_with_gomc(
                 ),
             )
             # fix parameters to zero for the unused values because we want the list length the same,
-            # and the unused ones are auto-set to 1.
-            parameters[0] = 0
-            parameters[1] = 0
-            parameters[2] = 0
+            # and the unused ones are auto-set to 1. (k=0  -> forced)
+            parameters_k0_forced_to_0[0] = 0
+            parameters_k0_forced_to_0[1] = 0
+            parameters_k0_forced_to_0[2] = 0
 
-            # fit the OPLS dihedral
-            fit_opls_dihedral = mdf_math.opls_dihedral(
+            # fit the OPLS dihedral (k=0  -> forced)
+            fit_opls_dihedral_k0_forced_to_0 = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
                 ),
-                parameters[0],
-                parameters[1],
-                parameters[2],
-                parameters[3],
-                parameters[4],
+                parameters_k0_forced_to_0[0],
+                parameters_k0_forced_to_0[1],
+                parameters_k0_forced_to_0[2],
+                parameters_k0_forced_to_0[3],
+                parameters_k0_forced_to_0[4],
+            )
+
+            # ***** (k=constant) ****
+            # # get parameeters and covariance the OPLS dihedral (k=constant)
+            parameters_k0_is_constant, covariance_k0_is_constant = curve_fit(
+                mdf_math.opls_dihedral,
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list
+                ),
+            )
+            # fix parameters to zero for the unused values because we want the list length the same,
+            # and the unused ones are auto-set to 1. (k=constant)
+            parameters_k0_is_constant[1] = 0
+            parameters_k0_is_constant[2] = 0
+
+            # fit the OPLS dihedral (k=constant)
+            fit_opls_dihedral_k0_is_constant = mdf_math.opls_dihedral(
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                parameters_k0_is_constant[0],
+                parameters_k0_is_constant[1],
+                parameters_k0_is_constant[2],
+                parameters_k0_is_constant[3],
+                parameters_k0_is_constant[4],
             )
 
         elif k_type_i == "1_2_3":
-            parameters, _ = curve_fit(
+            # ***** (k=0  -> forced) ****
+            # # get parameeters and covariance the OPLS dihedral (k=0  -> forced)
+            parameters_k0_forced_to_0, covariance_k0_forced_to_0 = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
@@ -2031,39 +2458,93 @@ def fit_dihedral_with_gomc(
                 ),
             )
             # fix parameters to zero for the unused values because we want the list length the same,
-            # and the unused ones are auto-set to 1.
-            parameters[0] = 0
-            parameters[4] = 0
+            # and the unused ones are auto-set to 1. (k=0  -> forced)
 
-            # fit the OPLS dihedral
-            fit_opls_dihedral = mdf_math.opls_dihedral(
+            parameters_k0_forced_to_0[0] = 0
+            parameters_k0_forced_to_0[4] = 0
+
+            # fit the OPLS dihedral (k=0  -> forced)
+            fit_opls_dihedral_k0_forced_to_0 = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
                 ),
-                parameters[0],
-                parameters[1],
-                parameters[2],
-                parameters[3],
-                parameters[4],
+                parameters_k0_forced_to_0[0],
+                parameters_k0_forced_to_0[1],
+                parameters_k0_forced_to_0[2],
+                parameters_k0_forced_to_0[3],
+                parameters_k0_forced_to_0[4],
+            )
+
+            # ***** (k=constant) ****
+            # # get parameeters and covariance the OPLS dihedral (k=constant)
+            parameters_k0_is_constant, covariance_k0_is_constant = curve_fit(
+                mdf_math.opls_dihedral,
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list
+                ),
+            )
+            # fix parameters to zero for the unused values because we want the list length the same,
+            # and the unused ones are auto-set to 1. (k=constant)
+            parameters_k0_is_constant[4] = 0
+
+            # fit the OPLS dihedral (k=constant)
+            fit_opls_dihedral_k0_is_constant = mdf_math.opls_dihedral(
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                parameters_k0_is_constant[0],
+                parameters_k0_is_constant[1],
+                parameters_k0_is_constant[2],
+                parameters_k0_is_constant[3],
+                parameters_k0_is_constant[4],
             )
 
         elif k_type_i == "1_2_3_4":
-            parameters, _ = curve_fit(
+            # ***** (k=0  -> forced) ****
+            # # get parameeters and covariance the OPLS dihedral (k=0  -> forced)
+            parameters_k0_forced_to_0, covariance_k0_forced_to_0 = curve_fit(
                 mdf_math.opls_dihedral,
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
@@ -2074,27 +2555,75 @@ def fit_dihedral_with_gomc(
                 ),
             )
             # fix parameters to zero for the unused values because we want the list length the same,
-            # and the unused ones are auto-set to 1.
-            parameters[0] = 0
+            # and the unused ones are auto-set to 1. (k=0  -> forced)
+            parameters_k0_forced_to_0[0] = 0
 
-            # fit the OPLS dihedral
-            fit_opls_dihedral = mdf_math.opls_dihedral(
+            # fit the OPLS dihedral (k=0  -> forced)
+            fit_opls_dihedral_k0_forced_to_0 = mdf_math.opls_dihedral(
                 (
                     np.asarray(k_type_list_i),
                     np.asarray(
                         sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
                     ),
-                    np.asarray(sorted_const_1_minus_Cos_0_phi_data_lists),
+                    np.asarray(
+                        k0_forced_to_0_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
                     np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
                     np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
                     np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
                 ),
-                parameters[0],
-                parameters[1],
-                parameters[2],
-                parameters[3],
-                parameters[4],
+                parameters_k0_forced_to_0[0],
+                parameters_k0_forced_to_0[1],
+                parameters_k0_forced_to_0[2],
+                parameters_k0_forced_to_0[3],
+                parameters_k0_forced_to_0[4],
+            )
+
+            # ***** (k=constant) ****
+            # # get parameeters and covariance the OPLS dihedral (k=constant)
+            parameters_k0_is_constant, covariance_k0_is_constant = curve_fit(
+                mdf_math.opls_dihedral,
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                np.asarray(
+                    sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list
+                ),
+            )
+            # fix parameters to zero for the unused values because we want the list length the same,
+            # and the unused ones are auto-set to 1. (k=constant)
+
+            # fit the OPLS dihedral (k=constant)
+            fit_opls_dihedral_k0_is_constant = mdf_math.opls_dihedral(
+                (
+                    np.asarray(k_type_list_i),
+                    np.asarray(
+                        sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list
+                    ),
+                    np.asarray(
+                        k0_is_constant_sorted_const_1_minus_Cos_0_phi_data_lists
+                    ),
+                    np.asarray(sorted_const_1_plus_Cos_1_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_2_phi_data_lists),
+                    np.asarray(sorted_const_1_plus_Cos_3_phi_data_lists),
+                    np.asarray(sorted_const_1_minus_Cos_4_phi_data_lists),
+                ),
+                parameters_k0_is_constant[0],
+                parameters_k0_is_constant[1],
+                parameters_k0_is_constant[2],
+                parameters_k0_is_constant[3],
+                parameters_k0_is_constant[4],
             )
 
         else:
@@ -2102,11 +2631,94 @@ def fit_dihedral_with_gomc(
                 f"ERROR: The {k_type_i} selected in the 'fit_k_list' variable is not a valid selection"
             )
 
-        # calulate TSS, RSS and R**2
-        r_squared = mdf_math.get_r_squared(
-            sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list,
-            fit_opls_dihedral,
+        # shift dihedral so always at energy = 0 minimum (changing 'fit_opls_dihedral' + C and 'parameters[0]' + C,
+        # and 'sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list' + C)
+        theta_spacing_degree = 1
+
+        # Can not do the min shift for k0_forced_to_0 or you add k0
+        fitted_opls_dihedral_small_theta_spacing_k0_forced_to_0 = []
+        for theta_i in range(-180, 180, 1):
+            fitted_opls_dihedral_small_theta_spacing_k0_forced_to_0.append(
+                mdf_math.opls_dihedral_n_1_2_3_4(
+                    theta_i,
+                    parameters_k0_forced_to_0[0],
+                    parameters_k0_forced_to_0[1],
+                    parameters_k0_forced_to_0[2],
+                    parameters_k0_forced_to_0[3],
+                    parameters_k0_forced_to_0[4],
+                )
+            )
+
+        # min shift to 0 for k0_is_constant
+        fitted_opls_dihedral_small_theta_spacing_k0_is_constant = []
+        for theta_i in range(-180, 180, 1):
+            fitted_opls_dihedral_small_theta_spacing_k0_is_constant.append(
+                mdf_math.opls_dihedral_n_1_2_3_4(
+                    theta_i,
+                    parameters_k0_is_constant[0],
+                    parameters_k0_is_constant[1],
+                    parameters_k0_is_constant[2],
+                    parameters_k0_is_constant[3],
+                    parameters_k0_is_constant[4],
+                )
+            )
+
+        min_0_fitted_opls_dihedral_small_theta_spacing_k0_is_constant = np.min(
+            fitted_opls_dihedral_small_theta_spacing_k0_is_constant
         )
+
+        # subtract minimum to  k0_is_constant[0] (shift dihedral so always at energy = 0 minimum )
+        # remember min times 2 as OPLS_energy = 1/2 (k0+...)
+        if opls_force_k0_zero is False:
+            parameters_k0_is_constant[0] -= (
+                min_0_fitted_opls_dihedral_small_theta_spacing_k0_is_constant
+                * 2
+            )
+
+        # subtract minimum to  parameters[0] (shift dihedral so always at energy = 0 minimum )
+        for dih_energy_m in range(0, len(fit_opls_dihedral_k0_is_constant)):
+            fit_opls_dihedral_k0_is_constant[
+                dih_energy_m
+            ] -= min_0_fitted_opls_dihedral_small_theta_spacing_k0_is_constant
+
+        # calulate TSS, RSS and R**2 (k0_is_constant)
+        r_squared_k0_is_constant = mdf_math.get_r_squared(
+            sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list,
+            fit_opls_dihedral_k0_is_constant,
+        )
+
+        # calulate TSS, RSS and R**2 (k0_forced_to_0)
+        r_squared_k0_forced_to_0 = mdf_math.get_r_squared(
+            sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list,
+            fit_opls_dihedral_k0_forced_to_0,
+        )
+
+        # Determine what fit to take 'k0_forced_to_0' or 'k0_is_constant' and
+        # select the best fit from them
+        if (
+            opls_force_k0_zero is False
+            and r_squared_k0_is_constant >= r_squared_k0_forced_to_0
+        ):
+            r_squared = r_squared_k0_is_constant
+            fit_opls_dihedral = fit_opls_dihedral_k0_is_constant
+            parameters = [
+                parameters_k0_is_constant[0],
+                parameters_k0_is_constant[1],
+                parameters_k0_is_constant[2],
+                parameters_k0_is_constant[3],
+                parameters_k0_is_constant[4],
+            ]
+
+        else:
+            r_squared = r_squared_k0_forced_to_0
+            fit_opls_dihedral = fit_opls_dihedral_k0_forced_to_0
+            parameters = [
+                parameters_k0_forced_to_0[0],
+                parameters_k0_forced_to_0[1],
+                parameters_k0_forced_to_0[2],
+                parameters_k0_forced_to_0[3],
+                parameters_k0_forced_to_0[4],
+            ]
 
         plt.plot(
             np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list),
@@ -2147,7 +2759,7 @@ def fit_dihedral_with_gomc(
         ncol=2,
         loc="lower center",
         fontsize=legend_font_size,
-        prop={"family": "Arial", "size": legend_font_size},
+        prop={"size": legend_font_size},
     )
 
     # plt.show()
@@ -2469,11 +3081,7 @@ def fit_dihedral_with_gomc(
             )
             output_name_control_fitted_file_name_str = f"output_GOMC_OPLS_fit_{opls_fit_q}_dihedral_coords_{scan_iter_q}.txt"
 
-            print("#**********************")
-            print(
-                "Started: Writing NVT GOMC control file for the GOMC simulation with fitted dihedral k values."
-            )
-            print("#**********************")
+            # "Started: Writing NVT GOMC control file for the GOMC simulation with fitted dihedral k values."
             gomc_control.write_gomc_control_file(
                 charmm,
                 f"{gomc_runs_folder_name}/{control_file_name_fitted_str}",
@@ -2524,18 +3132,13 @@ def fit_dihedral_with_gomc(
                     "HistogramFreq": output_false_list_input,
                     "CoordinatesFreq": output_false_list_input,
                     "DCDFreq": output_false_list_input,
-                    "Potential": "VDW",
                     "CBMC_First": 12,
                     "CBMC_Nth": 10,
                     "CBMC_Ang": 50,
                     "CBMC_Dih": 50,
                 },
             )
-            print("#**********************")
-            print(
-                "Completed: NVT GOMC control file written for the GOMC simulation with fitted dihedral k values."
-            )
-            print("#**********************")
+            # "Completed: NVT GOMC control file written for the GOMC simulation with fitted dihedral k values."
 
             # **************************************************************
             # make the GOMC control file for each dihedral angle (END)
@@ -2545,7 +3148,7 @@ def fit_dihedral_with_gomc(
             # based on their potential form
             if charmm.utilized_NB_expression in ["LJ"]:
                 k_constant_units_str = "kcal/mol"
-            elif charmm.utilized_NB_expression in ["Mie", "Exp6 "]:
+            elif charmm.utilized_NB_expression in ["Mie", "Exp6"]:
                 k_constant_units_str = "K"
             else:
                 raise ValueError(
@@ -2671,12 +3274,6 @@ def fit_dihedral_with_gomc(
         GOMC_data_fitted_total_energy_K_list = GOMC_data_fitted_df.loc[
             :, "TOTAL"
         ].tolist()
-        print(
-            f"GOMC_data_fitted_dihedral_degrees_list = {GOMC_data_fitted_dihedral_degrees_list}"
-        )
-        print(
-            f"GOMC_data_fitted_total_energy_K_list = {GOMC_data_fitted_total_energy_K_list}"
-        )
 
         # convert from Kelvin to kcal/mol normalize so the min value is 0
         GOMC_data_fitted_total_energy_kcal_per_mol_list = [
@@ -2687,10 +3284,6 @@ def fit_dihedral_with_gomc(
             i - min(GOMC_data_fitted_total_energy_kcal_per_mol_list)
             for i in GOMC_data_fitted_total_energy_kcal_per_mol_list
         ]
-
-        print(
-            f"GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list = {GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list}"
-        )
 
         # *********************************
         # get GOMC data (END)
@@ -2757,11 +3350,6 @@ def fit_dihedral_with_gomc(
         # Use R**2 (R-squared) to compare the data used to fit the dihedral(s)
         # via a single or multi-dihedral fit, to the individual fit entered in
         # GOMC and then recompared to Gaussian and write out the data to a file.
-        print(f"*****************")
-        print(
-            f"GOMC_data_fitted_dihedral_degrees_list === {len(GOMC_data_fitted_dihedral_degrees_list)}"
-        )
-        print(f"*****************")
         for q_angle in range(0, len(GOMC_data_fitted_dihedral_degrees_list)):
             if q_angle == 0:
                 # write out the GOMC and Gaussian data in a file
@@ -2792,37 +3380,190 @@ def fit_dihedral_with_gomc(
                 f"{str(opls_k_constant_fitted_q_list_kcal_per_mol[4]): <30} "
             )
 
-        # Compare original fit vs run through GOMC as a validation test case
-        if opls_fit_data_r_squared_list[
-            opls_q
-        ] >= r_squared_min and not np.isclose(
-            opls_r_squared_fitted_data_via_gomc_list[opls_q],
-            opls_fit_data_r_squared_list[opls_q],
-            rtol=r_squared_rtol,
-        ):
-            raise ValueError(
-                f"ERROR: The calculated R-squared energy values from the fit type "
-                f"{opls_fit_data_non_zero_k_constants_list[opls_q]} "
-                f"does not match the validated case for 'r_squared_min' >= "
-                f"{mdf_math.round_to_sig_figs(r_squared_min,sig_figs=3)}, "
-                f"within the relative tolerance or 'r_squared_rtol' = "
-                f"{mdf_math.round_to_sig_figs(r_squared_rtol,sig_figs=3)}. \n"
-                f"- Fit via the individual or multi-dihedral fit, when "
-                f"Gaussian minus GOMC with the selected dihedral set to zero \n"
-                f"--> R-squared = "
-                f"{mdf_math.round_to_sig_figs(opls_fit_data_r_squared_list[opls_q],sig_figs=3)} \n"
-                f"- Fit via the validation test case, when "
-                f"Gaussian minus GOMC with the selected individual dihedral added in GOMC \n"
-                f"-- >R-squared = "
-                f"{mdf_math.round_to_sig_figs(opls_r_squared_fitted_data_via_gomc_list[opls_q],sig_figs=3)} \n"
-                f"The 'r_squared_min' and 'r_squared_rtol' "
-                f"variables may need to be adjusted, \n"
-                f"there is likely something wrong with the fitting procedure, the "
-                f"software parameters need tuned, or there is a bug in the software. \n\n "
-                f"NOTE: Since the R-squared values are calculated via different parameters, \n"
-                f"the compared R-squared values could be very different if they are not nearly \n"
-                f"a perfect fit (R-squared --> ~0.98 to 0.99999999)."
+        # Compare original fit vs run through EACH GOMC as a validation test case
+        if opls_q == 0:
+            opls_fit_acceptable_r_squared_values_list = []
+            opls_fit_acceptable_r_squared_values_not_in_rtol_list = []
+            opls_fit_data_non_zero_k_constants_not_acceptable_r_squared_values_list = (
+                []
             )
+            opls_fit_data_r_squared_not_acceptable_r_squared_values_list = []
+            opls_r_squared_fitted_data_via_gomc_list_not_acceptable_r_squared_values_list = (
+                []
+            )
+            max_opls_fit_Rsquared = None
+            max_opls_fit_Rsquared_list_index_number = None
+
+        if opls_fit_data_r_squared_list[opls_q] >= r_squared_min:
+            opls_fit_acceptable_r_squared_values_list.append(1)
+
+            if np.isclose(
+                opls_r_squared_fitted_data_via_gomc_list[opls_q],
+                opls_fit_data_r_squared_list[opls_q],
+                rtol=r_squared_rtol,
+            ):
+                opls_fit_acceptable_r_squared_values_not_in_rtol_list.append(1)
+
+                # get maximum value for  fit vs run through EACH GOMC as a validation test case
+                if (
+                    max_opls_fit_Rsquared is None
+                    and max_opls_fit_Rsquared_list_index_number is None
+                ):
+                    max_opls_fit_Rsquared = opls_fit_data_r_squared_list[opls_q]
+                    max_opls_fit_Rsquared_list_index_number = opls_q
+
+                elif (
+                    opls_fit_data_r_squared_list[opls_q] > max_opls_fit_Rsquared
+                ):
+                    max_opls_fit_Rsquared = opls_fit_data_r_squared_list[opls_q]
+                    max_opls_fit_Rsquared_list_index_number = opls_q
+
+            else:
+                opls_fit_acceptable_r_squared_values_not_in_rtol_list.append(0)
+
+                opls_fit_data_non_zero_k_constants_not_acceptable_r_squared_values_list.append(
+                    opls_fit_data_non_zero_k_constants_list[opls_q]
+                )
+                opls_fit_data_r_squared_not_acceptable_r_squared_values_list.append(
+                    mdf_math.round_to_sig_figs(
+                        opls_fit_data_r_squared_list[opls_q], sig_figs=8
+                    )
+                )
+                opls_r_squared_fitted_data_via_gomc_list_not_acceptable_r_squared_values_list.append(
+                    mdf_math.round_to_sig_figs(
+                        opls_r_squared_fitted_data_via_gomc_list[opls_q],
+                        sig_figs=8,
+                    )
+                )
+
+    # round the 'opls_fit_data_r_squared_list' and 'opls_r_squared_fitted_data_via_gomc_list' for printing
+    rounded_opls_fit_data_r_squared_list = [
+        mdf_math.round_to_sig_figs(r_i, sig_figs=8)
+        for r_i in opls_fit_data_r_squared_list
+    ]
+    rounded_opls_r_squared_fitted_data_via_gomc_list = [
+        mdf_math.round_to_sig_figs(r_i, sig_figs=8)
+        for r_i in opls_r_squared_fitted_data_via_gomc_list
+    ]
+
+    # combine in pairs for the dihedrals [constants_used, r_squared_fitted, r_squared_rerun_GOMC, tolerance]
+    rounded_opls_combined_Rsq_tol_list = []
+    # Get only ones that meet R^2 objective but not tolerance
+    meet_r_sq_not_tol_rounded_opls_combined_Rsq_tol_list = []
+    for r_n_tol_i in range(0, len(rounded_opls_fit_data_r_squared_list)):
+        rounded_opls_combined_Rsq_tol_list.append(
+            [
+                opls_fit_data_non_zero_k_constants_list[r_n_tol_i],
+                rounded_opls_fit_data_r_squared_list[r_n_tol_i],
+                rounded_opls_r_squared_fitted_data_via_gomc_list[r_n_tol_i],
+                mdf_math.round_to_sig_figs(
+                    abs(
+                        rounded_opls_fit_data_r_squared_list[r_n_tol_i]
+                        - rounded_opls_r_squared_fitted_data_via_gomc_list[
+                            r_n_tol_i
+                        ]
+                    ),
+                    sig_figs=8,
+                ),
+            ]
+        )
+
+        # Get only ones that meet R^2 objective but not tolerance
+        if opls_fit_data_r_squared_list[r_n_tol_i] >= r_squared_min:
+
+            if not np.isclose(
+                opls_r_squared_fitted_data_via_gomc_list[r_n_tol_i],
+                opls_fit_data_r_squared_list[r_n_tol_i],
+                rtol=r_squared_rtol,
+            ):
+                meet_r_sq_not_tol_rounded_opls_combined_Rsq_tol_list.append(
+                    [
+                        opls_fit_data_non_zero_k_constants_list[r_n_tol_i],
+                        rounded_opls_fit_data_r_squared_list[r_n_tol_i],
+                        rounded_opls_r_squared_fitted_data_via_gomc_list[
+                            r_n_tol_i
+                        ],
+                        mdf_math.round_to_sig_figs(
+                            abs(
+                                rounded_opls_fit_data_r_squared_list[r_n_tol_i]
+                                - rounded_opls_r_squared_fitted_data_via_gomc_list[
+                                    r_n_tol_i
+                                ]
+                            ),
+                            sig_figs=8,
+                        ),
+                    ]
+                )
+
+    # print some Info for the fit, which is the same for all the dihedral angles
+    print("********************")
+    print(f"charmm.combining_rule = {charmm.combining_rule}")
+    print(f"charmm.utilized_NB_expression = {charmm.utilized_NB_expression}")
+    print("********************")
+    print(
+        f"opls_r_squared_fitted_data_via_gomc_list = {opls_r_squared_fitted_data_via_gomc_list}"
+    )
+    print(f"opls_fit_data_r_squared_list = {opls_fit_data_r_squared_list}")
+    print(f"user set 'r_squared_min' = {r_squared_min}")
+    print(f"user set 'r_squared_rtol' = {r_squared_rtol}")
+    print("********************")
+    print(
+        f"dihedral_degrees_list = {np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list)}"
+    )
+    print(f"normalized QM - MM total_energy (kcal_per_mol) = ")
+    print(
+        f"{np.asarray(sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list)}"
+    )
+    print("********************")
+
+    # Compare original fit vs run through ALL GOMC as a validation test case
+    if np.sum(opls_fit_acceptable_r_squared_values_not_in_rtol_list) == 0:
+        raise ValueError(
+            f"ERROR: The calculated R-squared energy values from the fit types "
+            f"do not match the validated case for 'r_squared_min' >= "
+            f"{mdf_math.round_to_sig_figs(r_squared_min,sig_figs=8)}, "
+            f"within the relative tolerance or 'r_squared_rtol' = "
+            f"{mdf_math.round_to_sig_figs(r_squared_rtol,sig_figs=8)}. \n"
+            f"Constants_used = The calculated R-squared energy values from the fit type constants_used."
+            f"R-squared_fitted = Gaussian minus GOMC with the selected dihedral set to zero \n"
+            f"R-squared_new_dihedral = Gaussian minus GOMC with the selected individual dihedral added in GOMC \n"
+            f"Abs(delta) = absolute_value(R-squared_fitted - R-squared_new_dihedral) \n"
+            f"- The fits for all are shown here for all the dihedral combinations \n"
+            f"[opls_constants_used, R-squared_fitted, R-squared_new_dihedral, Abs(delta)] \n"
+            f"{rounded_opls_combined_Rsq_tol_list}, \n"
+            f"The 'r_squared_min' and 'r_squared_rtol' "
+            f"variables may need to be adjusted, \n"
+            f"there is likely something wrong with the fitting procedure, the "
+            f"software parameters need tuned, or there is a bug in the software. \n\n "
+            f"NOTE: Since the R-squared values are calculated via different parameters, \n"
+            f"the compared R-squared values could be very different if they are not nearly \n"
+            f"a perfect fit (R-squared --> ~0.98 to 0.99999999)."
+        )
+
+    elif np.sum(
+        opls_fit_acceptable_r_squared_values_not_in_rtol_list
+    ) != np.sum(opls_fit_acceptable_r_squared_values_list):
+        warn(
+            f"WARNING: The calculated R-squared energy values from the fit types "
+            f"do match the validated case for 'r_squared_min' >= "
+            f"{mdf_math.round_to_sig_figs(r_squared_min,sig_figs=8)}, "
+            f"but do not fit within the relative tolerance of 'r_squared_rtol' = "
+            f"{mdf_math.round_to_sig_figs(r_squared_rtol,sig_figs=8)}. \n"
+            f"Constants_used = The calculated R-squared energy values from the fit type constants_used. \n"
+            f"R-squared_fitted = Gaussian minus GOMC with the selected dihedral set to zero. \n"
+            f"R-squared_new_dihedral = Gaussian minus GOMC with the selected individual dihedral added in GOMC. \n"
+            f"Abs(delta) = Abs(R-squared_fitted - R-squared_new_dihedral). \n"
+            f"- The fits for all are shown here for all the dihedral combinations \n"
+            f"[opls_constants_used, R-squared_fitted, R-squared_new_dihedral, Abs(delta)] \n"
+            f"{meet_r_sq_not_tol_rounded_opls_combined_Rsq_tol_list}. \n"
+            f"The 'r_squared_min' and 'r_squared_rtol' "
+            f"variables may need to be adjusted, \n"
+            f"there is likely something wrong with the fitting procedure, the "
+            f"software parameters need tuned, or there is a bug in the software. \n\n "
+            f"NOTE: Since the R-squared values are calculated via different parameters, \n"
+            f"the compared R-squared values could be very different if they are not nearly \n"
+            f"a perfect fit (R-squared --> ~0.98 to 0.99999999)."
+        )
 
     gomc_fitted_gaussian_kcal_per_mol_energy_data_txt_file.close()
 
@@ -2896,7 +3637,7 @@ def fit_dihedral_with_gomc(
         ncol=2,
         loc="lower center",
         fontsize=legend_font_size,
-        prop={"family": "Arial", "size": legend_font_size},
+        prop={"size": legend_font_size},
     )
 
     ax2.set_xticks(major_xticks)
