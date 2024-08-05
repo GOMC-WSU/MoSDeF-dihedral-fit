@@ -1,4 +1,6 @@
 import os
+import re
+import subprocess
 
 import numpy as np
 import pytest
@@ -11,14 +13,24 @@ from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import (
 from mosdef_dihedral_fit.tests.base_test import BaseTest
 
 # The below "gomc_binary_directory = "/opt/gomc_build/GOMC/bin"" is the
-# automated GitHub test binary path. It has to be fully specified, even if it is in the bashrc file.
+# automated GitHub test binary path.
 # The automated GitHub test filename and location = "MoSDeF-dihedral-fit/.github/workflows/CI.yml"
-gomc_binary_directory = "/opt/gomc_build/GOMC/bin"
-
-# User changable variable, as it needs to be run locally
+# set GOMC binary path here if you want to manually specify it
+gomc_binary_directory = ""
+# User changable variable, if the binary is not in the environment variable "PATH"
 # Examples
 # gomc_binary_directory = "/home/brad/Programs/GOMC/GOMC-2.75a/bin"
 # gomc_binary_directory = "/Users/calcraven/Documents/Vanderbilt/Research/MoSDeF/Dihedral_Fitter/GOMC/bin"
+if gomc_binary_directory == "":
+    gomc_binary_directory = subprocess.check_output(
+        "echo ${CONDA_PREFIX}/bin", shell=True, text=True
+    ).strip()
+if not gomc_binary_directory or "GOMC_CPU_NVT" not in os.listdir(
+    gomc_binary_directory
+):
+    raise OSError(
+        "Missing GOMC installation. Please install from https://github.com/GOMC-WSU/GOMC and add to conda environment `$CONDA_PREFIX`, or manually set gomc_binary_directory variable in tests/test_fit_dihedral_with_gomc.py"
+    )
 
 
 # NOTE: When comparing fitted values with reference value,
@@ -4239,10 +4251,8 @@ class TestFitDihedralWithGomc(BaseTest):
     def test_gomc_binary_path_containing_the_GOMC_CPU_NVT_file_does_not_exist(
         self,
     ):
-        with pytest.raises(
-            ValueError,
-            match=r"ERROR: The 'gomc_binary_path' file does not exist or contain the GOMC 'GOMC_CPU_NVT' file.",
-        ):
+        errormsg = r"ERROR: The 'gomc_binary_path' of gomc_binary_path does not exist or contain the GOMC 'GOMC_CPU_NVT' file. If the path is incorrect, please pass the correct absolute path for gomc_binary_path. If GOMC is not installed, go to https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/blob/main/docs/getting_started/installation/installation.rst#install-gomc README.md for this repository."
+        with pytest.raises(OSError, match=re.escape(errormsg)):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
                 self.get_fn(
@@ -4250,7 +4260,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 ),
                 self.get_fn("oplsaa_ethane_HC_CT_CT_HC.xml"),
                 298.15 * u.Kelvin,
-                f"gomc_binary_directory",
+                f"gomc_binary_path",
                 {
                     self.get_fn(
                         "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
