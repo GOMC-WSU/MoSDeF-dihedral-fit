@@ -38,9 +38,10 @@ os.system("cat periodic_torsion_k_constants_fit_energy.txt")
 
 ## Quick Installation/Setup
 
+**Note the mamba is used as a drop-in replacement for conda in the below installation, but conda works as well.**
 ```bash
 mamba install -c conda-forge mosdef-dihedral-fit
-mamba activate mosdef-dihedral-fit
+conda activate mosdef-dihedral-fit
 cd $CONDA_PREFIX
 git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a
 cd GOMC
