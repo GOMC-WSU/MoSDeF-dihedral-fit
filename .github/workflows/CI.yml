@@ -44,7 +44,7 @@ jobs:
         run: cd /opt/gomc_build/GOMC/ && sudo chmod u+x metamake.sh  && sudo ./metamake.sh NVT
 
       - name: Add GOMC path as symlink to conda bin
-        run: ln -s /opt/GOMC_CPU_NVT $CONDA_PREFIX/bin
+        run: sudo ln -s /opt/GOMC_CPU_NVT $CONDA_PREFIX/bin
 
       - name: Checkout Branch / Pull Request
         uses: actions/checkout@v3
