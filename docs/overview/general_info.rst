@@ -44,18 +44,18 @@ the dihedral in **GOMC >= v2.75** and comparing it to the original **Gaussian 16
 OPLS-dihedral:
 
 .. math:: 
-    OPLS_{Energy} = \frac{f_0}{2} 
-                    + \frac{f_1}{2}*(1+cos(\theta)) 
-                    + \frac{f_2}{2}*(1-cos(2*\theta)) 
+    U_{OPLS} = \frac{k_0}{2} 
+                    + \frac{k_1}{2}*(1+cos(\theta)) 
+                    + \frac{k_2}{2}*(1-cos(2*\theta)) 
 
 .. math:: 
-                        + \frac{f_3}{2}*(1+cos(3*\theta)) 
-                        + \frac{f_4}{2}*(1-cos(4*\theta))
+                        + \frac{k_3}{2}*(1+cos(3*\theta)) 
+                        + \frac{k_4}{2}*(1-cos(4*\theta))
 
 Ryckaert-Bellemans (RB)-torsions:
 
 .. math:: 
-    RB_{Energy} = C_0 + C_1*cos(\psi) 
+    U_{RB} = C_0 + C_1*cos(\psi) 
                   + C_2*cos(\psi)^2 
                   + C_3*cos(\psi)^3 
                   + C_4*cos(\psi)^4
@@ -66,7 +66,7 @@ Ryckaert-Bellemans (RB)-torsions:
 Periodic-dihedral:   
 
 .. math:: 
-    Periodic_{Energy} = K_0 * (1 + cos(n_0*\theta - 90^o)) 
+    U_{Periodic} = K_0 * (1 + cos(n_0*\theta - 90^o)) 
 
 .. math:: 
                             + K_1 * (1 + cos(n_1*\theta - 180^o)) 

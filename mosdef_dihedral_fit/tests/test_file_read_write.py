@@ -329,7 +329,7 @@ class TestFileReading(BaseTest):
         assert np.shape(degreesList) == (37, 9)
         opls_paramsList = out[4]
         expected_opls_params = [
-            0,
+            1,
             8.999999999999845,
             8.99999999999938,
             2.780442542871242e-12,
