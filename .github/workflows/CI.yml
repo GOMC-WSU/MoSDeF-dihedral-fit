@@ -57,7 +57,7 @@ jobs:
         run: python -m pip install -e .
 
       - name: Add GOMC path as symlink to conda bin
-        run: sudo ln -s /opt/GOMC_CPU_NVT $CONDA_PREFIX/bin
+        run: sudo ln -s /opt/gomc_build/GOMC/bin/GOMC_CPU_NVT $CONDA_PREFIX/bin
 
       - name: Test (OS -> ${{ matrix.os }} / Python -> ${{ matrix.python-version }})
         run: python -m pytest -v --cov=mosdef_dihedral_fit --cov-report=xml --cov-append --cov-config=setup.cfg --color yes --pyargs mosdef_dihedral_fit
