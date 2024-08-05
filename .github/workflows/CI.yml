@@ -41,16 +41,10 @@ jobs:
         run: which python
 
       - name: change permission on GOMC make file and run it
-        run: cd /opt/gomc_build/GOMC/ && sudo chmod u+x metamake.sh  && sudo ./metamake.sh
+        run: cd /opt/gomc_build/GOMC/ && sudo chmod u+x metamake.sh  && sudo ./metamake.sh NVT
 
-      - name: Add space to bashrc file
-        run: echo "" >> ~/.bashrc
-
-      - name: Add GOMC header to bashrc file
-        run: echo "# Add the GOMC binary files to the path" >> ~/.bashrc
-
-      - name: Add GOMC path to bashrc file
-        run: echo "export PATH=/opt/gomc_build/GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc
+      - name: Add GOMC path as symlink to conda bin
+        run: ln -s /opt/GOMC_CPU_NVT $CONDA_PREFIX/bin
 
       - name: Checkout Branch / Pull Request
         uses: actions/checkout@v3
