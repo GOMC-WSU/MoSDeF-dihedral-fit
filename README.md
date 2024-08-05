@@ -23,7 +23,8 @@ fit_dihedral_with_gomc(
         atom_type_naming_style='general',
         gomc_cpu_cores=1,
         r_squared_min=0.99,
-        r_squared_rtol=1e-03
+        r_squared_rtol=1e-03,
+        opls_set_k0_zero=True
     )
 import os
 os.system("cat RB_torsion_k_constants_fit_energy.txt")
@@ -53,15 +54,15 @@ The MoSDeF-dihedral-fit documentation can be found [here](https://mosdef-dihedra
 
 <u>OPLS-dihedral</u>:
 
-$$OPLS_{Energy} = \frac{f_0}{2}$$
+$$U_{OPLS} = \frac{k_0}{2}$$
 
-$$+ \frac{f_1}{2} * (1 + cos(\theta)) + \frac{f_2}{2} * (1-cos(2 * \theta))$$
+$$+ \frac{k_1}{2} * (1 + cos(\theta)) + \frac{k_2}{2} * (1-cos(2 * \theta))$$
 
-$$+ \frac{f_3}{2} * (1 + cos(3 * \theta)) + \frac{f_4}{2}  *(1-cos(4 * \theta))$$
+$$+ \frac{k_3}{2} * (1 + cos(3 * \theta)) + \frac{k_4}{2}  *(1-cos(4 * \theta))$$
 
 <u>Ryckaert-Bellemans (RB)-torsions</u>:
 
-$$RB_{Energy} = C_0$$
+$$U_{RB} = C_0$$
 
 $$+ C_1 * cos(\psi) + C_2 * cos(\psi)^2$$
 
@@ -71,17 +72,21 @@ $$\psi = \theta - 180^o$$
 
 <u>Periodic-dihedral</u>:
 
-$$Periodic_{Energy} = K_0 * (1 + cos(n_0*\theta - 90^o))$$
+$$U_{Periodic} = K_0 * (1 + cos(n_0*\theta - 90^o))$$
 
 $$+ K_1 * (1 + cos(n_1*\theta - 180^o)) + K_2 * (1 + cos(n_2*\theta))$$
 
 $$+  K_3 * (1 + cos(n_3*\theta - 180^o)) +  K_4 * (1 + cos(n_4*\theta))$$
 
 ## Examples
-Some basic workflows that use this package</br>
+Some basic workflows that use this package and cover several force field (FF) types are [here](https://github.com/GOMC-WSU/GOMC_Examples/tree/main/MoSDeF-dihedral-fit).  A summary of the FFs covered in the examples are listed below.
 
- - [ethane dihedral](https://github.com/GOMC-WSU/GOMC_Examples/tree/main/MoSDeF-dihedral-fit/ethane_HC_CT_CT_HC)</br>
- - [propanoic acid dihedral](https://github.com/GOMC-WSU/GOMC_Examples/tree/main/MoSDeF-dihedral-fit/protonated_fragment_CT_CT_C_OH)</br>
+ - <b>OPLS-AA</b>: ethane dihedral
+ - <b>OPLS-AA</b>: propanoic acid dihedral
+ - <b>AMBER-AA</b>: butane dihedral
+ - <b>TraPPE-UA</b>: butane dihedral
+ - <b>Mie-UA</b>: butane dihedral
+ - <b>Exp6-AA</b>: butane dihedral
 
 ## Resources
 This package is made as an API with [MoSDeF](https://github.com/mosdef-hub) and [MoSDeF-GOMC](https://github.com/GOMC-WSU/MoSDeF-GOMC). For `mosdef_dihedral_fit` to function, the forcefield files must be in a supported MoSDeF format (preferably the GMSO force field format), and use MoSDeF-GOMC and GOMC to perform the simulation setup and simulations.
