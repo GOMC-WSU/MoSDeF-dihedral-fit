@@ -3,7 +3,6 @@ import pytest
 
 import mosdef_dihedral_fit.utils.math_operations as mdf_math
 from mosdef_dihedral_fit.tests.base_test import BaseTest
-from mosdef_dihedral_fit.utils.io import get_mosdef_dihedral_fit_fn
 
 
 class TestMathOperations(BaseTest):

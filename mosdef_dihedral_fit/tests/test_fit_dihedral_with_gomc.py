@@ -3739,7 +3739,7 @@ class TestFitDihedralWithGomc(BaseTest):
         value_path_mol2 = "bad_mol2_path"
         with pytest.raises(
             ValueError,
-            match=r"ERROR: Please enter enter mol2 file \('mol2_file'\) name with the .mol2 extension.",
+            match=r"ERROR: Please enter mol2 file \('mol2_file'\) name with the .mol2 extension.",
         ):
             fit_dihedral_with_gomc(
                 ["HC", "CT", "CT", "HC"],
@@ -3823,7 +3823,7 @@ class TestFitDihedralWithGomc(BaseTest):
         value_path_xml = "bad_xml_path"
         with pytest.raises(
             ValueError,
-            match=r"ERROR: Please enter enter xml file "
+            match=r"ERROR: Please enter xml file "
             r"\('forcefield_file'\) name with the .xml extension.",
         ):
             fit_dihedral_with_gomc(

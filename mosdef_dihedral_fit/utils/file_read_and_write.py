@@ -1,8 +1,5 @@
 import os
 import shutil
-import subprocess
-import warnings
-from warnings import warn
 
 import numpy as np
 import vmd
