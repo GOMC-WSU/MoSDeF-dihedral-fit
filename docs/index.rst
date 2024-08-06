@@ -40,38 +40,38 @@ the dihedral in **GOMC >= v2.75** and comparing it to the original **Gaussian 16
 
 OPLS-dihedral:
 
-.. math:: 
-    U_{OPLS} = \frac{k_0}{2} 
-                    + \frac{k_1}{2}*(1+cos(\theta)) 
-                    + \frac{k_2}{2}*(1-cos(2*\theta)) 
+.. math::
+    U_{OPLS} = \frac{k_0}{2}
+                    + \frac{k_1}{2}*(1+cos(\theta))
+                    + \frac{k_2}{2}*(1-cos(2*\theta))
 
-.. math:: 
-                        + \frac{k_3}{2}*(1+cos(3*\theta)) 
+.. math::
+                        + \frac{k_3}{2}*(1+cos(3*\theta))
                         + \frac{k_4}{2}*(1-cos(4*\theta))
 
 Ryckaert-Bellemans (RB)-torsions:
 
-.. math:: 
-    U_{RB} = C_0 + C_1*cos(\psi) 
-                  + C_2*cos(\psi)^2 
-                  + C_3*cos(\psi)^3 
+.. math::
+    U_{RB} = C_0 + C_1*cos(\psi)
+                  + C_2*cos(\psi)^2
+                  + C_3*cos(\psi)^3
                   + C_4*cos(\psi)^4
 
-.. math:: 
+.. math::
    \psi = \theta - 180^o
 
-Periodic-dihedral:   
+Periodic-dihedral:
 
-.. math:: 
-    U_{Periodic} = K_0 * (1 + cos(n_0*\theta - 90^o)) 
+.. math::
+    U_{Periodic} = K_0 * (1 + cos(n_0*\theta - 90^o))
 
-.. math:: 
-                            + K_1 * (1 + cos(n_1*\theta - 180^o)) 
-                            + K_2 * (1 + cos(n_2*\theta))  
+.. math::
+                            + K_1 * (1 + cos(n_1*\theta - 180^o))
+                            + K_2 * (1 + cos(n_2*\theta))
 
-.. math:: 
-                            + K_3 * (1 + cos(n_3*\theta - 180^o)) 
-                            + K_4 * (1 + cos(n_4*\theta))  
+.. math::
+                            + K_3 * (1 + cos(n_3*\theta - 180^o))
+                            + K_4 * (1 + cos(n_4*\theta))
 
 **MoSDeF-dihedral-fit Highlights**:
    #. With a **Gaussian 16** log file and a few user inputs, the user can easily fit a dihedral.
@@ -124,5 +124,6 @@ The official VMD web page is http://www.ks.uiuc.edu/Research/vmd
 
         reference/units
         reference/user_notices
+        reference/contributing
         reference/credits
         reference/citing_mosdef_dihedral_fit_python
