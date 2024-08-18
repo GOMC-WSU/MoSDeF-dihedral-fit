@@ -57,7 +57,7 @@ DIHEDRALS * CHARMM
 ! Boltzmann = 0.0019872041 kcal / (mol * K)
 !
 ! type_1   type_2     type_3     type_4     Kchi            n          delta           ! extended_type_1      extended_type_2      extended_type_3      extended_type_4
-HC         CT         CT         HC         0.5             0          90.0            ! TMP_opls_140         TMP_opls_135         TMP_opls_135         TMP_opls_140
+HC         CT         CT         HC         0.5             0          90.0            ! TMP_opls_140         TMP_opls_135         TMP_opls_135         TMP_opls_140        
 ! The input dihedral to periodic dihedral conversion error is OK [error <= 10^(-10)]
 ! Maximum( |(input dihedral calc)-(periodic dihedral calc)| ) =  3.608224830031759e-16
 

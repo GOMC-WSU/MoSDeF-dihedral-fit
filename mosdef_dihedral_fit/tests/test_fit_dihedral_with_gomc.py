@@ -19,7 +19,7 @@ from mosdef_dihedral_fit.tests.base_test import BaseTest
 gomc_binary_directory = ""
 # User changable variable, if the binary is not in the environment variable "PATH"
 # Examples
-# gomc_binary_directory = "/home/brad/Programs/GOMC/GOMC-2.75a/bin"
+gomc_binary_directory = "/home/brad/Programs/GOMC/GOMC-2.75a/bin"
 # gomc_binary_directory = "/Users/calcraven/Documents/Vanderbilt/Research/MoSDeF/Dihedral_Fitter/GOMC/bin"
 if gomc_binary_directory == "":
     gomc_binary_directory = subprocess.check_output(
@@ -661,7 +661,7 @@ class TestFitDihedralWithGomc(BaseTest):
                             ) == mdf_math.round_to_sig_figs(
                                 correct_line_values[i][j], number_sig_i
                             )
-
+    
     def test_gaussian_log_file_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH(
         self,
     ):
@@ -5025,7 +5025,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 r_squared_rtol=2,
                 opls_force_k0_zero=True,
             )
-
+    
     def test_error_r_squared_min_and_r_squared_rtol_need_adjusted(
         self,
     ):
@@ -5042,16 +5042,16 @@ class TestFitDihedralWithGomc(BaseTest):
             f"Abs\(delta\) = absolute_value\(R-squared_fitted - R-squared_new_dihedral\) \n"
             f"- The fits for all are shown here for all the dihedral combinations \n"
             f"\[opls_constants_used, R-squared_fitted, R-squared_new_dihedral, Abs\(delta\)\] \n"
-            f"\[\['1', -0.27129793, -1.2824201, 1.0111222\], "
-            f"\['2', 0.45284933, -0.069821698, 0.52267103\], "
-            f"\['3', -1.5045949, -3.102543, 1.5979481\], "
-            f"\['4', -1.5448789, -3.1964352, 1.6515563\], "
-            f"\['1_3', -0.0060455503, -0.85802999, 0.85198444\], "
-            f"\['2_4', 0.55469005, 0.092830036, 0.46186001\], "
-            f"\['3_4', -0.8973394, -2.3260485, 1.4287091\], "
-            f"\['1_2', 0.98670161, 0.96338608, 0.02331553\], "
-            f"\['1_2_3', 0.99785712, 0.98674454, 0.01111258\], "
-            f"\['1_2_3_4', 0.99807697, 0.98725523, 0.01082174\]\], \n"
+            f"\[\['1', -0.26874241, -1.2725105, 1.0037681\], "
+            f"\['2', 0.44842113, -0.07712682, 0.52554795\], "
+            f"\['3', -1.5086367, -3.0946117, 1.585975\], "
+            f"\['4', -1.5454298, -3.1867649, 1.6413351\], "
+            f"\['1_3', -0.0037937181, -0.85110572, 0.847312\], "
+            f"\['2_4', 0.55194616, 0.088277735, 0.46366842\], "
+            f"\['3_4', -0.89796747, -2.3178875, 1.41992\], "
+            f"\['1_2', 0.98674311, 0.96364339, 0.02309972\], "
+            f"\['1_2_3', 0.99792638, 0.98698695, 0.01093943\], "
+            f"\['1_2_3_4', 0.99810376, 0.98668897, 0.01141479\]\], \n"
             f"The 'r_squared_min' and 'r_squared_rtol' "
             f"variables may need to be adjusted, \n"
             f"there is likely something wrong with the fitting procedure, the "
@@ -5085,7 +5085,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 r_squared_min=0.99,
                 r_squared_rtol=0.0000002,
             )
-
+    
     def test_warning_r_squared_min_and_r_squared_rtol_need_adjusted(
         self,
     ):
@@ -5102,7 +5102,7 @@ class TestFitDihedralWithGomc(BaseTest):
             f"Abs\(delta\) = Abs\(R-squared_fitted - R-squared_new_dihedral\). \n"
             f"- The fits for all are shown here for all the dihedral combinations \n"
             f"\[opls_constants_used, R-squared_fitted, R-squared_new_dihedral, Abs\(delta\)\] \n"
-            f"\[\['1_2', 0.98670161, 0.96338608, 0.02331553\]\]. \n"
+            f"\[\['1_2', 0.98674311, 0.96364339, 0.02309972\]\]. \n"
             f"The 'r_squared_min' and 'r_squared_rtol' "
             f"variables may need to be adjusted, \n"
             f"there is likely something wrong with the fitting procedure, the "
@@ -5136,7 +5136,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 r_squared_min=0.98,
                 r_squared_rtol=0.015,
             )
-
+    
     def test_gaussian_log_file_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH_in_mie_form(
         self,
     ):
@@ -5803,10 +5803,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-
-    """
-    """
-
+    
     def test_gaussian_style_files_fit_amber_aa_fit_CT_CT_CT_CT_in_butane_files(
         self,
     ):
@@ -5970,71 +5967,63 @@ class TestFitDihedralWithGomc(BaseTest):
                         "k4_kcal_per_mol",
                         "r_squared",
                     ],
-                    [str("1"), 0, 2.13492829593, 0, 0, 0, -0.851303269629],
-                    [str("2"), 0, 0, 2.25256162343, 0, 0, -0.690454186065],
-                    [
-                        str("3"),
-                        6.12246736014,
-                        0,
-                        0,
-                        -3.06123368007,
-                        0,
-                        0.960991418867,
-                    ],
-                    [str("4"), 0, 0, 0, 0, 2.0884153941, -0.91251897505],
+                    [str("1"), 0, 0.4721804016, 0, 0, 0, -1.38239818695],
+                    [str("2"), 0, 0, 0.575010099536, 0, 0, -0.546636504029],
+                    [str("3"), 0, 0, 0, 0.685865110811, 0, 0.538213945525],
+                    [str("4"), 0.549332597925, 0, 0, 0, -0.274666298962, -1.1033603631],
                     [
                         str("1_3"),
-                        6.5396241564,
-                        -0.208579929672,
                         0,
-                        -3.06123214853,
+                        0.0268839930837,
                         0,
-                        0.977746134654,
+                        0.667942488722,
+                        0,
+                        0.541330329235,
                     ],
                     [
                         str("2_4"),
                         0,
                         0,
-                        1.54851017553,
+                        0.524381976042,
                         0,
-                        1.05607698155,
-                        -0.497352492204,
+                        0.075942171368,
+                        -0.521769037912,
                     ],
                     [
                         str("3_4"),
-                        6.66816846056,
+                        0.473967795908,
                         0,
                         0,
-                        -3.06123287378,
-                        -0.348137574352,
-                        0.985623284101,
+                        0.506340068876,
+                        -0.274667465845,
+                        0.833121035656,
                     ],
                     [
                         str("1_2"),
                         0,
-                        1.13979595936,
-                        1.49269914954,
+                        0.15991259328,
+                        0.468401914855,
                         0,
                         0,
-                        -0.465523847167,
+                        -0.436373505711,
                     ],
                     [
                         str("1_2_3"),
-                        6.53963027886,
-                        -0.208580993867,
-                        0.144337057476,
-                        -3.06123414556,
                         0,
-                        0.977793543598,
+                        -0.0689348112445,
+                        0.239549950189,
+                        0.57212115096,
+                        0,
+                        0.749172728898 ,
                     ],
                     [
                         str("1_2_3_4"),
-                        6.55860366135,
-                        -0.208578022741,
-                        0.14433854159,
-                        -3.06123334065,
-                        -0.348136431047,
-                        0.982572116976,
+                        0.482298836836,
+                        -0.134715335358,
+                        0.173768441795,
+                        0.50633865346,
+                        -0.274667067896,
+                        0.980892468479,
                     ],
                 ]
 
@@ -6062,7 +6051,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-
+        
         # check the periodic dihedral file
         with open("periodic_dihedral_k_constants_fit_energy.txt", "r") as fp:
             number_sig_i = 4
@@ -6094,8 +6083,8 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [
                         str("0_1"),
-                        2.1349282959,
-                        -1.06746414796,
+                        0.4721804016,
+                        -0.2360902008,
                         0,
                         0,
                         0,
@@ -6112,13 +6101,13 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        -0.851303269629,
+                        -1.38239818695,
                     ],
                     [
                         str("0_2"),
-                        2.25256162343,
+                        0.575010099536,
                         0,
-                        -1.12628081172,
+                        -0.287505049768,
                         0,
                         0,
                         0,
@@ -6134,14 +6123,14 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        -0.690454186065,
+                        -0.546636504029,
                     ],
                     [
                         str("0_3"),
+                        0.685865110811,
                         0,
                         0,
-                        0,
-                        1.53061684004,
+                        -0.342932555406,
                         0,
                         0,
                         0,
@@ -6156,15 +6145,15 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.960991418867,
+                        0.5382139455257,
                     ],
                     [
                         str("0_4"),
-                        2.0884153941,
+                        4.9998893914e-13,
                         0,
                         0,
                         0,
-                        -1.04420769705,
+                        0.137333149481,
                         0,
                         0,
                         1,
@@ -6178,14 +6167,14 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        -0.91251897505,
+                        -1.1033603631,
                     ],
                     [
                         str("0_1_3"),
-                        -1.99973371195e-12,
-                        0.104289964836,
+                        0.694826481806,
+                        -0.0134419965418,
                         0,
-                        1.53061607426,
+                        -0.333971244361,
                         0,
                         0,
                         0,
@@ -6200,15 +6189,15 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.977746134654,
+                        0.541330329235,
                     ],
                     [
                         str("0_2_4"),
-                        2.60458715708,
+                        0.60032414741,
                         0,
-                        -0.774255087765,
+                        -0.262190988021,
                         0,
-                        -0.528038490775,
+                        -0.037971085684,
                         0,
                         0,
                         1,
@@ -6222,15 +6211,15 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        -0.497352492204,
+                        -0.521769037912,
                     ],
                     [
                         str("0_3_4"),
-                        -0.075286217852,
+                        0.468656500985,
                         0,
                         0,
-                        1.53061643689,
-                        0.174068787176,
+                        -0.253170034438,
+                        0.137333732922,
                         0,
                         0,
                         1,
@@ -6244,13 +6233,13 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.985623284101,
+                        0.833121035656,
                     ],
                     [
                         str("0_1_2"),
-                        2.6324951089,
-                        -0.56989797968,
-                        -0.74634957477,
+                        0.628314508135,
+                        -0.07995629664,
+                        -0.234200957428,
                         0,
                         0,
                         0,
@@ -6266,14 +6255,14 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        -0.465523847167,
+                        -0.436373505711,
                     ],
                     [
                         str("0_1_2_3"),
-                        0.144337057479,
-                        0.104290496934,
-                        -0.072168528738,
-                        1.53061707278,
+                        0.742736289904,
+                        0.0344674056222,
+                        -0.119774975094,
+                        -0.28606057548,
                         0,
                         0,
                         0,
@@ -6288,15 +6277,15 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.977793543598,
+                        0.749172728898,
                     ],
                     [
                         str("0_1_2_3_4"),
-                        -0.194307422173,
-                        0.10428901137,
-                        -0.072169270795,
-                        1.53061667032,
-                        0.174068215524,
+                        0.511874110419,
+                        0.067357667679,
+                        -0.0868842208975,
+                        -0.25316932673,
+                        0.137333533948,
                         0,
                         0,
                         1,
@@ -6310,7 +6299,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.982572116976,
+                        0.980892468479,
                     ],
                 ]
 
@@ -6358,103 +6347,627 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [
                         str("0_1"),
-                        1.06746414796,
-                        -1.06746414796,
+                        0.2360902008,
+                        -0.2360902008,
                         0,
                         0,
                         0,
                         0,
-                        -0.851303269629,
+                        -1.38239818695,
                     ],
                     [
                         str("0_2"),
-                        2.25256162343,
+                        0.575010099536,
                         0,
-                        -2.25256162343,
+                        -0.575010099536,
                         0,
                         0,
                         0,
-                        -0.690454186065,
+                        -0.5466365040295,
                     ],
                     [
                         str("0_3"),
-                        1.53061684004,
-                        -4.5918505201,
+                        0.342932555406,
+                        1.02879766622,
                         0,
-                        6.12246736014,
+                        -1.37173022162,
                         0,
                         0,
-                        0.960991418867,
+                        0.538213945525,
                     ],
                     [
                         str("0_4"),
+                        0.274666298962,
                         0,
+                        -1.09866519585,
                         0,
-                        8.3536615764,
+                        1.09866519585,
                         0,
-                        -8.3536615764,
-                        0,
-                        -0.91251897505,
+                        -1.1033603631,
                     ],
                     [
                         str("0_1_3"),
-                        1.6349060391,
-                        -4.48755825796,
+                        0.347413240903,
+                        0.988471736541,
                         0,
-                        6.12246429706,
+                        -1.33588497744,
                         0,
                         0,
-                        0.977746134654,
+                        0.541330329235,
                     ],
                     [
                         str("0_2_4"),
-                        1.54851017553,
+                        0.524381976042,
                         0,
-                        2.67579775067,
+                        -0.22061329057,
                         0,
-                        -4.2243079262,
+                        -0.303768685472,
                         0,
-                        -0.497352492204,
+                        -0.521769037912,
                     ],
                     [
                         str("0_3_4"),
-                        1.80346779339,
-                        -4.59184931067,
-                        -1.39255029741,
-                        6.12246574756,
-                        1.39255029741,
+                        0.490153932392,
+                        0.759510103314,
+                        -1.09866986338,
+                        -1.01268013775,
+                        1.09866986338,
                         0,
-                        0.985623284101,
+                        0.833121035656,
                     ],
                     [
                         str("0_1_2"),
-                        2.06259712922,
-                        -0.56989797968,
-                        -1.49269914954,
+                        0.548358211495,
+                        -0.07995629664,
+                        -0.468401914855,
                         0,
                         0,
                         0,
-                        -0.465523847167,
+                        -0.436373505711,
                     ],
                     [
                         str("0_1_2_3"),
-                        1.77924462719,
-                        -4.48756072141,
-                        -0.144337057476,
-                        6.12246829112,
+                        0.491143120047,
+                        0.892649132062,
+                        -0.239549950189,
+                        -1.14424230192,
                         0,
                         0,
-                        0.977793543598,
+                        0.749172728898,
                     ],
                     [
                         str("0_1_2_3_4"),
-                        1.78873469057,
-                        -4.4875609996,
-                        -1.53688426578,
-                        6.1224666813,
-                        1.39254572419,
+                        0.600729519264,
+                        0.826865647869,
+                        -1.27243671338,
+                        -1.01267730692,
+                        1.09866827158,
                         0,
-                        0.982572116976,
+                        0.980892468479,
+                    ],
+                ]
+
+                if i == 0:
+                    assert split_line_i == correct_line_values[i]
+
+                else:
+                    assert len(split_line_i) == len(correct_line_values[i])
+                    for j in range(0, len(correct_line_values[i])):
+                        # check the string listing what cosin powers are used
+                        if j == 0:
+                            assert str(split_line_i[j]) == str(
+                                correct_line_values[i][j]
+                            )
+
+                        # check the k-values and the r-squared fit
+                        else:
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
+                            )
+    
+    def test_gaussian_style_files_fit_amber_aa_all_unique_fit_CT_CT_CT_CT_in_butane_files(
+        self,
+    ):
+        fit_dihedral_with_gomc(
+            ['CT1', 'CT0', 'CT0', 'CT1'],
+            self.get_fn(
+                "gaussian_style_output_files/CT_CT_CT_CT/input/starting_coords/butane_aa.mol2"
+            ),
+            self.get_fn("amber_aa_butane_CT_CT_CT_CT_gmso.xml"),
+            298.15 * u.Kelvin,
+            gomc_binary_directory,
+            {
+                self.get_fn(
+                    "gaussian_style_output_files/CT_CT_CT_CT/output"
+                ): [],
+            },
+            manual_dihedral_atom_numbers_list=[1, 2, 3, 4],
+            zero_dihedral_atom_types=None,
+            qm_engine="gaussian_style_final_files",
+            combining_rule=None,
+            atom_type_naming_style="all_unique",
+            gomc_cpu_cores=1,
+            r_squared_min=0.98,
+            r_squared_rtol=0.02,
+            opls_force_k0_zero=False,
+        )
+
+        assert (
+            os.path.isfile("all_normalized_energies_in_kcal_per_mol.txt")
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_3_4_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_3_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_3_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_2_4_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_2_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_3_4_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_3_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_4_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert os.path.isfile("gomc_raw_energies_in_Kelvin.txt") is True
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_3_4_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_3_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_3_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_energies_in_Kelvin.txt") is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_2_4_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_2_energies_in_Kelvin.txt") is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_3_4_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_3_energies_in_Kelvin.txt") is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_4_energies_in_Kelvin.txt") is True
+        )
+        assert (
+            os.path.isfile(
+                "opls_all_single_fit_dihedral_k_constants_figure.pdf"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile("opls_all_summed_dihedrals_k_constants_figure.pdf")
+            is True
+        )
+        assert (
+            os.path.isfile("opls_dihedral_k_constants_fit_energy.txt") is True
+        )
+        assert (
+            os.path.isfile("periodic_dihedral_k_constants_fit_energy.txt")
+            is True
+        )
+        assert os.path.isfile("RB_torsion_k_constants_fit_energy.txt") is True
+
+        # check the OPLS dihedral file
+        with open("opls_dihedral_k_constants_fit_energy.txt", "r") as fp:
+            number_sig_i = 4
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                split_line_i = line.split()
+                correct_line_values = [
+                    [
+                        "non_zero_k_constants",
+                        "k0_kcal_per_mol",
+                        "k1_kcal_per_mol",
+                        "k2_kcal_per_mol",
+                        "k3_kcal_per_mol",
+                        "k4_kcal_per_mol",
+                        "r_squared",
+                    ],
+                    [str("1"), 0, 0.4721804016, 0, 0, 0, -1.38239818695],
+                    [str("2"), 0, 0, 0.575010099536, 0, 0, -0.546636504029],
+                    [str("3"), 0, 0, 0, 0.685865110811, 0, 0.538213945525],
+                    [str("4"), 0.549332597925, 0, 0, 0, -0.274666298962, -1.1033603631],
+                    [
+                        str("1_3"),
+                        0,
+                        0.0268839930837,
+                        0,
+                        0.667942488722,
+                        0,
+                        0.541330329235,
+                    ],
+                    [
+                        str("2_4"),
+                        0,
+                        0,
+                        0.524381976042,
+                        0,
+                        0.075942171368,
+                        -0.521769037912,
+                    ],
+                    [
+                        str("3_4"),
+                        0.473967795908,
+                        0,
+                        0,
+                        0.506340068876,
+                        -0.274667465845,
+                        0.833121035656,
+                    ],
+                    [
+                        str("1_2"),
+                        0,
+                        0.15991259328,
+                        0.468401914855,
+                        0,
+                        0,
+                        -0.436373505711,
+                    ],
+                    [
+                        str("1_2_3"),
+                        0,
+                        -0.0689348112445,
+                        0.239549950189,
+                        0.57212115096,
+                        0,
+                        0.749172728898 ,
+                    ],
+                    [
+                        str("1_2_3_4"),
+                        0.482298836836,
+                        -0.134715335358,
+                        0.173768441795,
+                        0.50633865346,
+                        -0.274667067896,
+                        0.980892468479,
+                    ],
+                ]
+
+                if i == 0:
+                    assert split_line_i == correct_line_values[i]
+
+                else:
+                    assert len(split_line_i) == len(correct_line_values[i])
+                    for j in range(0, len(correct_line_values[i])):
+                        # check the string listing what cosin powers are used
+                        if j == 0:
+                            assert str(split_line_i[j]) == str(
+                                correct_line_values[i][j]
+                            )
+
+                        # check the k-values and the r-squared fit
+                        else:
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
+                            )
+        
+        # check the periodic dihedral file
+        with open("periodic_dihedral_k_constants_fit_energy.txt", "r") as fp:
+            number_sig_i = 4
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                split_line_i = line.split()
+                correct_line_values = [
+                    [
+                        "non_zero_k_constants",
+                        "k0_kcal_per_mol",
+                        "k1_kcal_per_mol",
+                        "k2_kcal_per_mol",
+                        "k3_kcal_per_mol",
+                        "k4_kcal_per_mol",
+                        "k5_kcal_per_mol",
+                        "n0_kcal_per_mol",
+                        "n1_kcal_per_mol",
+                        "n2_kcal_per_mol",
+                        "n3_kcal_per_mol",
+                        "n4_kcal_per_mol",
+                        "n5_kcal_per_mol",
+                        "d0_kcal_per_mol",
+                        "d1_kcal_per_mol",
+                        "d2_kcal_per_mol",
+                        "d3_kcal_per_mol",
+                        "d4_kcal_per_mol",
+                        "d5_kcal_per_mol",
+                        "r_squared",
+                    ],
+                    [
+                        str("0_1"),
+                        0.4721804016,
+                        -0.2360902008,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        -1.38239818695,
+                    ],
+                    [
+                        str("0_2"),
+                        0.575010099536,
+                        0,
+                        -0.287505049768,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        -0.546636504029,
+                    ],
+                    [
+                        str("0_3"),
+                        0.685865110811,
+                        0,
+                        0,
+                        -0.342932555406,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        0.5382139455257,
+                    ],
+                    [
+                        str("0_4"),
+                        4.9998893914e-13,
+                        0,
+                        0,
+                        0,
+                        0.137333149481,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        -1.1033603631,
+                    ],
+                    [
+                        str("0_1_3"),
+                        0.694826481806,
+                        -0.0134419965418,
+                        0,
+                        -0.333971244361,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        0.541330329235,
+                    ],
+                    [
+                        str("0_2_4"),
+                        0.60032414741,
+                        0,
+                        -0.262190988021,
+                        0,
+                        -0.037971085684,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        -0.521769037912,
+                    ],
+                    [
+                        str("0_3_4"),
+                        0.468656500985,
+                        0,
+                        0,
+                        -0.253170034438,
+                        0.137333732922,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        0.833121035656,
+                    ],
+                    [
+                        str("0_1_2"),
+                        0.628314508135,
+                        -0.07995629664,
+                        -0.234200957428,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        -0.436373505711,
+                    ],
+                    [
+                        str("0_1_2_3"),
+                        0.742736289904,
+                        0.0344674056222,
+                        -0.119774975094,
+                        -0.28606057548,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        0.749172728898,
+                    ],
+                    [
+                        str("0_1_2_3_4"),
+                        0.511874110419,
+                        0.067357667679,
+                        -0.0868842208975,
+                        -0.25316932673,
+                        0.137333533948,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        0.980892468479,
                     ],
                 ]
 
@@ -6483,7 +6996,820 @@ class TestFitDihedralWithGomc(BaseTest):
                                 rtol=0.08,
                             )
 
-    def test_gaussian_style_files_fit_opls_ua_fit_CT_CT_CT_CT_in_butane_files(
+        # check the RB torsion file
+        with open("RB_torsion_k_constants_fit_energy.txt", "r") as fp:
+            number_sig_i = 4
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                split_line_i = line.split()
+                correct_line_values = [
+                    [
+                        "non_zero_k_constants",
+                        "k0_kcal_per_mol",
+                        "k1_kcal_per_mol",
+                        "k2_kcal_per_mol",
+                        "k3_kcal_per_mol",
+                        "k4_kcal_per_mol",
+                        "k5_kcal_per_mol",
+                        "r_squared",
+                    ],
+                    [
+                        str("0_1"),
+                        0.2360902008,
+                        -0.2360902008,
+                        0,
+                        0,
+                        0,
+                        0,
+                        -1.38239818695,
+                    ],
+                    [
+                        str("0_2"),
+                        0.575010099536,
+                        0,
+                        -0.575010099536,
+                        0,
+                        0,
+                        0,
+                        -0.5466365040295,
+                    ],
+                    [
+                        str("0_3"),
+                        0.342932555406,
+                        1.02879766622,
+                        0,
+                        -1.37173022162,
+                        0,
+                        0,
+                        0.538213945525,
+                    ],
+                    [
+                        str("0_4"),
+                        0.274666298962,
+                        0,
+                        -1.09866519585,
+                        0,
+                        1.09866519585,
+                        0,
+                        -1.1033603631,
+                    ],
+                    [
+                        str("0_1_3"),
+                        0.347413240903,
+                        0.988471736541,
+                        0,
+                        -1.33588497744,
+                        0,
+                        0,
+                        0.541330329235,
+                    ],
+                    [
+                        str("0_2_4"),
+                        0.524381976042,
+                        0,
+                        -0.22061329057,
+                        0,
+                        -0.303768685472,
+                        0,
+                        -0.521769037912,
+                    ],
+                    [
+                        str("0_3_4"),
+                        0.490153932392,
+                        0.759510103314,
+                        -1.09866986338,
+                        -1.01268013775,
+                        1.09866986338,
+                        0,
+                        0.833121035656,
+                    ],
+                    [
+                        str("0_1_2"),
+                        0.548358211495,
+                        -0.07995629664,
+                        -0.468401914855,
+                        0,
+                        0,
+                        0,
+                        -0.436373505711,
+                    ],
+                    [
+                        str("0_1_2_3"),
+                        0.491143120047,
+                        0.892649132062,
+                        -0.239549950189,
+                        -1.14424230192,
+                        0,
+                        0,
+                        0.749172728898,
+                    ],
+                    [
+                        str("0_1_2_3_4"),
+                        0.600729519264,
+                        0.826865647869,
+                        -1.27243671338,
+                        -1.01267730692,
+                        1.09866827158,
+                        0,
+                        0.980892468479,
+                    ],
+                ]
+
+                if i == 0:
+                    assert split_line_i == correct_line_values[i]
+
+                else:
+                    assert len(split_line_i) == len(correct_line_values[i])
+                    for j in range(0, len(correct_line_values[i])):
+                        # check the string listing what cosin powers are used
+                        if j == 0:
+                            assert str(split_line_i[j]) == str(
+                                correct_line_values[i][j]
+                            )
+
+                        # check the k-values and the r-squared fit
+                        else:
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
+                            )
+
+    def test_gaussian_style_files_fit_amber_aa_fit_CT_CT_CT_CT_force_k0_to_True_in_butane_files(
+        self,
+    ):
+        fit_dihedral_with_gomc(
+            ["CT", "CT", "CT", "CT"],
+            self.get_fn(
+                "gaussian_style_output_files/CT_CT_CT_CT/input/starting_coords/butane_aa.mol2"
+            ),
+            self.get_fn("amber_aa_butane_CT_CT_CT_CT_gmso.xml"),
+            298.15 * u.Kelvin,
+            gomc_binary_directory,
+            {
+                self.get_fn(
+                    "gaussian_style_output_files/CT_CT_CT_CT/output"
+                ): [],
+            },
+            manual_dihedral_atom_numbers_list=[1, 2, 3, 4],
+            zero_dihedral_atom_types=None,
+            qm_engine="gaussian_style_final_files",
+            combining_rule=None,
+            atom_type_naming_style="general",
+            gomc_cpu_cores=1,
+            r_squared_min=0.8,
+            r_squared_rtol=0.2,
+            opls_force_k0_zero=True,
+        )
+
+        assert (
+            os.path.isfile("all_normalized_energies_in_kcal_per_mol.txt")
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_3_4_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_3_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_3_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_2_4_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_2_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_3_4_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_3_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_4_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert os.path.isfile("gomc_raw_energies_in_Kelvin.txt") is True
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_3_4_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_3_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_3_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_energies_in_Kelvin.txt") is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_2_4_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_2_energies_in_Kelvin.txt") is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_3_4_energies_in_Kelvin.txt")
+            is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_3_energies_in_Kelvin.txt") is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_4_energies_in_Kelvin.txt") is True
+        )
+        assert (
+            os.path.isfile(
+                "opls_all_single_fit_dihedral_k_constants_figure.pdf"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile("opls_all_summed_dihedrals_k_constants_figure.pdf")
+            is True
+        )
+        assert (
+            os.path.isfile("opls_dihedral_k_constants_fit_energy.txt") is True
+        )
+        assert (
+            os.path.isfile("periodic_dihedral_k_constants_fit_energy.txt")
+            is True
+        )
+        assert os.path.isfile("RB_torsion_k_constants_fit_energy.txt") is True
+
+        # check the OPLS dihedral file
+        with open("opls_dihedral_k_constants_fit_energy.txt", "r") as fp:
+            number_sig_i = 4
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                split_line_i = line.split()
+                correct_line_values = [
+                    [
+                        "non_zero_k_constants",
+                        "k0_kcal_per_mol",
+                        "k1_kcal_per_mol",
+                        "k2_kcal_per_mol",
+                        "k3_kcal_per_mol",
+                        "k4_kcal_per_mol",
+                        "r_squared",
+                    ],
+                    [str("1"), 0, 0.4721804016, 0, 0, 0, -1.38239818695],
+                    [str("2"), 0, 0, 0.575010099536, 0, 0, -0.546636504029],
+                    [str("3"), 0, 0, 0, 0.685865110811, 0, 0.538213945525],
+                    [str("4"), 0, 0, 0, 0, 0.425529576141, -1.70742947963],
+                    [
+                        str("1_3"),
+                        0,
+                        0.0268839930837,
+                        0,
+                        0.667942488722,
+                        0,
+                        0.541330329235,
+                    ],
+                    [
+                        str("2_4"),
+                        0,
+                        0,
+                        0.524381976042,
+                        0,
+                        0.075942171368,
+                        -0.521769037912,
+                    ],
+                    [
+                        str("3_4"),
+                        0,
+                        0,
+                        0,
+                        0.723922225348,
+                        -0.0570857290245,
+                        0.552265364726,
+                    ],
+                    [
+                        str("1_2"),
+                        0,
+                        0.15991259328,
+                        0.468401914855,
+                        0,
+                        0,
+                        -0.436373505711,
+                    ],
+                    [
+                        str("1_2_3"),
+                        0,
+                        -0.0689348112445,
+                        0.239549950189,
+                        0.57212115096,
+                        0,
+                        0.749172728898 ,
+                    ],
+                    [
+                        str("1_2_3_4"),
+                        0,
+                        -0.0225155791286,
+                        0.285968363141,
+                        0.618539556698,
+                        -0.162465438799,
+                        0.836970467538,
+                    ],
+                ]
+
+                if i == 0:
+                    assert split_line_i == correct_line_values[i]
+
+                else:
+                    assert len(split_line_i) == len(correct_line_values[i])
+                    for j in range(0, len(correct_line_values[i])):
+                        # check the string listing what cosin powers are used
+                        if j == 0:
+                            print
+                            assert str(split_line_i[j]) == str(
+                                correct_line_values[i][j]
+                            )
+
+                        # check the k-values and the r-squared fit
+                        else:
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
+                            )
+        
+        # check the periodic dihedral file
+        with open("periodic_dihedral_k_constants_fit_energy.txt", "r") as fp:
+            number_sig_i = 4
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                split_line_i = line.split()
+                correct_line_values = [
+                    [
+                        "non_zero_k_constants",
+                        "k0_kcal_per_mol",
+                        "k1_kcal_per_mol",
+                        "k2_kcal_per_mol",
+                        "k3_kcal_per_mol",
+                        "k4_kcal_per_mol",
+                        "k5_kcal_per_mol",
+                        "n0_kcal_per_mol",
+                        "n1_kcal_per_mol",
+                        "n2_kcal_per_mol",
+                        "n3_kcal_per_mol",
+                        "n4_kcal_per_mol",
+                        "n5_kcal_per_mol",
+                        "d0_kcal_per_mol",
+                        "d1_kcal_per_mol",
+                        "d2_kcal_per_mol",
+                        "d3_kcal_per_mol",
+                        "d4_kcal_per_mol",
+                        "d5_kcal_per_mol",
+                        "r_squared",
+                    ],
+                    [
+                        str("0_1"),
+                        0.4721804016,
+                        -0.2360902008,
+                        0,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        -1.38239818695,
+                    ],
+                    [
+                        str("0_2"),
+                        0.575010099536,
+                        0,
+                        -0.287505049768,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        -0.546636504029,
+                    ],
+                    [
+                        str("0_3"),
+                        0.685865110811,
+                        0,
+                        0,
+                        -0.342932555406,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        0.5382139455257,
+                    ],
+                    [
+                        str("0_4"),
+                        0.425529576141,
+                        0,
+                        0,
+                        0,
+                        -0.21276478807,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        -1.70742947963,
+                    ],
+                    [
+                        str("0_1_3"),
+                        0.694826481806,
+                        -0.0134419965418,
+                        0,
+                        -0.333971244361,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        0.541330329235,
+                    ],
+                    [
+                        str("0_2_4"),
+                        0.60032414741,
+                        0,
+                        -0.262190988021,
+                        0,
+                        -0.037971085684,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        -0.521769037912,
+                    ],
+                    [
+                        str("0_3_4"),
+                        0.666836496324,
+                        0,
+                        0,
+                        -0.361961112674,
+                        0.0285428645122,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        0.552265364726,
+                    ],
+                    [
+                        str("0_1_2"),
+                        0.628314508135,
+                        -0.07995629664,
+                        -0.234200957428,
+                        0,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        -0.436373505711,
+                    ],
+                    [
+                        str("0_1_2_3"),
+                        0.742736289904,
+                        0.0344674056222,
+                        -0.119774975094,
+                        -0.28606057548,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        0.749172728898,
+                    ],
+                    [
+                        str("0_1_2_3_4"),
+                        0.719526901911,
+                        0.0112577895643,
+                        -0.14298418157,
+                        -0.309269778349,
+                        0.0812327193995,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        0.836970467538,
+                    ],
+                ]
+
+                if i == 0:
+                    assert split_line_i == correct_line_values[i]
+
+                else:
+                    assert len(split_line_i) == len(correct_line_values[i])
+                    for j in range(0, len(correct_line_values[i])):
+                        # check the string listing what cosin powers are used
+                        if j == 0:
+                            assert str(split_line_i[j]) == str(
+                                correct_line_values[i][j]
+                            )
+
+                        # check the k-values and the r-squared fit
+                        else:
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
+                            )
+        
+        # check the RB torsion file
+        with open("RB_torsion_k_constants_fit_energy.txt", "r") as fp:
+            number_sig_i = 4
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                split_line_i = line.split()
+                correct_line_values = [
+                    [
+                        "non_zero_k_constants",
+                        "k0_kcal_per_mol",
+                        "k1_kcal_per_mol",
+                        "k2_kcal_per_mol",
+                        "k3_kcal_per_mol",
+                        "k4_kcal_per_mol",
+                        "k5_kcal_per_mol",
+                        "r_squared",
+                    ],
+                    [
+                        str("0_1"),
+                        0.2360902008,
+                        -0.2360902008,
+                        0,
+                        0,
+                        0,
+                        0,
+                        -1.38239818695,
+                    ],
+                    [
+                        str("0_2"),
+                        0.575010099536,
+                        0,
+                        -0.575010099536,
+                        0,
+                        0,
+                        0,
+                        -0.5466365040295,
+                    ],
+                    [
+                        str("0_3"),
+                        0.342932555406,
+                        1.02879766622,
+                        0,
+                        -1.37173022162,
+                        0,
+                        0,
+                        0.538213945525,
+                    ],
+                    [
+                        str("0_4"),
+                        0,
+                        0,
+                        1.70211830456,
+                        0,
+                        -1.70211830456,
+                        0,
+                        -1.70742947963,
+                    ],
+                    [
+                        str("0_1_3"),
+                        0.347413240903,
+                        0.988471736541,
+                        0,
+                        -1.33588497744,
+                        0,
+                        0,
+                        0.541330329235,
+                    ],
+                    [
+                        str("0_2_4"),
+                        0.524381976042,
+                        0,
+                        -0.22061329057,
+                        0,
+                        -0.303768685472,
+                        0,
+                        -0.521769037912,
+                    ],
+                    [
+                        str("0_3_4"),
+                        0.361961112674,
+                        1.08588333802,
+                        -0.228342916098,
+                        -1.4478444507,
+                        0.228342916098,
+                        0,
+                        0.552265364726,
+                    ],
+                    [
+                        str("0_1_2"),
+                        0.548358211495,
+                        -0.07995629664,
+                        -0.468401914855,
+                        0,
+                        0,
+                        0,
+                        -0.436373505711,
+                    ],
+                    [
+                        str("0_1_2_3"),
+                        0.491143120047,
+                        0.892649132062,
+                        -0.239549950189,
+                        -1.14424230192,
+                        0,
+                        0,
+                        0.749172728898,
+                    ],
+                    [
+                        str("0_1_2_3_4"),
+                        0.583980351926,
+                        0.939067124611,
+                        -0.935830118337,
+                        -1.2370791134,
+                        0.649861755196,
+                        0,
+                        0.836970467538,
+                    ],
+                ]
+
+                if i == 0:
+                    assert split_line_i == correct_line_values[i]
+
+                else:
+                    assert len(split_line_i) == len(correct_line_values[i])
+                    for j in range(0, len(correct_line_values[i])):
+                        # check the string listing what cosin powers are used
+                        if j == 0:
+                            assert str(split_line_i[j]) == str(
+                                correct_line_values[i][j]
+                            )
+
+                        # check the k-values and the r-squared fit
+                        else:
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
+                            )
+                         
+    def test_gaussian_style_files_fit_trappe_ua_fit_CT_CT_CT_CT_in_butane_files(
         self,
     ):
         fit_dihedral_with_gomc(
@@ -7150,6 +8476,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
+   
 
     def test_gaussian_style_files_fit_mia_ua_fit_CT_CT_CT_CT_in_butane_files(
         self,
@@ -7818,8 +9145,8 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-
-    def test_gaussian_style_files_fit_amber_fit_CT_CT_CT_CT_in_butane_files(
+    
+    def test_gaussian_style_files_fit_exp6_fit_CT_CT_CT_CT_in_butane_files(
         self,
     ):
         fit_dihedral_with_gomc(

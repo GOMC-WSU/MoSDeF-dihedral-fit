@@ -52,7 +52,7 @@ Install `GOMC <https://gomc-wsu.org/>`_
     $ # The above line creates a symlink that should be findable for the gomc_binary_directory
 
 .. note::
-   GOMC will also be removed when the mosdef_dihedral_fit environment is removed. The installation can be placed anywhere though, that path will just have to manually be passed for the variable gomc_binary_directory.
+   The GOMC binary will be accessible when you activate the **mosdef_dihedral_fit** conda enviornment.  GOMC will also be removed when the **mosdef_dihedral_fit** environment is removed. The installation can be placed anywhere though, that path will just have to manually be passed for the variable **gomc_binary_directory**.
 
 Install pre-commit
 ------------------

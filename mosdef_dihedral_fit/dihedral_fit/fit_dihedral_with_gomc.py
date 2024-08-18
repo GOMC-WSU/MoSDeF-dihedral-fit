@@ -71,13 +71,15 @@ def fit_dihedral_with_gomc(
     NOTE: The OPLS dihedral equation
 
     .. math::
-    opls_dihedral_n_1 &= 1/2 *(
-        &= k0
-        &= + k1 * (1 + cos(1 * phi))
-        &= + k2 * (1 - cos(2 * phi))
-        &= + k3 * (1 + cos(3 * phi))
-        &= + k4 * (1 - cos(4 * phi))
-        &= )
+        U_{opls-dihedral} = 1/2 * (
+        k0 + k1 * (1 + cos[1 * phi])
+        + k2 * (1 - cos[2 * phi])
+
+    .. math::
+        + k3 * (1 + cos[3 * phi])
+        + k4 * (1 - cos[4 * phi])
+        )
+
 
     Parameters
     ----------
