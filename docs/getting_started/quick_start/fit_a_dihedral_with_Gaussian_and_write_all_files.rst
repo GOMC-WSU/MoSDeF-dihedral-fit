@@ -44,7 +44,7 @@ Import the required packages.
 .. code:: ipython3
 
     import unyt as u
-    #from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import fit_dihedral_with_gomc
+    from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import fit_dihedral_with_gomc
     import os
 
 Select the desired variables, file, and set the temperature.
