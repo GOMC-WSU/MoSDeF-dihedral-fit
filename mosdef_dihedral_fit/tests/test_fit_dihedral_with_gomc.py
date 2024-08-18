@@ -19,7 +19,7 @@ from mosdef_dihedral_fit.tests.base_test import BaseTest
 gomc_binary_directory = ""
 # User changable variable, if the binary is not in the environment variable "PATH"
 # Examples
-gomc_binary_directory = "/home/brad/Programs/GOMC/GOMC-2.75a/bin"
+# gomc_binary_directory = "/home/brad/Programs/GOMC/GOMC-2.75a/bin"
 # gomc_binary_directory = "/Users/calcraven/Documents/Vanderbilt/Research/MoSDeF/Dihedral_Fitter/GOMC/bin"
 if gomc_binary_directory == "":
     gomc_binary_directory = subprocess.check_output(
