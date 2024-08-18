@@ -1,6 +1,6 @@
 ================================
 How to Contribute to the Project
-=================================
+================================
 
 We welcome contributions to our project, whether it's adding a feature, fixing a bug, or improving documentation. The process is straightforward:
 
