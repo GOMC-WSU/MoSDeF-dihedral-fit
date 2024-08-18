@@ -661,7 +661,7 @@ class TestFitDihedralWithGomc(BaseTest):
                             ) == mdf_math.round_to_sig_figs(
                                 correct_line_values[i][j], number_sig_i
                             )
-    
+
     def test_gaussian_log_file_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH(
         self,
     ):
@@ -5025,7 +5025,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 r_squared_rtol=2,
                 opls_force_k0_zero=True,
             )
-    
+
     def test_error_r_squared_min_and_r_squared_rtol_need_adjusted(
         self,
     ):
@@ -5085,7 +5085,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 r_squared_min=0.99,
                 r_squared_rtol=0.0000002,
             )
-    
+
     def test_warning_r_squared_min_and_r_squared_rtol_need_adjusted(
         self,
     ):
@@ -5136,7 +5136,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 r_squared_min=0.98,
                 r_squared_rtol=0.015,
             )
-    
+
     def test_gaussian_log_file_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH_in_mie_form(
         self,
     ):
@@ -5803,7 +5803,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-    
+
     def test_gaussian_style_files_fit_amber_aa_fit_CT_CT_CT_CT_in_butane_files(
         self,
     ):
@@ -5970,7 +5970,15 @@ class TestFitDihedralWithGomc(BaseTest):
                     [str("1"), 0, 0.4721804016, 0, 0, 0, -1.38239818695],
                     [str("2"), 0, 0, 0.575010099536, 0, 0, -0.546636504029],
                     [str("3"), 0, 0, 0, 0.685865110811, 0, 0.538213945525],
-                    [str("4"), 0.549332597925, 0, 0, 0, -0.274666298962, -1.1033603631],
+                    [
+                        str("4"),
+                        0.549332597925,
+                        0,
+                        0,
+                        0,
+                        -0.274666298962,
+                        -1.1033603631,
+                    ],
                     [
                         str("1_3"),
                         0,
@@ -6014,7 +6022,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         0.239549950189,
                         0.57212115096,
                         0,
-                        0.749172728898 ,
+                        0.749172728898,
                     ],
                     [
                         str("1_2_3_4"),
@@ -6051,7 +6059,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-        
+
         # check the periodic dihedral file
         with open("periodic_dihedral_k_constants_fit_energy.txt", "r") as fp:
             number_sig_i = 4
@@ -6471,12 +6479,12 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-    
+
     def test_gaussian_style_files_fit_amber_aa_all_unique_fit_CT_CT_CT_CT_in_butane_files(
         self,
     ):
         fit_dihedral_with_gomc(
-            ['CT1', 'CT0', 'CT0', 'CT1'],
+            ["CT1", "CT0", "CT0", "CT1"],
             self.get_fn(
                 "gaussian_style_output_files/CT_CT_CT_CT/input/starting_coords/butane_aa.mol2"
             ),
@@ -6638,7 +6646,15 @@ class TestFitDihedralWithGomc(BaseTest):
                     [str("1"), 0, 0.4721804016, 0, 0, 0, -1.38239818695],
                     [str("2"), 0, 0, 0.575010099536, 0, 0, -0.546636504029],
                     [str("3"), 0, 0, 0, 0.685865110811, 0, 0.538213945525],
-                    [str("4"), 0.549332597925, 0, 0, 0, -0.274666298962, -1.1033603631],
+                    [
+                        str("4"),
+                        0.549332597925,
+                        0,
+                        0,
+                        0,
+                        -0.274666298962,
+                        -1.1033603631,
+                    ],
                     [
                         str("1_3"),
                         0,
@@ -6682,7 +6698,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         0.239549950189,
                         0.57212115096,
                         0,
-                        0.749172728898 ,
+                        0.749172728898,
                     ],
                     [
                         str("1_2_3_4"),
@@ -6719,7 +6735,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-        
+
         # check the periodic dihedral file
         with open("periodic_dihedral_k_constants_fit_energy.txt", "r") as fp:
             number_sig_i = 4
@@ -7350,7 +7366,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         0.239549950189,
                         0.57212115096,
                         0,
-                        0.749172728898 ,
+                        0.749172728898,
                     ],
                     [
                         str("1_2_3_4"),
@@ -7388,7 +7404,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-        
+
         # check the periodic dihedral file
         with open("periodic_dihedral_k_constants_fit_energy.txt", "r") as fp:
             number_sig_i = 4
@@ -7664,7 +7680,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-        
+
         # check the RB torsion file
         with open("RB_torsion_k_constants_fit_energy.txt", "r") as fp:
             number_sig_i = 4
@@ -7808,7 +7824,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-                         
+
     def test_gaussian_style_files_fit_trappe_ua_fit_CT_CT_CT_CT_in_butane_files(
         self,
     ):
@@ -8476,7 +8492,6 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-   
 
     def test_gaussian_style_files_fit_mia_ua_fit_CT_CT_CT_CT_in_butane_files(
         self,
@@ -9145,7 +9160,7 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-    
+
     def test_gaussian_style_files_fit_exp6_fit_CT_CT_CT_CT_in_butane_files(
         self,
     ):
