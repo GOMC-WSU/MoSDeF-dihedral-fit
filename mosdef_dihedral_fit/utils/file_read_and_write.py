@@ -50,10 +50,11 @@ def get_atom_names_and_elements_from_mol2(mol2_directory_and_filename):
                 get_atom_type_bool = True
 
     if len(atom_name_list) == 0 or len(element_name_list) == 0:
-        raise TypeError(
+        error_message = (
             "ERROR: The provided mol2 format is not the required VMD TRIPOS format "
             "or the mol2 file has zero (0) atoms or beads in it."
         )
+        raise TypeError(error_message)
 
     return [atom_name_list, element_name_list]
 
