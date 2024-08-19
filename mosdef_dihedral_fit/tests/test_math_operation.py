@@ -454,9 +454,21 @@ class TestMathOperations(BaseTest):
     # test the dihedral_angle (END)
     # ********************************************
 
-    def test_check_previous_qu_values_match():
-        # Without error
-        all_value_list = [1, 2, 3, 4, 5]
-        current_value = [1, 2, 3, 4, 5]
+    # ********************************************
+    # test the mdf_math.check_previous_qm_values_match (START)
+    # ********************************************
 
+    def test_check_previous_qm_values_match(self):
+        # Without error
+        all_value_list = [[1], [2], [3]]
+
+        check_return = mdf_math.check_previous_qm_values_match(
+            all_value_list, [3], "value_names", "qm_engine", "log_file"
+        )
         # With error
+        with pytest.raises(
+            ValueError,
+        ):
+            check_return = mdf_math.check_previous_qm_values_match(
+                all_value_list, [4], "value_names", "qm_engine", "log_file"
+            )
