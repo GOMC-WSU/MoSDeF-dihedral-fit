@@ -24,7 +24,7 @@ fit_dihedral_with_gomc(
         gomc_cpu_cores=1,
         r_squared_min=0.99,
         r_squared_rtol=1e-03,
-        opls_set_k0_zero=True
+        opls_force_k0_zero=True
     )
 import os
 os.system("cat RB_torsion_k_constants_fit_energy.txt")
@@ -37,14 +37,25 @@ os.system("cat periodic_torsion_k_constants_fit_energy.txt")
     - "opls_all_summed_dihedrals_k_constants_figure.pdf"
 
 
-## Installation/Setup
-```
-conda install -c conda-forge mosdef-dihedral-fit
-git clone https://github.com/GOMC-WSU/GOMC.git
+## Quick Installation/Setup
+
+**Note the mamba is used as a drop-in replacement for conda in the below installation, but conda works as well.**
+```bash
+mamba install -c conda-forge mosdef-dihedral-fit
+conda activate mosdef-dihedral-fit
+cd $CONDA_PREFIX
+git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a
 cd GOMC
-chmod u+x metamake.sh
+chmod u+x metamake.sh NVT
 ./metamake.sh
+ln -s $CONDA_PREFIX/GOMC/bin/GOMC_CPU_NVT $CONDA_PREFIX/bin
 ```
+
+GOMC will also be removed when the mosdef_dihedral_fit environment is removed. The installation can be placed anywhere though, that path will just have to manually be passed for the variable gomc_binary_directory.
+
+#### More setup information
+For more complete setup information see the [full installation documentation](https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/blob/main/docs/getting_started/installation/installation.rst#installation)
+
 
 ## Documentation
 

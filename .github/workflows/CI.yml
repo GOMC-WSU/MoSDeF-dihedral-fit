@@ -41,16 +41,7 @@ jobs:
         run: which python
 
       - name: change permission on GOMC make file and run it
-        run: cd /opt/gomc_build/GOMC/ && sudo chmod u+x metamake.sh  && sudo ./metamake.sh
-
-      - name: Add space to bashrc file
-        run: echo "" >> ~/.bashrc
-
-      - name: Add GOMC header to bashrc file
-        run: echo "# Add the GOMC binary files to the path" >> ~/.bashrc
-
-      - name: Add GOMC path to bashrc file
-        run: echo "export PATH=/opt/gomc_build/GOMC/bin${PATH:+:${PATH}}" >> ~/.bashrc
+        run: cd /opt/gomc_build/GOMC/ && sudo chmod u+x metamake.sh  && sudo ./metamake.sh NVT
 
       - name: Checkout Branch / Pull Request
         uses: actions/checkout@v3
@@ -64,6 +55,9 @@ jobs:
 
       - name: Install Package
         run: python -m pip install -e .
+
+      - name: Add GOMC path as symlink to conda bin
+        run: sudo ln -s /opt/gomc_build/GOMC/bin/GOMC_CPU_NVT $CONDA_PREFIX/bin
 
       - name: Test (OS -> ${{ matrix.os }} / Python -> ${{ matrix.python-version }})
         run: python -m pytest -v --cov=mosdef_dihedral_fit --cov-report=xml --cov-append --cov-config=setup.cfg --color yes --pyargs mosdef_dihedral_fit

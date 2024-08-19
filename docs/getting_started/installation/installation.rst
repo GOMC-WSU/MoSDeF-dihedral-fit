@@ -37,6 +37,22 @@ ensure all of the dependencies are installed::
     If ``Windows`` is being used, you need to use a virtual machine or the ``Linux`` subsystem,
     since some parts of this software or its dependencies could not be compatible with ``Windows``.
 
+Install `GOMC <https://gomc-wsu.org/>`_
+-----------------------------------------------------------------------------
+::
+
+    $ pip install cmake
+    $ conda activate mosdef_dihedral_fit # make sure this has been installed above
+    $ cd $CONDA_PREFIX
+    $ git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a
+    $ cd GOMC
+    $ chmod u+x metamake.sh
+    $ ./metamake.sh NVT
+    $ ln -s $CONDA_PREFIX/GOMC/bin/GOMC_CPU_NVT $CONDA_PREFIX/bin
+    $ # The above line creates a symlink that should be findable for the gomc_binary_directory
+
+.. note::
+   The GOMC binary will be accessible when you activate the **mosdef_dihedral_fit** conda enviornment.  GOMC will also be removed when the **mosdef_dihedral_fit** environment is removed. The installation can be placed anywhere though, that path will just have to manually be passed for the variable **gomc_binary_directory**.
 
 Install pre-commit
 ------------------
