@@ -107,6 +107,14 @@ class TestFileReading(BaseTest):
             "H",
             "H",
         ]
+        error_fn = "with_errors/CT_CT_C_3_OH_with_errors.pdb"
+        full_error_fn = self.get_fn(error_fn)
+        error_msg = (
+            "ERROR: The provided pdb format is not the required PDB format "
+            "or the pdb file has zero \(0\) atoms or beads in it."
+        )
+        with pytest.raises(TypeError, match=error_msg):
+            get_atom_names_and_elements_from_pdb(full_error_fn)
 
     def test_write_xyz_file_from_gaussian(self):
         atom_namesList = [
