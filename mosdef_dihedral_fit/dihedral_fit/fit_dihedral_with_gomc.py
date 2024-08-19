@@ -541,7 +541,7 @@ def fit_dihedral_with_gomc(
     extension_ff_name = os.path.splitext(mol2_file)[-1]
     if extension_ff_name != ".mol2":
         raise ValueError(
-            "ERROR: Please enter enter mol2 file ('mol2_file') name with the .mol2 extension."
+            "ERROR: Please enter mol2 file ('mol2_file') name with the .mol2 extension."
         )
 
     if not os.path.exists(mol2_file):
@@ -558,7 +558,7 @@ def fit_dihedral_with_gomc(
     extension_ff_name = os.path.splitext(forcefield_file)[-1]
     if extension_ff_name != ".xml":
         raise ValueError(
-            "ERROR: Please enter enter xml file ('forcefield_file') name with the .xml extension."
+            "ERROR: Please enter xml file ('forcefield_file') name with the .xml extension."
         )
 
     if not os.path.exists(forcefield_file):

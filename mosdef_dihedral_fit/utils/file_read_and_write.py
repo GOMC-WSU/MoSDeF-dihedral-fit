@@ -1,8 +1,5 @@
 import os
 import shutil
-import subprocess
-import warnings
-from warnings import warn
 
 import numpy as np
 import vmd
@@ -53,10 +50,11 @@ def get_atom_names_and_elements_from_mol2(mol2_directory_and_filename):
                 get_atom_type_bool = True
 
     if len(atom_name_list) == 0 or len(element_name_list) == 0:
-        raise TypeError(
+        error_message = (
             "ERROR: The provided mol2 format is not the required VMD TRIPOS format "
             "or the mol2 file has zero (0) atoms or beads in it."
         )
+        raise TypeError(error_message)
 
     return [atom_name_list, element_name_list]
 
@@ -111,13 +109,16 @@ def get_atom_names_and_elements_from_pdb(pdb_directory_and_filename):
                     if element_name_str_space_iter != " ":
                         element_name_j += element_name_str_space_iter
 
-                atom_name_list.append(atom_name_j)
-                element_name_list.append(element_name_j)
+                if atom_name_j != "":
+                    atom_name_list.append(atom_name_j)
+                if element_name_j != "":
+                    element_name_list.append(element_name_j)
 
             if len(split_line_m) > 0 and str(split_line_m[0]) in ["CRYST1"]:
                 get_atom_type_bool = True
 
-    if len(atom_name_list) == 0:
+    print(element_name_list)
+    if len(element_name_list) == 0:
         raise TypeError(
             "ERROR: The provided pdb format is not the required PDB format "
             "or the pdb file has zero (0) atoms or beads in it."

@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+import pytest
 import unyt as u
 
 import mosdef_dihedral_fit.utils.math_operations as mdf_math
@@ -63,6 +64,15 @@ class TestFileReading(BaseTest):
             "H",
         ]
 
+        error_fn = "with_errors/CT_CT_C_3_OH_with_errors.mol2"
+        full_error_fn = self.get_fn(error_fn)
+        error_msg = (
+            "ERROR: The provided mol2 format is not the required VMD TRIPOS format "
+            "or the mol2 file has zero \(0\) atoms or beads in it."
+        )
+        with pytest.raises(TypeError, match=error_msg):
+            get_atom_names_and_elements_from_mol2(full_error_fn)
+
     def test_get_from_pdb(self):
         fn = "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.pdb"
         full_fn = self.get_fn(fn)
@@ -97,6 +107,14 @@ class TestFileReading(BaseTest):
             "H",
             "H",
         ]
+        error_fn = "with_errors/CT_CT_C_3_OH_with_errors.pdb"
+        full_error_fn = self.get_fn(error_fn)
+        error_msg = (
+            "ERROR: The provided pdb format is not the required PDB format "
+            "or the pdb file has zero \(0\) atoms or beads in it."
+        )
+        with pytest.raises(TypeError, match=error_msg):
+            get_atom_names_and_elements_from_pdb(full_error_fn)
 
     def test_write_xyz_file_from_gaussian(self):
         atom_namesList = [

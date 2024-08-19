@@ -3,7 +3,6 @@ import pytest
 
 import mosdef_dihedral_fit.utils.math_operations as mdf_math
 from mosdef_dihedral_fit.tests.base_test import BaseTest
-from mosdef_dihedral_fit.utils.io import get_mosdef_dihedral_fit_fn
 
 
 class TestMathOperations(BaseTest):
@@ -12,6 +11,8 @@ class TestMathOperations(BaseTest):
     # ********************************************
 
     def test_round_to_sig_figs(self):
+        assert mdf_math.round_to_sig_figs(0) == 0
+
         test_sigfig_input_value = 122.283638245
         expected_values = [
             0.0,
@@ -162,12 +163,12 @@ class TestMathOperations(BaseTest):
 
     def test_angle_between_2_vectors_errors(self):
         # Error 1
-        with pytest.raises(
-            ValueError,
-            match=f"ERROR: The 'vector_1' or 'vector_2', and  |vector_1||vector_2| == 0, which means the \n"
+        error_message = (
+            f"ERROR: The 'vector_1' or 'vector_2', and  |vector_1||vector_2| == 0, which means the \n"
             f"angle can not be calculated due to the divisor being zero in the formula; \n"
-            f"angle = arccos\[\(vector_1 dot vector_2\)/\(|vector_1||vector_2|\)\]",
-        ):
+            f"angle = arccos\[\(vector_1 dot vector_2\)/\(|vector_1||vector_2|\)\]"
+        )
+        with pytest.raises(ValueError, match=error_message):
             test_vector_1_input_value = [0, 0, 0]
             test_vector_2_input_value = [1, 1, 1]
             test_return_value = mdf_math.angle_between_2_vectors(
@@ -175,12 +176,7 @@ class TestMathOperations(BaseTest):
             )
 
         # Error 2
-        with pytest.raises(
-            ValueError,
-            match=f"ERROR: The 'vector_1' or 'vector_2', and  |vector_1||vector_2| == 0, which means the \n"
-            f"angle can not be calculated due to the divisor being zero in the formula; \n"
-            f"angle = arccos\[\(vector_1 dot vector_2\)/\(|vector_1||vector_2|\)\]",
-        ):
+        with pytest.raises(ValueError, match=error_message):
             test_vector_1_input_value = [1, 1, 1]
             test_vector_2_input_value = [0, 0, 0]
             test_return_value = mdf_math.angle_between_2_vectors(
@@ -457,3 +453,28 @@ class TestMathOperations(BaseTest):
     # ********************************************
     # test the dihedral_angle (END)
     # ********************************************
+
+    # ********************************************
+    # test the mdf_math.check_previous_qm_values_match (START)
+    # ********************************************
+
+    def test_check_previous_qm_values_match(self):
+        # Without error
+        all_value_list = [[1], [2], [3]]
+        check_return = mdf_math.check_previous_qm_values_match(
+            all_value_list, [3], "value_names", "qm_engine", "log_file"
+        )
+        # With error
+        msg = (
+            f"ERROR: The qm_engine log file 'log_file' does not have the same "
+            f"value_name = [4], "
+            f"as other previous entries = [3]. "
+            f"The molecule or property may not be the same in the multiple qm_engine log files, "
+            f"but this may be be desired by the user to obtain a more general dihedral fit."
+        )
+        with pytest.raises(
+            ValueError,
+        ):
+            check_return = mdf_math.check_previous_qm_values_match(
+                all_value_list, [4], "value_name", "qm_engine", "log_file"
+            )
