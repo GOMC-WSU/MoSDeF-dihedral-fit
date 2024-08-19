@@ -461,14 +461,20 @@ class TestMathOperations(BaseTest):
     def test_check_previous_qm_values_match(self):
         # Without error
         all_value_list = [[1], [2], [3]]
-
         check_return = mdf_math.check_previous_qm_values_match(
             all_value_list, [3], "value_names", "qm_engine", "log_file"
         )
         # With error
+        msg = (
+            f"ERROR: The qm_engine log file 'log_file' does not have the same "
+            f"value_name = [4], "
+            f"as other previous entries = [3]. "
+            f"The molecule or property may not be the same in the multiple qm_engine log files, "
+            f"but this may be be desired by the user to obtain a more general dihedral fit."
+        )
         with pytest.raises(
             ValueError,
         ):
             check_return = mdf_math.check_previous_qm_values_match(
-                all_value_list, [4], "value_names", "qm_engine", "log_file"
+                all_value_list, [4], "value_name", "qm_engine", "log_file"
             )
