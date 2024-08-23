@@ -1,13 +1,8 @@
 import os
-
 import numpy as np
 import pytest
-import unyt as u
 
 import mosdef_dihedral_fit.utils.math_operations as mdf_math
-from mosdef_dihedral_fit.dihedral_fit.fit_dihedral_with_gomc import (
-    fit_dihedral_with_gomc,
-)
 from mosdef_dihedral_fit.tests.base_test import BaseTest
 from mosdef_dihedral_fit.utils.file_read_and_write import (
     change_gomc_ff_file_dihedral_values,

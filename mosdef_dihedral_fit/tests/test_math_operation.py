@@ -856,7 +856,7 @@ class TestMathOperations(BaseTest):
     # ********************************************
     # test the mdf_math.check_previous_qm_values_match (START)
     # ********************************************
-    """
+
     def test_check_previous_qm_values_match(self):
         # Without error
         all_value_list = [[1], [2], [3]]
@@ -877,4 +877,4 @@ class TestMathOperations(BaseTest):
             check_return = mdf_math.check_previous_qm_values_match(
                 all_value_list, [4], "value_name", "qm_engine", "log_file"
             )
-    """
+
