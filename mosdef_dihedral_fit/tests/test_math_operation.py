@@ -877,4 +877,3 @@ class TestMathOperations(BaseTest):
             check_return = mdf_math.check_previous_qm_values_match(
                 all_value_list, [4], "value_name", "qm_engine", "log_file"
             )
-
