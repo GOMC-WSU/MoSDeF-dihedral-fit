@@ -19,4 +19,3 @@ Fit a Dihedral
 		:members: fit_dihedral_with_gomc
 
 		
-

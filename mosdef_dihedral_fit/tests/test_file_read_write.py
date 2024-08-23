@@ -276,7 +276,7 @@ class TestFileReading(BaseTest):
         out_indices = []
         write_qm_data_files({full_path: out_indices})
         assert os.path.exists("extracted_gaussian_data/dihedral.txt")
-    
+
     def test_get_matching_dihedral_info_and_opls_fitting_data(self):
         out = get_matching_dihedral_info_and_opls_fitting_data(
             fit_dihedral_atom_types=["HC", "CT", "CT", "HC"],
@@ -304,7 +304,7 @@ class TestFileReading(BaseTest):
             [4, 1, 2, 8],
             [5, 1, 2, 6],
             [5, 1, 2, 7],
-            [5, 1, 2, 8]
+            [5, 1, 2, 8],
         ]
         assert dihedral_numsList == expected_dihedralnumsList
 
@@ -327,7 +327,7 @@ class TestFileReading(BaseTest):
             [-1.012159, 1.156346, 0.0],
             [0.0, 0.76376, 0.0],
             [-0.0, -0.76376, 0.0],
-            [1.012159, -1.156346, 0.0]
+            [1.012159, -1.156346, 0.0],
         ]
         assert np.allclose(coordsList[0][0], expected_coords)
         assert np.shape(coordsList) == (37, 9, 4, 3)
@@ -351,10 +351,10 @@ class TestFileReading(BaseTest):
             8.999999999999845,
             8.99999999999938,
             2.780442542871242e-12,
-            8.99999999999753
+            8.99999999999753,
         ]
         assert np.allclose(opls_paramsList[0], expected_opls_params)
-    
+
     def test_change_gomc_ff_file_dihedral_values(self):
         new_file = self.get_fn(
             "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp"
@@ -379,4 +379,3 @@ class TestFileReading(BaseTest):
                     break
 
         assert checkFile
-        

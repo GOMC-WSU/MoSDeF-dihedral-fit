@@ -1,4 +1,5 @@
 import math
+
 import numpy as np
 
 
@@ -37,6 +38,7 @@ def round_to_sig_figs(value, sig_figs=3):
 # dihedral angles calculations
 # (START)
 # **************************************************************
+
 
 def normalize_vector(vector):
     """Generates the normalized vector from a given vector.
@@ -118,10 +120,7 @@ def angle_between_2_vectors(vector_1, vector_2):
 
 
 def dihedral_angle(
-    atom_xyz_coord_1,
-    atom_xyz_coord_2,
-    atom_xyz_coord_3,
-    atom_xyz_coord_4
+    atom_xyz_coord_1, atom_xyz_coord_2, atom_xyz_coord_3, atom_xyz_coord_4
 ):
     """Gets the dihedral angle between the four (4) atom coordinates given in cartesian coordinates.
 
@@ -147,23 +146,21 @@ def dihedral_angle(
     dihedral_angle_degrees: float (in degrees)
         The dihedral angle, in degrees, between the four (4) atoms.
     """
-    # check if any atom coordinates are 3 ints or floats in lists 
-    if  (
-        ( 
-            not isinstance(atom_xyz_coord_1, list)  
-            or not isinstance(atom_xyz_coord_2, list) 
+    # check if any atom coordinates are 3 ints or floats in lists
+    if (
+        (
+            not isinstance(atom_xyz_coord_1, list)
+            or not isinstance(atom_xyz_coord_2, list)
             or not isinstance(atom_xyz_coord_3, list)
             or not isinstance(atom_xyz_coord_4, list)
-        ) 
-        or
-        (
+        )
+        or (
             len(atom_xyz_coord_1) != 3
             or len(atom_xyz_coord_2) != 3
             or len(atom_xyz_coord_3) != 3
             or len(atom_xyz_coord_4) != 3
         )
-        or 
-        ( 
+        or (
             not isinstance(atom_xyz_coord_1[0], (int, float))
             or not isinstance(atom_xyz_coord_1[1], (int, float))
             or not isinstance(atom_xyz_coord_1[2], (int, float))
@@ -259,6 +256,7 @@ def dihedral_angle(
 # (End)
 # **************************************************************
 
+
 def check_previous_qm_values_match(
     all_value_list, current_value, value_name, qm_engine, log_file_name
 ):
@@ -328,7 +326,7 @@ def sum_opls_const_1_plus_or_minus_cos_n_values(phi_list):
     | const_1_minus_Cos_4_phi = sum of the list using all phis [(1 - cos(4 * phi))] in k4 * (1 - cos(4 * phi))
 
     .. note::
-        These values are used to simplify the diheral fitting process, 
+        These values are used to simplify the diheral fitting process,
         allowing the user to deal with four (4) OPLS constants (see below).
 
 
@@ -338,7 +336,7 @@ def sum_opls_const_1_plus_or_minus_cos_n_values(phi_list):
         U_{opls-dihedral} = 1/2 * (
         k0 + k1 * [1 + cos[1 * phi]
         + k2 * [1 - cos[2 * phi]
-    
+
         + k3 * [1 + cos[3 * phi]
         + k4 * [1 - cos[4 * phi]
         )
@@ -349,7 +347,7 @@ def sum_opls_const_1_plus_or_minus_cos_n_values(phi_list):
         U_{opls-dihedral-mod} = 1/2 * (
         k0 + k1 * [const1plusCos1phi]
         + k2 * [const1minusCos2phi]
-    
+
         + k3 * [const1plusCos3phi]
         + k4 * [const1minusCos4phi]
         )
@@ -409,20 +407,20 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
     and the output ' dihedral_energy' energy are output in the same energy units.
 
 
-    .. note:: 
+    .. note::
         THIS WILL FIT THE FORM IT IS FED, REGARDLESS IF IT IS THE CORRECT
         ANALYTICAL SOLUTION.  MEANING SOMETIMES YOU CAN NOT USE A K-VALUE BECAUSE
         OF MOLECULE SYMMETREY. THEREFORE, THIS IS MUST BE ACCOUNTED FOR OUTSIDE
         OF THIS FUNCTION.
 
-    .. note:: 
+    .. note::
         ALL THE K-VALUE ENERGY UNITS MUST BE THE SAME.
 
     .. math::
         U_{opls-dihedral} = 1/2 * (
         k0 + k1 * (1 + cos[1 * phi])
         + k2 * (1 - cos[2 * phi])
- 
+
     .. math::
         + k3 * (1 + cos[3 * phi])
         + k4 * (1 - cos[4 * phi])
@@ -952,10 +950,10 @@ def periodic_dihedral_n_1_2_3_4_5(
     .. note::
         ALL THE K_x-VALUE ENERGY UNITS MUST BE THE SAME.
 
-        
+
     .. note::
         All the K_x, n_x, and d_x x-values are a pair (i.e., K_1, n_1, and d_1)
-        
+
 
     .. math::
         U_{periodic-dihedral} = K_0 * (1 + cos[n_0*t - d_0])
@@ -966,7 +964,7 @@ def periodic_dihedral_n_1_2_3_4_5(
 
         + K_5 * (1 + cos[n_5*t - d_5])
 
-        
+
     Parameters
     ----------
     phi_data: float, int, or list of floats/int, in degrees
@@ -1008,21 +1006,21 @@ def RB_torsion_n_1_2_3_4_5(phi_data, k_0, k_1, k_2, k_3, k_4, k_5):
     This is the Ryckaert-Bellemans (RB) torsion style energy calculation.
 
     This is the Ryckaert-Bellemans (RB) torsion style energy calculation.
-    
+
     The K_x-values are in energy units (i.e., kcal/mol, kJ/mol, Kelvin, ...),
-    
+
     and the output 'dihedral_energy' energy are output in the same energy units.
 
-    .. note:: 
+    .. note::
         ALL THE k_x-VALUE ENERGY UNITS MUST BE THE SAME.
-        
+
     .. math::
-        U_{RB-torsions} = k_0 + k_1*cos(psi) 
-        
-        + k_2*cos(psi)^2 + k_3*cos(psi)^3 
-        
+        U_{RB-torsions} = k_0 + k_1*cos(psi)
+
+        + k_2*cos(psi)^2 + k_3*cos(psi)^3
+
         + k_4*cos(psi)^4 + k_5*cos(psi)^5
-        
+
     Parameters
     ----------
     phi_data: float, int, or list of floats/int, in degrees
@@ -1070,7 +1068,7 @@ def opls_dihedral_n_1_2_3_4(phi_data, k_0, k_1, k_2, k_3, k_4):
         U_{opls-dihedral} = 1/2 * (
         k0 + k1 * (1 + cos[1 * phi])
         + k2 * (1 - cos[2 * phi])
- 
+
     .. math::
         + k3 * (1 + cos[3 * phi])
         + k4 * (1 - cos[4 * phi])

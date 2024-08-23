@@ -162,7 +162,7 @@ def write_xyz_file_from_gaussian_coordinates(
 
     Outputs
     -------
-    Writes the xyz file in the file in the selected 'xyz_files_directory' directory, 
+    Writes the xyz file in the file in the selected 'xyz_files_directory' directory,
     with the file name 'dihedral_coords_position_n.xyz'.
     """
     # check if file extension starts with a "." or not remove for correct insertion later
@@ -232,7 +232,7 @@ def write_restart_coor_from_xyz_file(coor_files_directory, total_qm_scans):
 
     This function utilized VMD to write the restart coor files from the xyz file.
 
-    .. note:: 
+    .. note::
         NAMD or GOMC need to be restarted from the restart coor file to have
         more coordinate precision than the PDB file format provides.
 
@@ -398,7 +398,7 @@ def check_gaussian_optimized_coordinate_file_correct(
 
     This checks the gaussian/Gausview containing the optimized coordinates is formatted correctly.
     | The proper header format for the GausView/Gaussian output is as follows:
-    
+
     | Row	Highlight	Display	Tag	Symbol	X	Y	Z
 
     Parameters
@@ -1191,7 +1191,7 @@ def write_qm_data_files(
         |    Uses all data points from the 'path/gaussian_log_file.log' file, except points
         |    0 and 23. NOTE: Python counting starts at 0.
 
-            
+
         |    qm_engine="gaussian_style_final_files"
 
         |    This is a dictionary comprised of a key (string) of the file paths to the
@@ -1237,12 +1237,12 @@ def write_qm_data_files(
 
         |    Example 2: {'path_to_gaussian_style_final_files': [0, 23]}
         |    Uses all data points from the 'path/gaussian_log_file.log' file, except points
-        |    0 and 23. 
-            
+        |    0 and 23.
+
         |    NOTE: Python counting starts at 0.
 
     manual_dihedral_atom_numbers_list: list of 4 int, default=None
-        .. note:: 
+        .. note::
             Only needed for qm_engine="gaussian_style_final_files"
 
         This is a list of the dihedral atom numbers in order that were used for the dihedral
@@ -1410,7 +1410,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
         do not explictly specify the system bonds.
     qm_log_file_dict: dict, {str: [int, ..., int]}
         qm_engine="gaussian"
-            
+
         |    This is a dictionary comprised of a key (string) of the QM log file path and name,
         |    and a list of integers, which are the QM optimization parameters to remove from
         |    the written data, in order of reading from each file. These can be seen in the
@@ -1422,10 +1422,10 @@ def get_matching_dihedral_info_and_opls_fitting_data(
 
         |    Example 2: {'path/gaussian_log_file.log': [0, 23]}
         |    Uses all data points from the 'path/gaussian_log_file.log' file, except points
-        |    0 and 23.  
-            
+        |    0 and 23.
+
         |    NOTE: Python counting starts at 0.
-            
+
 
         qm_engine="gaussian_style_final_files"
 
@@ -1435,7 +1435,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
         |    from each folder. These can be seen in the order of the dictionary file name (strings).
         |    These removed parameters allow users to remove any bad or repeated data points
         |    for the QM log file when needed.
-            
+
         |    NOTE: The energy and dihedral angle file in this directory need to be
         |    named 'dihedral.txt' for the energy and dihedral angle values (one 1 per directory).
 
@@ -1471,7 +1471,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
         The list length is the number of dihedrals which match the QM scanned atom/bead types,
         with the nested list has four (4) integers
 
-    matching_dihedral_types_by_atom_type_list: nested list 
+    matching_dihedral_types_by_atom_type_list: nested list
         A list of the four atom numbers that match the selected
         'fit_dihedral_atom_types', extracted from the PSF file, including the dihedral being fit.
 
@@ -1524,7 +1524,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
         const_1_plus_Cos_3_phi,
         const_1_minus_Cos_4_phi
         ]
-        
+
         | Example 0:
         | const_1_minus_Cos_0_phi  = 0 , since k0 is not used in this form
 
