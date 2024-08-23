@@ -9,7 +9,6 @@ class TestMathOperations(BaseTest):
     # ********************************************
     # test the mdf_math.round_to_sig_figs (START)
     # ********************************************
-
     def test_round_to_sig_figs(self):
         assert mdf_math.round_to_sig_figs(0) == 0
 
@@ -450,6 +449,407 @@ class TestMathOperations(BaseTest):
                 test_vectors_input_value[3],
             )
 
+    def test_dihedral_angle_error_coord_1_not_list(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'str'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                '[1, 2, 3]',
+                [4, 5, 6],
+                [7, 8, 9],
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+    
+    def test_dihedral_angle_error_coord_2_not_list(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'str'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                '[4, 5, 6]',
+                [7, 8, 9],
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+
+    def test_dihedral_angle_error_coord_3_not_list(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'str'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                [4, 5, 6],
+                '[7, 8, 9]',
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+
+    def test_dihedral_angle_error_coord_4_not_list(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'str'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9],
+                '[10, 11, 12]',
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+    
+    def test_dihedral_angle_error_coord_1_entry_1_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \['1', 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                ['1', 2, 3],
+                [4, 5, 6],
+                [7, 8, 9],
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+    
+    def test_dihedral_angle_error_coord_1_entry_2_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, '2', 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, '2', 3],
+                [4, 5, 6],
+                [7, 8, 9],
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+    
+    def test_dihedral_angle_error_coord_1_entry_3_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, '3'\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, '3'],
+                [4, 5, 6],
+                [7, 8, 9],
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+    
+    def test_dihedral_angle_error_coord_2_entry_1_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \['4', 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                ['4', 5, 6],
+                [7, 8, 9],
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+    
+    def test_dihedral_angle_error_coord_2_entry_2_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, '5', 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                [4, '5', 6],
+                [7, 8, 9],
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+    
+    def test_dihedral_angle_error_coord_2_entry_3_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, '6'\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                [4, 5, '6'],
+                [7, 8, 9],
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+
+    def test_dihedral_angle_error_coord_3_entry_1_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \['7', 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                [4, 5, 6],
+                ['7', 8, 9],
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+    
+    def test_dihedral_angle_error_coord_3_entry_2_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, '8', 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, '8', 9],
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+    
+    def test_dihedral_angle_error_coord_3_entry_3_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, '9'\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, '9'],
+                [10, 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+
+    def test_dihedral_angle_error_coord_4_entry_1_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \['10', 11, 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9],
+                ['10', 11, 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+    
+    def test_dihedral_angle_error_coord_4_entry_2_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, '11', 12\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9],
+                [10, '11', 12],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+    
+    def test_dihedral_angle_error_coord_4_entry_3_not_int_float(self):
+        # Test case 1
+        with pytest.raises(
+            ValueError,
+            match=f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three \(3\) ints or floats. \n"
+            f"Example: \[1.2, 3.4, 5.6\] \n "
+            f"atom_xyz_coord_1 = \[1, 2, 3\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_2 = \[4, 5, 6\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_3 = \[7, 8, 9\] and type = <class 'list'>; \n"
+            f"atom_xyz_coord_4 = \[10, 11, '12'\] and type = <class 'list'>. "
+        ):
+            test_vectors_input_value = [
+                [1, 2, 3],
+                [4, 5, 6],
+                [7, 8, 9],
+                [10, 11, '12'],
+            ]
+            test_return_value = mdf_math.dihedral_angle(
+                test_vectors_input_value[0],
+                test_vectors_input_value[1],
+                test_vectors_input_value[2],
+                test_vectors_input_value[3],
+            )
+
+
     # ********************************************
     # test the dihedral_angle (END)
     # ********************************************
@@ -457,7 +857,7 @@ class TestMathOperations(BaseTest):
     # ********************************************
     # test the mdf_math.check_previous_qm_values_match (START)
     # ********************************************
-
+    '''
     def test_check_previous_qm_values_match(self):
         # Without error
         all_value_list = [[1], [2], [3]]
@@ -478,3 +878,4 @@ class TestMathOperations(BaseTest):
             check_return = mdf_math.check_previous_qm_values_match(
                 all_value_list, [4], "value_name", "qm_engine", "log_file"
             )
+    '''

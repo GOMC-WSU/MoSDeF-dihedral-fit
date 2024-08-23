@@ -117,6 +117,7 @@ The official VMD web page is http://www.ks.uiuc.edu/Research/vmd
     	:maxdepth: 2
 
     	topic_guides/data_structures
+	topic_guides/secondary_structures
 
 .. toctree::
     	:caption: Reference

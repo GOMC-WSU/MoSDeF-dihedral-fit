@@ -1,5 +1,4 @@
 import math
-
 import numpy as np
 
 
@@ -38,7 +37,6 @@ def round_to_sig_figs(value, sig_figs=3):
 # dihedral angles calculations
 # (START)
 # **************************************************************
-
 
 def normalize_vector(vector):
     """Generates the normalized vector from a given vector.
@@ -123,7 +121,7 @@ def dihedral_angle(
     atom_xyz_coord_1,
     atom_xyz_coord_2,
     atom_xyz_coord_3,
-    atom_xyz_coord_4,
+    atom_xyz_coord_4
 ):
     """Gets the dihedral angle between the four (4) atom coordinates given in cartesian coordinates.
 
@@ -149,6 +147,47 @@ def dihedral_angle(
     dihedral_angle_degrees: float (in degrees)
         The dihedral angle, in degrees, between the four (4) atoms.
     """
+    # check if any atom coordinates are 3 ints or floats in lists 
+    if  (
+        ( 
+            not isinstance(atom_xyz_coord_1, list)  
+            or not isinstance(atom_xyz_coord_2, list) 
+            or not isinstance(atom_xyz_coord_3, list)
+            or not isinstance(atom_xyz_coord_4, list)
+        ) 
+        or
+        (
+            len(atom_xyz_coord_1) != 3
+            or len(atom_xyz_coord_2) != 3
+            or len(atom_xyz_coord_3) != 3
+            or len(atom_xyz_coord_4) != 3
+        )
+        or 
+        ( 
+            not isinstance(atom_xyz_coord_1[0], (int, float))
+            or not isinstance(atom_xyz_coord_1[1], (int, float))
+            or not isinstance(atom_xyz_coord_1[2], (int, float))
+            or not isinstance(atom_xyz_coord_2[0], (int, float))
+            or not isinstance(atom_xyz_coord_2[1], (int, float))
+            or not isinstance(atom_xyz_coord_2[2], (int, float))
+            or not isinstance(atom_xyz_coord_3[0], (int, float))
+            or not isinstance(atom_xyz_coord_3[1], (int, float))
+            or not isinstance(atom_xyz_coord_3[2], (int, float))
+            or not isinstance(atom_xyz_coord_4[0], (int, float))
+            or not isinstance(atom_xyz_coord_4[1], (int, float))
+            or not isinstance(atom_xyz_coord_4[2], (int, float))
+        )
+    ):
+        raise ValueError(
+            f"ERROR: The one or more of the atom coordinates are not in the form of a "
+            f"list with three (3) ints or floats. \n"
+            f"Example: [1.2, 3.4, 5.6] \n "
+            f"atom_xyz_coord_1 = {atom_xyz_coord_1} and type = {type(atom_xyz_coord_1)}; \n"
+            f"atom_xyz_coord_2 = {atom_xyz_coord_2} and type = {type(atom_xyz_coord_2)}; \n"
+            f"atom_xyz_coord_3 = {atom_xyz_coord_3} and type = {type(atom_xyz_coord_3)}; \n"
+            f"atom_xyz_coord_4 = {atom_xyz_coord_4} and type = {type(atom_xyz_coord_4)}. "
+        )
+
     # check if any atom coordinates are the same
     if (
         list(atom_xyz_coord_1) == list(atom_xyz_coord_2)
@@ -220,7 +259,6 @@ def dihedral_angle(
 # (End)
 # **************************************************************
 
-
 def check_previous_qm_values_match(
     all_value_list, current_value, value_name, qm_engine, log_file_name
 ):
@@ -274,43 +312,47 @@ def sum_opls_const_1_plus_or_minus_cos_n_values(phi_list):
     dihedrals of the same atom types/classes exist in the molecule
     that the dihedral is fit too.
 
-    Example 0:
-    const_1_minus_Cos_0_phi  = 1 , since k0 is a constant
+    | Example 0:
+    | const_1_minus_Cos_0_phi  = 1 , since k0 is a constant
 
-    Example 1:
-    const_1_plus_Cos_1_phi  = sum of the list using all phis [(1 + cos(1 * phi))] in k1 * (1 + cos(1 * phi))
+    | Example 1:
+    | const_1_plus_Cos_1_phi  = sum of the list using all phis [(1 + cos(1 * phi))] in k1 * (1 + cos(1 * phi))
 
-    Example 2:
-    const_1_minus_Cos_2_phi = sum of the list using all phis [(1 - cos(2 * phi))] in k2 * (1 - cos(2 * phi))
+    | Example 2:
+    | const_1_minus_Cos_2_phi = sum of the list using all phis [(1 - cos(2 * phi))] in k2 * (1 - cos(2 * phi))
 
-    Example 3:
-    const_1_plus_Cos_3_phi  = sum of the list using all phis [(1 + cos(3 * phi))] in k3 * (1 + cos(3 * phi))
+    | Example 3:
+    | const_1_plus_Cos_3_phi  = sum of the list using all phis [(1 + cos(3 * phi))] in k3 * (1 + cos(3 * phi))
 
-    Example 4:
-    const_1_minus_Cos_4_phi = sum of the list using all phis [(1 - cos(4 * phi))] in k4 * (1 - cos(4 * phi))
+    | Example 4:
+    | const_1_minus_Cos_4_phi = sum of the list using all phis [(1 - cos(4 * phi))] in k4 * (1 - cos(4 * phi))
 
-    NOTE: These values are used to simplify the diheral fitting process,
-    allowing the user to deal with four (4) OPLS constants (see below).
+    .. note::
+        These values are used to simplify the diheral fitting process, 
+        allowing the user to deal with four (4) OPLS constants (see below).
 
 
     Standard OPLS dihedral form
+
     .. math::
-    opls_dihedral &= 1/2 *(
-        &= k0
-        &= + k1 * (1 + cos(1 * phi))
-        &= + k2 * (1 - cos(2 * phi))
-        &= + k3 * (1 + cos(3 * phi))
-        &= + k4 * (1 - cos(4 * phi))
-        &= )
+        U_{opls-dihedral} = 1/2 * (
+        k0 + k1 * [1 + cos[1 * phi]
+        + k2 * [1 - cos[2 * phi]
+    
+        + k3 * [1 + cos[3 * phi]
+        + k4 * [1 - cos[4 * phi]
+        )
 
     Modified OPLS dihedral form for all dihedrals with the same atom types/classes exist in the molecule.
-    opls_dihedral_n_1 &= 1/2 *(
-        &= k0
-        &= + k1 * const_1_plus_Cos_1_phi
-        &= + k2 * const_1_minus_Cos_2_phi
-        &= + k3 * const_1_plus_Cos_3_phi
-        &= + k4 * const_1_minus_Cos_4_phi
-        &= )
+
+    .. math::
+        U_{opls-dihedral-mod} = 1/2 * (
+        k0 + k1 * [const1plusCos1phi]
+        + k2 * [const1minusCos2phi]
+    
+        + k3 * [const1plusCos3phi]
+        + k4 * [const1minusCos4phi]
+        )
 
     Parameters
     ----------
@@ -320,16 +362,16 @@ def sum_opls_const_1_plus_or_minus_cos_n_values(phi_list):
     Returns
     -------
     List of:
-        const_1_minus_Cos_0_phi: float (unitless)
-            This values is always zero, since k0 is not used this standard OPLS form.
-        const_1_plus_Cos_1_phi: float (unitless)
-            The sum of all phi values in the list [(1 - cos(2 * phi))] in k2 * (1 - cos(2 * phi))
-        const_1_minus_Cos_2_phi: float (unitless)
-            The sum of all phi values in the list [(1 - cos(2 * phi))] in k2 * (1 - cos(2 * phi))
-        const_1_plus_Cos_3_phi: float (unitless)
-            The sum of all phi values in the list [(1 + cos(3 * phi))] in k3 * (1 + cos(3 * phi))
-        const_1_minus_Cos_4_phi: float (unitless)
-            The sum of all phi values in the list [(1 - cos(4 * phi))] in k4 * (1 - cos(4 * phi))
+        | const_1_minus_Cos_0_phi: float (unitless)
+        |   This values is always zero, since k0 is not used this standard OPLS form.
+        | const_1_plus_Cos_1_phi: float (unitless)
+        |   The sum of all phi values in the list [(1 - cos(2 * phi))] in k2 * (1 - cos(2 * phi))
+        | const_1_minus_Cos_2_phi: float (unitless)
+        |   The sum of all phi values in the list [(1 - cos(2 * phi))] in k2 * (1 - cos(2 * phi))
+        | const_1_plus_Cos_3_phi: float (unitless)
+        |   The sum of all phi values in the list [(1 + cos(3 * phi))] in k3 * (1 + cos(3 * phi))
+        | const_1_minus_Cos_4_phi: float (unitless)
+        |   The sum of all phi values in the list [(1 - cos(4 * phi))] in k4 * (1 - cos(4 * phi))
     """
     const_1_minus_Cos_0_phi = 1
     const_1_plus_Cos_1_phi = 0
@@ -355,8 +397,6 @@ def sum_opls_const_1_plus_or_minus_cos_n_values(phi_list):
 
 
 # opls dihedral function using for all combinations
-
-
 def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
     """OPLS dihedral energy calculation with only the selected k-values.
 
@@ -369,92 +409,95 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
     and the output ' dihedral_energy' energy are output in the same energy units.
 
 
-    NOTE: THIS WILL FIT THE FORM IT IS FED, REGARDLESS IF IT IS THE CORRECT
-    ANALYTICAL SOLUTION.  MEANING SOMETIMES YOU CAN NOT USE A K-VALUE BECAUSE
-    OF MOLECULE SYMMETREY. THEREFORE, THIS IS MUST BE ACCOUNTED FOR OUTSIDE
-    OF THIS FUNCTION.
+    .. note:: 
+        THIS WILL FIT THE FORM IT IS FED, REGARDLESS IF IT IS THE CORRECT
+        ANALYTICAL SOLUTION.  MEANING SOMETIMES YOU CAN NOT USE A K-VALUE BECAUSE
+        OF MOLECULE SYMMETREY. THEREFORE, THIS IS MUST BE ACCOUNTED FOR OUTSIDE
+        OF THIS FUNCTION.
 
-    NOTE: ALL THE K-VALUE ENERGY UNITS MUST BE THE SAME.
+    .. note:: 
+        ALL THE K-VALUE ENERGY UNITS MUST BE THE SAME.
 
     .. math::
-    opls_dihedral_n_1 &= 1/2 *(
-        &= k0
-        &= + k1 * (1 + cos(1 * phi))
-        &= + k2 * (1 - cos(2 * phi))
-        &= + k3 * (1 + cos(3 * phi))
-        &= + k4 * (1 - cos(4 * phi))
-        &= )
+        U_{opls-dihedral} = 1/2 * (
+        k0 + k1 * (1 + cos[1 * phi])
+        + k2 * (1 - cos[2 * phi])
+ 
+    .. math::
+        + k3 * (1 + cos[3 * phi])
+        + k4 * (1 - cos[4 * phi])
+        )
 
     Parameters
     ----------
     cos_powers_phi_and_constants_data: list or tuple of (cos_powers, scanned_phi, all_sum_opls_const_1_plus_or_minus_cos_n_list)
-        cos_powers: str, int, or float,
-            The str options are:   '1',  '1_3',  '2', '2_4', '1_2', '1_2_3', and '1_2_3_4'
-            The int options are:   '1',   '13',  '2',  '24',  '12',   '123', and    '1234'
-            The float options are: '1.', '13.', '2.', '24.', '12.',  '123.', and   '1234.'
-            The type type of powers in the cosine series to use.
+        | cos_powers: str, int, or float,
+        |    The str options are:   '1',  '1_3',  '2', '2_4', '1_2', '1_2_3', and '1_2_3_4'
+        |    The int options are:   '1',   '13',  '2',  '24',  '12',   '123', and    '1234'
+        |    The float options are: '1.', '13.', '2.', '24.', '12.',  '123.', and   '1234.'
+        |    The type type of powers in the cosine series to use.
 
-            Example 1:  '1' only set the k1 to a non-zero value
-            Example 2:  '1_2_3' only set the k1, k2, and k3 to a non-zero value
+        |    Example 1:  '1' only set the k1 to a non-zero value
+        |    Example 2:  '1_2_3' only set the k1, k2, and k3 to a non-zero value
 
-            Example 3:  '1' only set the k1 to a non-zero value
-            Example 4:  '123' only set the k1, k2, and k3 to a non-zero value
+        |    Example 3:  '1' only set the k1 to a non-zero value
+        |    Example 4:  '123' only set the k1, k2, and k3 to a non-zero value
 
-            Example 5:  '1' only set the k1 to a non-zero value
-            Example 6:  '123.' only set the k1, k2, and k3 to a non-zero value
+        |    Example 5:  '1' only set the k1 to a non-zero value
+        |    Example 6:  '123.' only set the k1, k2, and k3 to a non-zero value
 
-        scanned_phi: floats, int, nest list or tuple of floats/int
-            The 'phi_data' angle of the dihedral is in degrees
+        | scanned_phi: floats, int, nest list or tuple of floats/int
+        |    The 'phi_data' angle of the dihedral is in degrees
 
-            The floats, int options: the phi_data from a single point
+        |    The floats, int options: the phi_data from a single point
 
-            The nest list of floats/int: This nested list include the dihedral angle
-                being rotated in QM, and all the other identical dihedral angles from
-                the same atom typed/classed atoms in the test molecule/fragment.
+        |    The nest list of floats/int: This nested list include the dihedral angle
+        |        being rotated in QM, and all the other identical dihedral angles from
+        |        the same atom typed/classed atoms in the test molecule/fragment.
 
-        all_sum_opls_const_1_plus_or_minus_cos_n_list: list or tuple, default=None
+        | all_sum_opls_const_1_plus_or_minus_cos_n_list: list or tuple, default=None
 
-            all_sum_opls_const_1_plus_or_minus_cos_n_list = [
-            const_1_minus_Cos_0_phi,
-            const_1_plus_Cos_1_phi,
-            const_1_minus_Cos_2_phi,
-            const_1_plus_Cos_3_phi,
-            const_1_minus_Cos_4_phi
-            ]
+        |    all_sum_opls_const_1_plus_or_minus_cos_n_list = [
+        |    const_1_minus_Cos_0_phi,
+        |    const_1_plus_Cos_1_phi,
+        |    const_1_minus_Cos_2_phi,
+        |    const_1_plus_Cos_3_phi,
+        |    const_1_minus_Cos_4_phi
+        |    ]
 
-            A list of the OPLS k0 data, which is always 0 or 1 in this case.
-            If all 0 values --> (0, 0, .., 0), then k0=0.
-            If all 1 values --> (1, 1, .., 1), then k0=constant
+        |    A list of the OPLS k0 data, which is always 0 or 1 in this case.
+        |    If all 0 values --> (0, 0, .., 0), then k0=0.
+        |    If all 1 values --> (1, 1, .., 1), then k0=constant
 
-            # It is critical that 'const_1_minus_Cos_0_phi' be all (0, 0, .., 0) for k0=0
-            # and all (1, 1, .., 1) 'const_1_minus_Cos_0_phi' for k0=constant
+        |    # It is critical that 'const_1_minus_Cos_0_phi' be all (0, 0, .., 0) for k0=0
+        |    # and all (1, 1, .., 1) 'const_1_minus_Cos_0_phi' for k0=constant
 
-            const_1_plus_Cos_1_phi:  values for all k-values, which
-            is required to fit the data, especially when multiple dihedrals of the same
-            atom types/classes exist in the molecule that the dihedral is fit too.
+        |    const_1_plus_Cos_1_phi:  values for all k-values, which
+        |    is required to fit the data, especially when multiple dihedrals of the same
+        |    atom types/classes exist in the molecule that the dihedral is fit too.
 
-            Example 0:
-            const_1_minus_Cos_0_phi  = k0
+        |    Example 0:
+        |    const_1_minus_Cos_0_phi  = k0
 
-            Example 1:
-            const_1_plus_Cos_1_phi  = sum of all phi values in the list
-            [(1 + cos(1 * phi))] in k1 * (1 + cos(1 * phi))
+        |    Example 1:
+        |    const_1_plus_Cos_1_phi  = sum of all phi values in the list
+        |    [(1 + cos(1 * phi))] in k1 * (1 + cos(1 * phi))
 
-            Example 2:
-            const_1_minus_Cos_2_phi = sum of all phi values in the list
-            [(1 - cos(2 * phi))] in k2 * (1 - cos(2 * phi))
+        |    Example 2:
+        |    const_1_minus_Cos_2_phi = sum of all phi values in the list
+        |    [(1 - cos(2 * phi))] in k2 * (1 - cos(2 * phi))
 
-            Example 3:
-            const_1_plus_Cos_3_phi  = sum of all phi values in the list
-            [(1 + cos(3 * phi))] in k3 * (1 + cos(3 * phi))
+        |    Example 3:
+        |    const_1_plus_Cos_3_phi  = sum of all phi values in the list
+        |    [(1 + cos(3 * phi))] in k3 * (1 + cos(3 * phi))
 
-            Example 4:
-            const_1_minus_Cos_4_phi = sum of all phi values in the list
-            [(1 - cos(4 * phi))] in k4 * (1 - cos(4 * phi))
+        |    Example 4:
+        |    const_1_minus_Cos_4_phi = sum of all phi values in the list
+        |    [(1 - cos(4 * phi))] in k4 * (1 - cos(4 * phi))
 
-            The list length is the number of dihedrals which match the QM scanned atom/bead types,
-            with the next nested list being the 'all_sum_opls_const_1_plus_or_minus_cos_n_list'
-            as described.
+        |    The list length is the number of dihedrals which match the QM scanned atom/bead types,
+        |    with the next nested list being the 'all_sum_opls_const_1_plus_or_minus_cos_n_list'
+        |    as described.
 
     k0: int, or float, in energy units (i.e., kcal/mol, kJ/mol, Kelvin, ...)
         The 'k0' value is the k-value for the opls dihedral where n=0,
@@ -483,7 +526,7 @@ def opls_dihedral(cos_powers_phi_and_constants_data, k0, k1, k2, k3, k4):
 
     Returns
     -------
-    dihedral_energy; float or list of floats, same as the k-value energy units
+    dihedral_energy: float or list of floats, same as the k-value energy units
         The OPLS dihedral energy from the valid phi_data and k-values
         (i.e., k1 in this case).
     """
@@ -906,18 +949,24 @@ def periodic_dihedral_n_1_2_3_4_5(
     the cosine power representation, where n_x and d_x match the K_x x-values.
     The 'd_x' values is the d-value cosine phase angle or phase shift.
 
-    NOTE: ALL THE K_x-VALUE ENERGY UNITS MUST BE THE SAME.
+    .. note::
+        ALL THE K_x-VALUE ENERGY UNITS MUST BE THE SAME.
 
-    NOTE: All the K_x, n_x, and d_x x-values are a pair (i.e., K_1, n_1, and d_1)
+        
+    .. note::
+        All the K_x, n_x, and d_x x-values are a pair (i.e., K_1, n_1, and d_1)
+        
 
     .. math::
-        periodic_dihedral &= K_0 * (1 + cos(n_0*t - d_0)) + \\
-                          &= K_1 * (1 + cos(n_1*t - d_1)) + \\
-                          &= K_2 * (1 + cos(n_2*t - d_2)) + \\
-                          &= K_3 * (1 + cos(n_3*t - d_3)) + \\
-                          &= K_4 * (1 + cos(n_4*t - d_4)) + \\
-                          &= K_5 * (1 + cos(n_5*t - d_5))
+        U_{periodic-dihedral} = K_0 * (1 + cos[n_0*t - d_0])
 
+        + K_1 * (1 + cos[n_1*t - d_1]) + K_2 * (1 + cos[n_2*t - d_2])
+
+        + K_3 * (1 + cos[n_3*t - d_3]) + K_4 * (1 + cos[n_4*t - d_4])
+
+        + K_5 * (1 + cos[n_5*t - d_5])
+
+        
     Parameters
     ----------
     phi_data: float, int, or list of floats/int, in degrees
@@ -957,19 +1006,28 @@ def RB_torsion_n_1_2_3_4_5(phi_data, k_0, k_1, k_2, k_3, k_4, k_5):
     """Ryckaert-Bellemans (RB) torsion energy calculation from n=1 to n=5.
 
     This is the Ryckaert-Bellemans (RB) torsion style energy calculation.
+
+    This is the Ryckaert-Bellemans (RB) torsion style energy calculation.
+    
     The K_x-values are in energy units (i.e., kcal/mol, kJ/mol, Kelvin, ...),
-    and the output ' dihedral_energy' energy are output in the same energy units.
+    
+    and the output 'dihedral_energy' energy are output in the same energy units.
 
-    NOTE: ALL THE k_x-VALUE ENERGY UNITS MUST BE THE SAME.
-
+    .. note:: 
+        ALL THE k_x-VALUE ENERGY UNITS MUST BE THE SAME.
+        
     .. math::
-        RB_torsions &= k_0 + k_1*cos(psi) + k_2*cos(psi)^2 + k_3*cos(psi)^3 + \\
-                    &= k_4*cos(psi)^4 + k_5*cos(psi)^5
-
+        U_{RB-torsions} = k_0 + k_1*cos(psi) 
+        
+        + k_2*cos(psi)^2 + k_3*cos(psi)^3 
+        
+        + k_4*cos(psi)^4 + k_5*cos(psi)^5
+        
     Parameters
     ----------
     phi_data: float, int, or list of floats/int, in degrees
         The 'phi_data' angle of the dihedral is in degrees
+
     k_0, k_1, k_2, k_3, k_4, and k_5: int or float, in energy units (i.e., kcal/mol, kJ/mol, Kelvin, ...)
         The 'k_x' values is the k-value constant scalar for the Ryckaert-Bellemans (RB) torsion style.
 
@@ -1009,13 +1067,14 @@ def opls_dihedral_n_1_2_3_4(phi_data, k_0, k_1, k_2, k_3, k_4):
     NOTE: ALL THE K-VALUE ENERGY UNITS MUST BE THE SAME.
 
     .. math::
-    opls_dihedral_n_1 &= 1/2 *(
-        &= k0
-        &= + k1 * (1 + cos(1 * phi))
-        &= + k2 * (1 - cos(2 * phi))
-        &= + k3 * (1 + cos(3 * phi))
-        &= + k4 * (1 - cos(4 * phi))
-        &= )
+        U_{opls-dihedral} = 1/2 * (
+        k0 + k1 * (1 + cos[1 * phi])
+        + k2 * (1 - cos[2 * phi])
+ 
+    .. math::
+        + k3 * (1 + cos[3 * phi])
+        + k4 * (1 - cos[4 * phi])
+        )
 
     Parameters
     ----------
@@ -1032,18 +1091,24 @@ def opls_dihedral_n_1_2_3_4(phi_data, k_0, k_1, k_2, k_3, k_4):
     k_2: int, or float, in energy units (i.e., kcal/mol, kJ/mol, Kelvin, ...)
         The 'k2' value is the k-value for the opls dihedral where n=2
         in the cosine multiple.
-        NOTE: In this case, it is set to zero (0) regardless of the
-        user entered value, because it is not in the equation form.
+
+        .. note::
+            In this case, it is set to zero (0) regardless of the
+            user entered value, because it is not in the equation form.
     k_3: int, or float, in energy units (i.e., kcal/mol, kJ/mol, Kelvin, ...)
         The 'k3' value is the k-value for the opls dihedral where n=3
         in the cosine multiple.
-        NOTE: In this case, it is set to zero (0) regardless of the
-        user entered value, because it is not in the equation form.
+
+        .. note::
+            In this case, it is set to zero (0) regardless of the
+            user entered value, because it is not in the equation form.
     k_4: int, or float, in energy units (i.e., kcal/mol, kJ/mol, Kelvin, ...)
         The 'k4' value is the k-value for the opls dihedral where n=4
         in the cosine multiple.
-        NOTE: In this case, it is set to zero (0) regardless of the
-        user entered value, because it is not in the equation form.
+
+        .. note::
+            In this case, it is set to zero (0) regardless of the
+            user entered value, because it is not in the equation form.
 
     Returns
     -------
