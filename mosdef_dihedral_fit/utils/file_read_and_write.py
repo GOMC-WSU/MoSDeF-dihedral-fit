@@ -479,35 +479,35 @@ def get_final_gaussian_output_file_data(
 
     Returns
     -------
-    | list of:
-    | all_dihedral_angle_degrees_list: list (nested list)
-    |     This is the list of the optimized Gaussian dihedral angles (degrees) with the
-    |     specific angles removed per the 'qm_log_file_dict' list
-    |     (value) input. This is a nested list, with an inner list for every
-    |     Gaussian log file or 'qm_log_file_dict' (key).
-    | all_energy_hartree_list: list (nested list)
-    |     This is the list of the optimized Gaussian energies with the specific energies
-    |     (hartree) removed per the 'qm_log_file_dict' list
-    |     (value) input. This is a nested list, with an inner list for every
-    |     Gaussian log file or 'qm_log_file_dict' (key).
-    | all_coordinates_ang_list: list (nested list)
-    |     This is the list of the optimized Gaussian energies with the specific energies
-    |     (hartree) removed per the 'qm_log_file_dict' list
-    |     (value) input. This is a nested list, with an inner list for every
-    |     Gaussian log file or 'qm_log_file_dict' (key).
-    | element_names_list: list
-    |     This is the list of the Gaussian element names per the
-    |     'qm_log_file_dict' list (value) input.
-    |     The list length is dependant on the number of elements in the Gaussian log file
-    |     These values are confirmed to be the same for all entered Gaussian log files.
-    | number_of_atoms: int
-    |     This is the number of atoms in the Gaussian
-    |     'qm_log_file_dict' list (value) input.
-    |     These values are confirmed to be the same for all entered Gaussian log files.
-    | manual_dihedral_atom_numbers_list: list, list of four (4) int (example: [3,2,1,5])
-    |      This is a list of the dihedral atom numbers in order that were used for the dihedral
-    |      fit. This information needs to be correct and in order to produce correct results.
-    |      The values must be the same in all the combined files.
+    list of:
+    |   all_dihedral_angle_degrees_list: list (nested list)
+    |       This is the list of the optimized Gaussian dihedral angles (degrees) with the
+    |       specific angles removed per the 'qm_log_file_dict' list
+    |       (value) input. This is a nested list, with an inner list for every
+    |       Gaussian log file or 'qm_log_file_dict' (key).
+    |   all_energy_hartree_list: list (nested list)
+    |       This is the list of the optimized Gaussian energies with the specific energies
+    |       (hartree) removed per the 'qm_log_file_dict' list
+    |       (value) input. This is a nested list, with an inner list for every
+    |       Gaussian log file or 'qm_log_file_dict' (key).
+    |   all_coordinates_ang_list: list (nested list)
+    |       This is the list of the optimized Gaussian energies with the specific energies
+    |       (hartree) removed per the 'qm_log_file_dict' list
+    |       (value) input. This is a nested list, with an inner list for every
+    |       Gaussian log file or 'qm_log_file_dict' (key).
+    |   element_names_list: list
+    |       This is the list of the Gaussian element names per the
+    |       'qm_log_file_dict' list (value) input.
+    |       The list length is dependant on the number of elements in the Gaussian log file
+    |       These values are confirmed to be the same for all entered Gaussian log files.
+    |   number_of_atoms: int
+    |       This is the number of atoms in the Gaussian
+    |       'qm_log_file_dict' list (value) input.
+    |       These values are confirmed to be the same for all entered Gaussian log files.
+    |   manual_dihedral_atom_numbers_list: list, list of four (4) int (example: [3,2,1,5])
+    |       This is a list of the dihedral atom numbers in order that were used for the dihedral
+    |       fit. This information needs to be correct and in order to produce correct results.
+    |       The values must be the same in all the combined files.
     """
     if not isinstance(qm_log_file_dict, dict):
         raise TypeError(
@@ -763,35 +763,36 @@ def get_gaussian_log_file_data(
 
     Returns
     -------
-    all_dihedral_angle_degrees_list: list (nested list of str)
-        This is the list of the optimized Gaussian dihedral angles (degrees) with the
-        specific angles removed per the 'qm_log_file_dict' list
-        (value) input. This is a nested list, with an inner list for every
-        Gaussian log file or 'qm_log_file_dict' (key).
-    all_energy_hartree_list: list (nested list of str)
-        This is the list of the optimized Gaussian energies with the specific energies
-        (hartree) removed per the 'qm_log_file_dict' list
-        (value) input. This is a nested list, with an inner list for every
-        Gaussian log file or 'qm_log_file_dict' (key).
-    all_coordinates_ang_list: list (nested list of float)
-        This is the list of the optimized Gaussian energies with the specific energies
-        (hartree) removed per the 'qm_log_file_dict' list
-        (value) input. This is a nested list, with an inner list for every
-        Gaussian log file or 'qm_log_file_dict' (key).
-    element_names_list: list of str
-        This is the list of the Gaussian element names per the
-        'qm_log_file_dict' list (value) input.
-        The list length is dependant on the number of elements in the Gaussian log file
-        These values are confirmed to be the same for all entered Gaussian log files.
-    number_of_atoms: int
-        This is the number of atoms in the Gaussian
-        'qm_log_file_dict' list (value) input.
-        These values are confirmed to be the same for all entered Gaussian log files.
-    dihedral_atom_numbers_list: list of 4 int
-        This is the list of the dihedral atom numbers used in the Gaussian
-        dihedral scan, which are taken from the Gaussian
-        'qm_log_file_dict' list (value) input.
-        These values are confirmed to be the same for all entered Gaussian log files.
+    list of:
+    |    all_dihedral_angle_degrees_list: list (nested list of str)
+    |        This is the list of the optimized Gaussian dihedral angles (degrees) with the
+    |        specific angles removed per the 'qm_log_file_dict' list
+    |        (value) input. This is a nested list, with an inner list for every
+    |        Gaussian log file or 'qm_log_file_dict' (key).
+    |        all_energy_hartree_list: list (nested list of str)
+    |        This is the list of the optimized Gaussian energies with the specific energies
+    |        (hartree) removed per the 'qm_log_file_dict' list
+    |        (value) input. This is a nested list, with an inner list for every
+    |        Gaussian log file or 'qm_log_file_dict' (key).
+    |    all_coordinates_ang_list: list (nested list of float)
+    |        This is the list of the optimized Gaussian energies with the specific energies
+    |        (hartree) removed per the 'qm_log_file_dict' list
+    |        (value) input. This is a nested list, with an inner list for every
+    |        Gaussian log file or 'qm_log_file_dict' (key).
+    |    element_names_list: list of str
+    |        This is the list of the Gaussian element names per the
+    |        'qm_log_file_dict' list (value) input.
+    |        The list length is dependant on the number of elements in the Gaussian log file
+    |        These values are confirmed to be the same for all entered Gaussian log files.
+    |    number_of_atoms: int
+    |        This is the number of atoms in the Gaussian
+    |        'qm_log_file_dict' list (value) input.
+    |        These values are confirmed to be the same for all entered Gaussian log files.
+    |    dihedral_atom_numbers_list: list of 4 int
+    |        This is the list of the dihedral atom numbers used in the Gaussian
+    |        dihedral scan, which are taken from the Gaussian
+    |        'qm_log_file_dict' list (value) input.
+    |        These values are confirmed to be the same for all entered Gaussian log files.
     """
     if not isinstance(qm_log_file_dict, dict):
         raise TypeError(
