@@ -1,11 +1,11 @@
-.. _secondary_data_structures:
+.. _additional_utilities:
 
-=========================
-Secondary Data Structures
-=========================
+====================
+Additional Utilities
+====================
 
 .. warning::
-	These secondary functions, mostly from the **utils** folder,= 
+	These additional utilities, mostly from the **utils** folder,= 
 	**do not contain Type or Value Input Checks**.  Therefore, they are being
 	listed with a warning that only advanced users should use these functions, as  
 	they were not designed with input error checks.  
@@ -18,7 +18,7 @@ Read and Write Functions (For Advanded Users)
 ---------------------------------------------
 
 .. warning::
-	These secondary functions, mostly from the **utils** folder,= 
+	These additional utilities, mostly from the **utils** folder,= 
 	**do not contain Type or Value Input Checks**.  Therefore, they are being
 	listed with a warning that only advanced users should use these functions, as  
 	they were not designed with input error checks.  
@@ -35,7 +35,7 @@ Math and Operation Functions (For Advanded Users)
 -------------------------------------------------
 
 .. warning::
-	These secondary functions, mostly from the **utils** folder,= 
+	These additional utilities, mostly from the **utils** folder,= 
 	**do not contain Type or Value Input Checks**.  Therefore, they are being
 	listed with a warning that only advanced users should use these functions, as  
 	they were not designed with input error checks.  
