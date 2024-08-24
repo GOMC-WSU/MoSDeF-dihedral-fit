@@ -110,13 +110,14 @@ The official VMD web page is http://www.ks.uiuc.edu/Research/vmd
     	:maxdepth: 2
 
 	getting_started/installation/installation
-        getting_started/quick_start/quick_start
+	getting_started/quick_start/quick_start
 
 .. toctree::
 	:caption: Topic Guides
     	:maxdepth: 2
 
-    	topic_guides/data_structures
+	topic_guides/data_structures
+	topic_guides/additional_utilities
 
 .. toctree::
     	:caption: Reference
