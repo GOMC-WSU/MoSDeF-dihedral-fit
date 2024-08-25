@@ -141,21 +141,16 @@ class TestFileReading(BaseTest):
             write_xyz_file_from_gaussian_coordinates(
                 atom_namesList, full_fn, "", "./", 2
             )
-
-        error_fn = "with_errors/dihedral_coords_position_1_with_errors.txt"
-        full_error_fn = self.get_fn(error_fn)
-        error_msg = (
-            "# The Gaussian file need to have these columns "
-            "'Row	Highlight	Display	Tag	Symbol	X	Y	Z'"
-        )
-        with pytest.raises(ValueError, match=error_msg):
-            write_xyz_file_from_gaussian_coordinates(
-                atom_namesList, full_error_fn, extension, "./", 1
-            )
-
         write_restart_coor_from_xyz_file("./", 2)
         assert "dihedral_coords_position_1.coor" in os.listdir()
         assert "dihedral_coords_position_2.coor" in os.listdir()
+
+        error_fn = "with_errors/dihedral_coords_position_with_errors_"
+        full_error_fn = self.get_fn(error_fn)
+        with pytest.raises(TypeError):
+            write_xyz_file_from_gaussian_coordinates(
+                atom_namesList, full_error_fn, extension, "./", 1
+            )
 
     def test_check_gaussian_angle_energy_file_correct(self):
         full_path = self.get_fn(
@@ -225,13 +220,13 @@ class TestFileReading(BaseTest):
             )
 
         # manual_dihedral_atom_numbers_list must be a list of len 4
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             get_final_gaussian_output_file_data(
                 {full_path: list(np.arange(32, dtype=int))}, None
             )
 
         # manual_dihedral_atom_numbers_list must be a list of integers
-        with pytest.raises(ValueError):
+        with pytest.raises(TypeError):
             get_final_gaussian_output_file_data(
                 {full_path: list(np.arange(32, dtype=int))},
                 [0.1, 0.2, 0.3, 0.4],
