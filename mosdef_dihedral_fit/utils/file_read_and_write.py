@@ -171,10 +171,8 @@ def write_xyz_file_from_gaussian_coordinates(
         and qm_coordinate_file_extension[0] == "."
     ):
         qm_coordinate_file_extension = qm_coordinate_file_extension[1:]
-
     elif len(qm_coordinate_file_extension) > 0:
         qm_coordinate_file_extension = qm_coordinate_file_extension
-
     else:
         raise ValueError(
             "ERROR: The 'qm_coordinate_file_extension' variable extension is not listed or a an empty string."
@@ -519,7 +517,7 @@ def get_final_gaussian_output_file_data(
     else:
         for key_j, value_j in qm_log_file_dict.items():
             if not isinstance(key_j, str):
-                raise ValueError(
+                raise TypeError(
                     f"ERROR: In the 'get_final_gaussian_output_file_data' function, "
                     f"the 'qm_log_file_dict' key "
                     f"'{key_j}' is a {type(key_j)} not a string."

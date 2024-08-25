@@ -136,6 +136,23 @@ class TestFileReading(BaseTest):
         assert "dihedral_coords_position_1.xyz" in os.listdir()
         assert "dihedral_coords_position_2.xyz" in os.listdir()
 
+        error_msg = "ERROR: The 'qm_coordinate_file_extension' variable extension is not listed or a an empty string."
+        with pytest.raises(ValueError, match=error_msg):
+            write_xyz_file_from_gaussian_coordinates(
+                atom_namesList, full_fn, "", "./", 2
+            )
+
+        error_fn = "with_errors/dihedral_coords_position_1_with_errors.txt"
+        full_error_fn = self.get_fn(error_fn)
+        error_msg = (
+            "# The Gaussian file need to have these columns "
+            "'Row	Highlight	Display	Tag	Symbol	X	Y	Z'"
+        )
+        with pytest.raises(ValueError, match=error_msg):
+            write_xyz_file_from_gaussian_coordinates(
+                atom_namesList, full_error_fn, extension, "./", 1
+            )
+
         write_restart_coor_from_xyz_file("./", 2)
         assert "dihedral_coords_position_1.coor" in os.listdir()
         assert "dihedral_coords_position_2.coor" in os.listdir()
@@ -184,6 +201,41 @@ class TestFileReading(BaseTest):
         )  # 4 to grab from, 8 total atoms,
         assert elements == ["C", "C", "H", "H", "H", "H", "H", "H"]
         assert n_atoms == 8
+
+        # Wrong input types
+        with pytest.raises(TypeError):
+            get_final_gaussian_output_file_data(None, [3, 1, 2, 8])
+
+        # Dict value must be list of integers
+        with pytest.raises(TypeError):
+            get_final_gaussian_output_file_data(
+                {full_path: [0.1, 0.2, 0.3, -0.4]}, [3, 1, 2, 8]
+            )
+
+        # Dict key must be a string
+        with pytest.raises(TypeError):
+            get_final_gaussian_output_file_data(
+                {1: [0.1, 0.2, 0.3, 0.4]}, [3, 1, 2, 8]
+            )
+
+        # Dict value must be a list
+        with pytest.raises(TypeError):
+            get_final_gaussian_output_file_data(
+                {full_path: "ERROR"}, [3, 1, 2, 8]
+            )
+
+        # manual_dihedral_atom_numbers_list must be a list of len 4
+        with pytest.raises(ValueError):
+            get_final_gaussian_output_file_data(
+                {full_path: list(np.arange(32, dtype=int))}, None
+            )
+
+        # manual_dihedral_atom_numbers_list must be a list of integers
+        with pytest.raises(ValueError):
+            get_final_gaussian_output_file_data(
+                {full_path: list(np.arange(32, dtype=int))},
+                [0.1, 0.2, 0.3, 0.4],
+            )
 
     def test_get_gaussian_log_file_data(self):
         full_path = self.get_fn(
