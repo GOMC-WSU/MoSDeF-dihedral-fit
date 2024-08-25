@@ -802,7 +802,7 @@ def get_gaussian_log_file_data(
     else:
         for key_j, value_j in qm_log_file_dict.items():
             if not isinstance(key_j, str):
-                raise ValueError(
+                raise TypeError(
                     f"ERROR: In the 'get_gaussian_log_file_data' function, "
                     f"the 'qm_log_file_dict' key "
                     f"'{key_j}' is a {type(key_j)} not a string."

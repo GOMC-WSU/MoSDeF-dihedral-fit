@@ -317,6 +317,22 @@ class TestFileReading(BaseTest):
         dihedral_atoms = out[5]
         assert dihedral_atoms == [5, 1, 2, 3]
 
+        # Input must be a dict
+        with pytest.raises(TypeError):
+            get_gaussian_log_file_data(None)
+
+        # Dict key must be a string
+        with pytest.raises(TypeError):
+            get_gaussian_log_file_data({1: out_indices})
+
+        # Dict value must be a list of integers
+        with pytest.raises(TypeError):
+            get_gaussian_log_file_data({full_path: [0.1, 0.2, 0.3, -0.4]})
+
+        # Dict value must be a list
+        with pytest.raises(TypeError):
+            get_gaussian_log_file_data({full_path: "ERROR"})
+
     def test_write_qm_data_files(self):
         full_path = self.get_fn(
             "gaussian/CT_CT_C_OH/output/CT_CT_C_OH_multiplicity_1.log"
