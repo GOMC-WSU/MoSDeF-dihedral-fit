@@ -103,8 +103,12 @@ $$\psi = \theta - 180^o$$
 
 <u>Periodic-dihedral</u>:
 
-$$U_{Periodic} = K_0 * (1 + cos(n_0*\theta - 90^o))$$
+$$U_{Periodic} = K_0 * (1 + cos(n_0*\theta - d_0))$$
 
-$$+ K_1 * (1 + cos(n_1*\theta - 180^o)) + K_2 * (1 + cos(n_2*\theta))$$
+$$+ K_1 * (1 + cos(n_1*\theta - d_1)) + K_2 * (1 + cos(n_2*\theta - d_2))$$
 
-$$+  K_3 * (1 + cos(n_3*\theta - 180^o)) +  K_4 * (1 + cos(n_4*\theta))$$
+$$+  K_3 * (1 + cos(n_3*\theta - d_3)) +  K_4 * (1 + cos(n_4*\theta) - d_4)$$
+
+$$where:  n_0 = 0  ;  n_1 = 1  ;  n_2 = 2  ;  n_3 = 3  ;  n_4 = 4 $$
+
+$$d_0 = 90^o  ;  d_1 = 180^o  ;  d_2 = 0^o  ;  d_3 = 180^o  ;  d_4 = 0^o $$
