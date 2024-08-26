@@ -1947,13 +1947,13 @@ def change_gomc_ff_file_dihedral_values(
                 if not len(list_i) == 4:
                     raise TypeError(zero_dihedral_atom_types_error)
 
-                    if (
-                        isinstance(list_i[0], str)
-                        and isinstance(list_i[1], str)
-                        and isinstance(list_i[2], str)
-                        and isinstance(list_i[3], str)
-                    ):
-                        raise TypeError(zero_dihedral_atom_types_error)
+                if (
+                    isinstance(list_i[0], str)
+                    and isinstance(list_i[1], str)
+                    and isinstance(list_i[2], str)
+                    and isinstance(list_i[3], str)
+                ):
+                    raise TypeError(zero_dihedral_atom_types_error)
 
     elif not isinstance(zero_dihedral_atom_types, type(None)):
         raise TypeError(zero_dihedral_atom_types_error)
