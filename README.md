@@ -91,7 +91,7 @@ $$+  K_3 * (1 + cos(n_3*\theta - d_3)) +  K_4 * (1 + cos(n_4*\theta) - d_4)$$
 
 $$where:  n_0 = 0  ;  n_1 = 1  ;  n_2 = 2  ;  n_3 = 3  ;  n_4 = 4 $$
 
-$$d_0 = 90^o  ;  d_1 = 180^o  ;  d_2 = 0^o  ;  d_3 = 180^o  ;  d_4 = 0^o
+$$d_0 = 90^o  ;  d_1 = 180^o  ;  d_2 = 0^o  ;  d_3 = 180^o  ;  d_4 = 0^o$$
 
 ## Examples
 Some basic workflows that use this package and cover several force field (FF) types are [here](https://github.com/GOMC-WSU/GOMC_Examples/tree/main/MoSDeF-dihedral-fit).  A summary of the FFs covered in the examples are listed below.
