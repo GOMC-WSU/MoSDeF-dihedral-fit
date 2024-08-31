@@ -939,7 +939,10 @@ def get_gaussian_log_file_data(
 
                 # get the dihedral atom numbers (in Gaussian numbering starts at 1)
                 # and the dihedral degrees per scan
-                if len(split_line_m) == 8 and molecule_charge_mult_found is not None:
+                if (
+                    len(split_line_m) == 8
+                    and molecule_charge_mult_found is not None
+                ):
                     if (
                         split_line_m[0] == "D"
                         and split_line_m[5] == "S"
@@ -1026,11 +1029,9 @@ def get_gaussian_log_file_data(
 
                         last_coordinates_ang_list = coord_list_iter
 
-                if (
-                    last_coordinates_ang_list is not None 
-                    and 
-                    len(optimized_dihedral_angle_degrees_list) > len(optimized_coordinates_ang_list)
-                    ):
+                if last_coordinates_ang_list is not None and len(
+                    optimized_dihedral_angle_degrees_list
+                ) > len(optimized_coordinates_ang_list):
                     optimized_coordinates_ang_list.append(
                         last_coordinates_ang_list
                     )
