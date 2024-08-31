@@ -136,9 +136,21 @@ class TestFileReading(BaseTest):
         assert "dihedral_coords_position_1.xyz" in os.listdir()
         assert "dihedral_coords_position_2.xyz" in os.listdir()
 
+        error_msg = "ERROR: The 'qm_coordinate_file_extension' variable extension is not listed or a an empty string."
+        with pytest.raises(ValueError, match=error_msg):
+            write_xyz_file_from_gaussian_coordinates(
+                atom_namesList, full_fn, "", "./", 2
+            )
         write_restart_coor_from_xyz_file("./", 2)
         assert "dihedral_coords_position_1.coor" in os.listdir()
         assert "dihedral_coords_position_2.coor" in os.listdir()
+
+        error_fn = "with_errors/dihedral_coords_position_with_errors_"
+        full_error_fn = self.get_fn(error_fn)
+        with pytest.raises(TypeError):
+            write_xyz_file_from_gaussian_coordinates(
+                atom_namesList, full_error_fn, extension, "./", 1
+            )
 
     def test_check_gaussian_angle_energy_file_correct(self):
         full_path = self.get_fn(
@@ -300,7 +312,6 @@ class TestFileReading(BaseTest):
         dihedral_atoms = out[5]
         assert dihedral_atoms == [5, 1, 2, 3]
 
-
     def test_get_gaussian_log_file_data_2(self):
         full_path = self.get_fn(
             "gaussian/perfluorodimethylether/scan_perfluorodimethylether.log"
@@ -424,6 +435,19 @@ class TestFileReading(BaseTest):
         write_qm_data_files({full_path: out_indices})
         assert os.path.exists("extracted_gaussian_data/dihedral.txt")
 
+        # qm_engine not in list
+        with pytest.raises(ValueError):
+            write_qm_data_files(None, qm_engine="None")
+
+        # when qm_engine="gaussian_style_final_files"
+        # manual_dihedral_atom_numbers_list must be a list of len 4
+        with pytest.raises(TypeError):
+            write_qm_data_files(
+                {full_path: out_indices},
+                None,
+                qm_engine="gaussian_style_final_files",
+            )
+
     def test_get_matching_dihedral_info_and_opls_fitting_data(self):
         out = get_matching_dihedral_info_and_opls_fitting_data(
             fit_dihedral_atom_types=["HC", "CT", "CT", "HC"],
@@ -502,6 +526,102 @@ class TestFileReading(BaseTest):
         ]
         assert np.allclose(opls_paramsList[0], expected_opls_params)
 
+        # fit_dihedral_atom_types must be a list of length 4
+        with pytest.raises(TypeError):
+            out = get_matching_dihedral_info_and_opls_fitting_data(
+                fit_dihedral_atom_types=["HC", "CT", "CT"],
+                psf_path_and_filename=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files.psf"
+                ),
+                qm_log_file_dict={
+                    self.get_fn(
+                        "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
+                    ): []
+                },
+                mol2_file=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
+                ),
+                qm_engine="gaussian",
+                manual_dihedral_atom_numbers_list=None,
+            )
+
+        # Each element of fit_dihedral_atom_types must be a string
+        with pytest.raises(TypeError):
+            out = get_matching_dihedral_info_and_opls_fitting_data(
+                fit_dihedral_atom_types=[1, 2, 3, 4],
+                psf_path_and_filename=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files.psf"
+                ),
+                qm_log_file_dict={
+                    self.get_fn(
+                        "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
+                    ): []
+                },
+                mol2_file=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
+                ),
+                qm_engine="gaussian",
+                manual_dihedral_atom_numbers_list=None,
+            )
+
+        # fit_dihedral_atom_types must be a list
+        with pytest.raises(TypeError):
+            out = get_matching_dihedral_info_and_opls_fitting_data(
+                fit_dihedral_atom_types=None,
+                psf_path_and_filename=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files.psf"
+                ),
+                qm_log_file_dict={
+                    self.get_fn(
+                        "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
+                    ): []
+                },
+                mol2_file=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
+                ),
+                qm_engine="gaussian",
+                manual_dihedral_atom_numbers_list=None,
+            )
+
+        # When qm_engine="gaussian_style_final_files"
+        # manual_dihedral_atom_numbers_list must be a list of len 4
+        with pytest.raises(TypeError):
+            out = get_matching_dihedral_info_and_opls_fitting_data(
+                fit_dihedral_atom_types=["HC", "CT", "CT", "HC"],
+                psf_path_and_filename=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files.psf"
+                ),
+                qm_log_file_dict={
+                    self.get_fn(
+                        "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
+                    ): []
+                },
+                mol2_file=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
+                ),
+                qm_engine="gaussian_style_final_files",
+                manual_dihedral_atom_numbers_list=None,
+            )
+
+        # qm_engine must be "gaussian" or "gaussian_style_final_files"
+        with pytest.raises(ValueError):
+            out = get_matching_dihedral_info_and_opls_fitting_data(
+                fit_dihedral_atom_types=["HC", "CT", "CT", "HC"],
+                psf_path_and_filename=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files.psf"
+                ),
+                qm_log_file_dict={
+                    self.get_fn(
+                        "gaussian/HC_CT_CT_HC/output/HC_CT_CT_HC_multiplicity_1.log"
+                    ): []
+                },
+                mol2_file=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/input/starting_coords/ethane_aa.mol2"
+                ),
+                qm_engine="None",
+                manual_dihedral_atom_numbers_list=None,
+            )
+
     def test_change_gomc_ff_file_dihedral_values(self):
         new_file = self.get_fn(
             "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files_dihedrals_zeroed.inp"
@@ -526,3 +646,58 @@ class TestFileReading(BaseTest):
                     break
 
         assert checkFile
+
+        with pytest.raises(TypeError):
+            change_gomc_ff_file_dihedral_values(
+                read_gomc_ff_filename=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp"
+                ),
+                new_gomc_ff_filename=new_file,
+                fit_dihedral_atom_types=[],
+                fit_dihedral_opls_k_0_1_2_3_4_values=[1, 0, 0, 0],
+            )
+
+        # zero_dihedral_atom_types must be a list or None
+        with pytest.raises(TypeError):
+            change_gomc_ff_file_dihedral_values(
+                read_gomc_ff_filename=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp"
+                ),
+                new_gomc_ff_filename=new_file,
+                fit_dihedral_atom_types=["HC", "CT", "CT", "HC"],
+                fit_dihedral_opls_k_0_1_2_3_4_values=[1, 0, 0, 0, 0],
+                zero_dihedral_atom_types="INVALID",
+            )
+
+        with pytest.raises(TypeError):
+            change_gomc_ff_file_dihedral_values(
+                read_gomc_ff_filename=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp"
+                ),
+                new_gomc_ff_filename=new_file,
+                fit_dihedral_atom_types=["HC", "CT", "CT", "HC"],
+                fit_dihedral_opls_k_0_1_2_3_4_values=[1, 0, 0, 0, 0],
+                zero_dihedral_atom_types=["CT"],
+            )
+
+        with pytest.raises(TypeError):
+            change_gomc_ff_file_dihedral_values(
+                read_gomc_ff_filename=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp"
+                ),
+                new_gomc_ff_filename=new_file,
+                fit_dihedral_atom_types=["HC", "CT", "CT", "HC"],
+                fit_dihedral_opls_k_0_1_2_3_4_values=[1, 0, 0, 0, 0],
+                zero_dihedral_atom_types=[1, 2, 3, 4],
+            )
+
+        with pytest.raises(ValueError):
+            change_gomc_ff_file_dihedral_values(
+                read_gomc_ff_filename=self.get_fn(
+                    "gaussian/HC_CT_CT_HC/output/GOMC_pdb_psf_ff_files_dihedrals_per_xml.inp"
+                ),
+                new_gomc_ff_filename=new_file,
+                fit_dihedral_atom_types=["HC", "CT", "CT", "HC"],
+                fit_dihedral_opls_k_0_1_2_3_4_values=[1, 0, 0, 0, 0],
+                zero_dihedral_atom_types=["HC", "CT", "CT", "HC"],
+            )
