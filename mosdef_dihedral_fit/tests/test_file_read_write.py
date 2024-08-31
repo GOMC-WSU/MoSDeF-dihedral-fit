@@ -185,7 +185,7 @@ class TestFileReading(BaseTest):
         assert elements == ["C", "C", "H", "H", "H", "H", "H", "H"]
         assert n_atoms == 8
 
-    def test_get_gaussian_log_file_data(self):
+    def test_get_gaussian_log_file_data_1(self):
         full_path = self.get_fn(
             "gaussian/CT_CT_C_OH/output/CT_CT_C_OH_multiplicity_1.log"
         )
@@ -264,6 +264,122 @@ class TestFileReading(BaseTest):
 
         dihedral_atoms = out[5]
         assert dihedral_atoms == [5, 1, 2, 3]
+
+
+    def test_get_gaussian_log_file_data_2(self):
+        full_path = self.get_fn(
+            "gaussian/perfluorodimethylether/scan_perfluorodimethylether.log"
+        )
+        out_indices = []
+        out = get_gaussian_log_file_data({full_path: out_indices})
+        anglesList = out[0]
+        anglesList = list(map(float, anglesList))
+        expected_angles = np.arange(round(-77.802,3), 2.198, 5) 
+        expected_angles = np.append(expected_angles, np.arange(2.198, 182.198, 5))
+        expected_angles = np.append(expected_angles, np.arange(-177.802, -72.802, 5))
+        expected_angles = list(expected_angles.round(decimals=3))
+        assert np.allclose(anglesList, expected_angles)
+
+        energyList = out[1]
+        expected_energies = [
+             -747.265516312, 
+             -747.265443737, 
+             -747.265268941, 
+             -747.265123260, 
+             -747.265140067, 
+             -747.265300729, 
+             -747.265463069, 
+             -747.265515062, 
+             -747.265426543, 
+             -747.265221767, 
+             -747.264947686, 
+             -747.264653189, 
+             -747.264377973, 
+             -747.264149999, 
+             -747.263987395, 
+             -747.263901001, 
+             -747.263896025, 
+             -747.263972758, 
+             -747.264126609, 
+             -747.264347481, 
+             -747.264618251, 
+             -747.264912293, 
+             -747.265191319, 
+             -747.265407157, 
+             -747.265511705, 
+             -747.265476532, 
+             -747.265323201, 
+             -747.265154212, 
+             -747.265115120, 
+             -747.265246555, 
+             -747.265426192, 
+             -747.265515212, 
+             -747.265459576, 
+             -747.265275962, 
+             -747.265010909, 
+             -747.264715229, 
+             -747.264431277, 
+             -747.264189813, 
+             -747.264011609, 
+             -747.263909826, 
+             -747.263891551, 
+             -747.263958437, 
+             -747.264106693, 
+             -747.264326464, 
+             -747.264600305, 
+             -747.264900629, 
+             -747.265187236, 
+             -747.265408739, 
+             -747.265512974, 
+             -747.265469070, 
+             -747.265304125, 
+             -747.265138596, 
+             -747.265126682, 
+             -747.265280857, 
+             -747.265454103, 
+             -747.265515723, 
+             -747.265428483, 
+             -747.265218549, 
+             -747.264936922, 
+             -747.264635857, 
+             -747.264357118, 
+             -747.264129715, 
+             -747.263972162, 
+             -747.263895133, 
+             -747.263903100, 
+             -747.263995060, 
+             -747.264164599, 
+             -747.264399353, 
+             -747.264679582, 
+             -747.264975866, 
+             -747.265247223, 
+             -747.265443415, 
+             -747.265516312,
+        ]
+        energyList = list(map(float, energyList))
+        assert np.allclose(energyList, expected_energies)
+
+        coordsList = out[2]
+        assert np.shape(coordsList) == (73, 9, 3)
+
+        elementsList = out[3]
+        assert elementsList == [
+             'C', 
+             'F', 
+             'F', 
+             'F', 
+             'C', 
+             'F', 
+             'F', 
+             'F', 
+             'O'
+        ]
+
+        n_atoms = out[4]
+        assert n_atoms == len(elementsList)
+
+        dihedral_atoms = out[5]
+        assert dihedral_atoms == [3, 1, 9, 5]
 
     def test_write_qm_data_files(self):
         full_path = self.get_fn(
