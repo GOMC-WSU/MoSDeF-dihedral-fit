@@ -314,7 +314,7 @@ class TestFileReading(BaseTest):
 
     def test_get_gaussian_log_file_data_2(self):
         full_path = self.get_fn(
-            "gaussian/perfluorodimethylether/scan_perfluorodimethylether.log"
+            "gaussian/FC_CF_OE_CF/output/scan_perfluorodimethylether_FC_CF_OE_CF.log"
         )
         out_indices = []
         out = get_gaussian_log_file_data({full_path: out_indices})

@@ -112,7 +112,7 @@ Run the dihedral fit to fit to the MM simulations:
         atom_type_naming_style='general',
         gomc_cpu_cores=1,
         r_squared_min=0.99,
-        r_squared_rtol=1e-03,
+        r_squared_atol=1e-03,
         opls_force_k0_zero=True
     )
 
@@ -231,7 +231,7 @@ Run the dihedral fit to fit to the MM simulations:
         atom_type_naming_style='general',
         gomc_cpu_cores=1,
     	r_squared_min=0.99,
-    	r_squared_rtol=5e-03,
+    	r_squared_atol=5e-03,
         opls_force_k0_zero=True
     )
 

@@ -37,7 +37,7 @@ def fit_dihedral_with_gomc(
     atom_type_naming_style="general",
     gomc_cpu_cores=1,
     r_squared_min=0.98,
-    r_squared_rtol=2.5e-02,
+    r_squared_atol=2.5e-02,
     opls_force_k0_zero=False,
 ):
     """Fit the desired dihedral to a MM force field, based on QM data.
@@ -319,14 +319,15 @@ def fit_dihedral_with_gomc(
         dihedral energies are set to zero.
 
         NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
-    r_squared_rtol: float (0 < r_squared_min < 1), default=2.5e-02
-        Where the QM data is defined as the actual data; this is the difference
+    r_squared_atol: float (0 < r_squared_min < 2), default=2.5e-02
+        Where the QM data is defined as the actual data; this is the absolute difference
         of the dihedral's calculated R-squared values between:
         * The QM-MM fitting process, where the fit MM dihedral k-values are zero (0).
         * The MM calculations where the fit k-value are entered in the MM data and
         compared to the QM data.
 
         NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
+        NOTE: The max is 2 as the min R**2 is -1, if the fit it is worse than the data average.
     opls_force_k0_zero: bool, default=False
         The k0 constant is from the equation listed above.
         If True, this is force sets the k0 constant in the opls equation to zero (0),
@@ -696,17 +697,17 @@ def fit_dihedral_with_gomc(
             f"but it must be a 0<float<1."
         )
 
-    # test the 'r_squared_rtol' input
-    if isinstance(r_squared_rtol, float):
-        if not (r_squared_rtol > 0 and r_squared_rtol < 1):
+    # test the 'r_squared_atol' input
+    if isinstance(r_squared_atol, float):
+        if not (r_squared_atol > 0 and r_squared_atol < 2):
             raise ValueError(
-                f"ERROR: The 'r_squared_rtol' = {r_squared_rtol}, "
-                f"but it must be a 0<float<1."
+                f"ERROR: The 'r_squared_atol' = {r_squared_atol}, "
+                f"but it must be a 0<float<2."
             )
 
     else:
         raise TypeError(
-            f"ERROR: The 'r_squared_rtol' is a {type( r_squared_rtol)}, "
+            f"ERROR: The 'r_squared_atol' is a {type( r_squared_atol)}, "
             f"but it must be a 0<float<1."
         )
 
@@ -3345,13 +3346,17 @@ def fit_dihedral_with_gomc(
                 ),
             )
         ]
-
+        r_squared_k0_is_constant = mdf_math.get_r_squared(
+            sorted_Gaussian_minus_GOMC_data_total_energy_kcal_per_mol_normalized_list,
+            fit_opls_dihedral_k0_is_constant,
+        )
         # get R**2 for the fit, running through GOMC to get the new energy of the
         # individual fit.
         opls_r_squared_fitted_data_via_gomc_iter = mdf_math.get_r_squared(
-            gaussian_data_total_energy_kcal_per_mol_normalize_list,
             GOMC_data_fitted_total_energy_kcal_per_mol_normalize_list,
+            gaussian_data_total_energy_kcal_per_mol_normalize_list,
         )
+
         opls_r_squared_fitted_data_via_gomc_list.append(
             opls_r_squared_fitted_data_via_gomc_iter
         )
@@ -3392,7 +3397,7 @@ def fit_dihedral_with_gomc(
         # Compare original fit vs run through EACH GOMC as a validation test case
         if opls_q == 0:
             opls_fit_acceptable_r_squared_values_list = []
-            opls_fit_acceptable_r_squared_values_not_in_rtol_list = []
+            opls_fit_acceptable_r_squared_values_not_in_atol_list = []
             opls_fit_data_non_zero_k_constants_not_acceptable_r_squared_values_list = (
                 []
             )
@@ -3409,9 +3414,10 @@ def fit_dihedral_with_gomc(
             if np.isclose(
                 opls_r_squared_fitted_data_via_gomc_list[opls_q],
                 opls_fit_data_r_squared_list[opls_q],
-                rtol=r_squared_rtol,
+                atol=r_squared_atol,
+                rtol=0,
             ):
-                opls_fit_acceptable_r_squared_values_not_in_rtol_list.append(1)
+                opls_fit_acceptable_r_squared_values_not_in_atol_list.append(1)
 
                 # get maximum value for  fit vs run through EACH GOMC as a validation test case
                 if (
@@ -3428,7 +3434,7 @@ def fit_dihedral_with_gomc(
                     max_opls_fit_Rsquared_list_index_number = opls_q
 
             else:
-                opls_fit_acceptable_r_squared_values_not_in_rtol_list.append(0)
+                opls_fit_acceptable_r_squared_values_not_in_atol_list.append(0)
 
                 opls_fit_data_non_zero_k_constants_not_acceptable_r_squared_values_list.append(
                     opls_fit_data_non_zero_k_constants_list[opls_q]
@@ -3483,7 +3489,8 @@ def fit_dihedral_with_gomc(
             if not np.isclose(
                 opls_r_squared_fitted_data_via_gomc_list[r_n_tol_i],
                 opls_fit_data_r_squared_list[r_n_tol_i],
-                rtol=r_squared_rtol,
+                atol=r_squared_atol,
+                rtol=0,
             ):
                 meet_r_sq_not_tol_rounded_opls_combined_Rsq_tol_list.append(
                     [
@@ -3514,7 +3521,7 @@ def fit_dihedral_with_gomc(
     )
     print(f"opls_fit_data_r_squared_list = {opls_fit_data_r_squared_list}")
     print(f"user set 'r_squared_min' = {r_squared_min}")
-    print(f"user set 'r_squared_rtol' = {r_squared_rtol}")
+    print(f"user set 'r_squared_atol' = {r_squared_atol}")
     print("********************")
     print(
         f"dihedral_degrees_list = {np.asarray(sorted_Gaussian_minus_GOMC_data_dihedral_degrees_list)}"
@@ -3526,13 +3533,13 @@ def fit_dihedral_with_gomc(
     print("********************")
 
     # Compare original fit vs run through ALL GOMC as a validation test case
-    if np.sum(opls_fit_acceptable_r_squared_values_not_in_rtol_list) == 0:
+    if np.sum(opls_fit_acceptable_r_squared_values_not_in_atol_list) == 0:
         raise ValueError(
             f"ERROR: The calculated R-squared energy values from the fit types "
             f"do not match the validated case for 'r_squared_min' >= "
             f"{mdf_math.round_to_sig_figs(r_squared_min,sig_figs=8)}, "
-            f"within the relative tolerance or 'r_squared_rtol' = "
-            f"{mdf_math.round_to_sig_figs(r_squared_rtol,sig_figs=8)}. \n"
+            f"within the absolute tolerance or 'r_squared_atol' = "
+            f"{mdf_math.round_to_sig_figs(r_squared_atol,sig_figs=8)}. \n"
             f"Constants_used = The calculated R-squared energy values from the fit type constants_used."
             f"R-squared_fitted = Gaussian minus GOMC with the selected dihedral set to zero \n"
             f"R-squared_new_dihedral = Gaussian minus GOMC with the selected individual dihedral added in GOMC \n"
@@ -3540,7 +3547,7 @@ def fit_dihedral_with_gomc(
             f"- The fits for all are shown here for all the dihedral combinations \n"
             f"[opls_constants_used, R-squared_fitted, R-squared_new_dihedral, Abs(delta)] \n"
             f"{rounded_opls_combined_Rsq_tol_list}, \n"
-            f"The 'r_squared_min' and 'r_squared_rtol' "
+            f"The 'r_squared_min' and 'r_squared_atol' "
             f"variables may need to be adjusted, \n"
             f"there is likely something wrong with the fitting procedure, the "
             f"software parameters need tuned, or there is a bug in the software. \n\n "
@@ -3548,16 +3555,16 @@ def fit_dihedral_with_gomc(
             f"the compared R-squared values could be very different if they are not nearly \n"
             f"a perfect fit (R-squared --> ~0.98 to 0.99999999)."
         )
-
+    
     elif np.sum(
-        opls_fit_acceptable_r_squared_values_not_in_rtol_list
+        opls_fit_acceptable_r_squared_values_not_in_atol_list
     ) != np.sum(opls_fit_acceptable_r_squared_values_list):
         warn(
             f"WARNING: The calculated R-squared energy values from the fit types "
             f"do match the validated case for 'r_squared_min' >= "
             f"{mdf_math.round_to_sig_figs(r_squared_min,sig_figs=8)}, "
-            f"but do not fit within the relative tolerance of 'r_squared_rtol' = "
-            f"{mdf_math.round_to_sig_figs(r_squared_rtol,sig_figs=8)}. \n"
+            f"but do not fit within the absolute tolerance of 'r_squared_atol' = "
+            f"{mdf_math.round_to_sig_figs(r_squared_atol,sig_figs=8)}. \n"
             f"Constants_used = The calculated R-squared energy values from the fit type constants_used. \n"
             f"R-squared_fitted = Gaussian minus GOMC with the selected dihedral set to zero. \n"
             f"R-squared_new_dihedral = Gaussian minus GOMC with the selected individual dihedral added in GOMC. \n"
@@ -3565,7 +3572,7 @@ def fit_dihedral_with_gomc(
             f"- The fits for all are shown here for all the dihedral combinations \n"
             f"[opls_constants_used, R-squared_fitted, R-squared_new_dihedral, Abs(delta)] \n"
             f"{meet_r_sq_not_tol_rounded_opls_combined_Rsq_tol_list}. \n"
-            f"The 'r_squared_min' and 'r_squared_rtol' "
+            f"The 'r_squared_min' and 'r_squared_atol' "
             f"variables may need to be adjusted, \n"
             f"there is likely something wrong with the fitting procedure, the "
             f"software parameters need tuned, or there is a bug in the software. \n\n "
