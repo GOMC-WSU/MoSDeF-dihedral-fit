@@ -1192,7 +1192,7 @@ def get_r_squared(data_points, fitted_values):
         rss += (data_points[iter_i] - fitted_values[iter_i]) ** 2
         tss += (data_points[iter_i] - np.average(data_points)) ** 2
 
-    if 1 - rss / tss >=0:
+    if 1 - rss / tss >= 0:
         r_squared_0_to_1 = 1 - rss / tss
     else:
         r_squared_0_to_1 = -1

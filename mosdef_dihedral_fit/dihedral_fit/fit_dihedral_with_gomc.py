@@ -3555,7 +3555,7 @@ def fit_dihedral_with_gomc(
             f"the compared R-squared values could be very different if they are not nearly \n"
             f"a perfect fit (R-squared --> ~0.98 to 0.99999999)."
         )
-    
+
     elif np.sum(
         opls_fit_acceptable_r_squared_values_not_in_atol_list
     ) != np.sum(opls_fit_acceptable_r_squared_values_list):
