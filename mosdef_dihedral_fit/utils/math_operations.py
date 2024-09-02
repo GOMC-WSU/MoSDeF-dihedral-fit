@@ -1152,6 +1152,15 @@ def get_r_squared(data_points, fitted_values):
         compared to the data that was used in the fitting process.
         These values are typically 0-1, but can be negative if the intercept
         constant or other parameters are manually not used in the fitting process.
+        These values are typically 0-1, but can be negative if the intercept
+        constant or other parameters are manually not used in the fitting process.
+
+        if r_squared >=0
+        |   It will be presented as calculated.
+
+        if r_squared <0
+        |   It will be set to -1
+
     """
     if not isinstance(
         data_points,
@@ -1183,6 +1192,9 @@ def get_r_squared(data_points, fitted_values):
         rss += (data_points[iter_i] - fitted_values[iter_i]) ** 2
         tss += (data_points[iter_i] - np.average(data_points)) ** 2
 
-    r_squared_0_to_1 = 1 - rss / tss
+    if 1 - rss / tss >= 0:
+        r_squared_0_to_1 = 1 - rss / tss
+    else:
+        r_squared_0_to_1 = -1
 
     return r_squared_0_to_1

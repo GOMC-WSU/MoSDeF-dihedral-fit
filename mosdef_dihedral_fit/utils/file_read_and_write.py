@@ -838,13 +838,14 @@ def get_gaussian_log_file_data(
     ) in qm_log_file_dict.items():
         # run each log file
         with open(log_file_iter, "r") as fp:
-            dihedral_scan_line = None
+            molecule_charge_mult_found = None
             dihedral_atom_numbers_list = None
             number_of_optimized_scans = None
             scan_degrees_per_scan = None
             molecule_charge = None
             molecule_multiplicity = None
             number_of_atoms = None
+            last_coordinates_ang_list = None
 
             energy_hartree_list_iter = []
 
@@ -862,15 +863,7 @@ def get_gaussian_log_file_data(
                 # **********************************
                 # get the starting dihedral scan location, elements, charge, multiplicity and number of atoms (START)
                 # **********************************
-                # get and mark the initial system setup for a dihedral scan
-                if (
-                    len(split_line_m) >= 2
-                    and split_line_m[0] == "Dihedral"
-                    and split_line_m[1] == "Scan"
-                ):
-                    dihedral_scan_line = m
-
-                # get the gaussian molecule charge and multiplicity
+                # get the gaussian molecule charge and multiplicity and ma
                 if (
                     len(split_line_m) >= 4
                     and split_line_m[0] == "Charge"
@@ -880,6 +873,7 @@ def get_gaussian_log_file_data(
                 ):
                     molecule_charge = split_line_m[2]
                     molecule_multiplicity = split_line_m[5]
+                    molecule_charge_mult_found = True
 
                     # check if the molecule charges are the same for all Gaussian files
                     all_molecule_charge_list = (
@@ -945,7 +939,10 @@ def get_gaussian_log_file_data(
 
                 # get the dihedral atom numbers (in Gaussian numbering starts at 1)
                 # and the dihedral degrees per scan
-                if len(split_line_m) == 8 and dihedral_scan_line is not None:
+                if (
+                    len(split_line_m) == 8
+                    and molecule_charge_mult_found is not None
+                ):
                     if (
                         split_line_m[0] == "D"
                         and split_line_m[5] == "S"
@@ -1032,9 +1029,9 @@ def get_gaussian_log_file_data(
 
                         last_coordinates_ang_list = coord_list_iter
 
-                if len(optimized_dihedral_angle_degrees_list) > len(
-                    optimized_coordinates_ang_list
-                ):
+                if last_coordinates_ang_list is not None and len(
+                    optimized_dihedral_angle_degrees_list
+                ) > len(optimized_coordinates_ang_list):
                     optimized_coordinates_ang_list.append(
                         last_coordinates_ang_list
                     )
@@ -1839,6 +1836,7 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                         atom_coor_iter_list[3],
                     )
                 )
+            print(f"m dih_phi_iter_list = { dih_phi_iter_list}")
 
             all_matching_dihedral_coordinates_angstroms_added_to_k_values_list.append(
                 dih_coor_iter_list
@@ -1851,6 +1849,19 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                     dih_phi_iter_list
                 )
             )
+    print(f"9999999999999999999999999999999999999")
+    print(f"9999999999999999999999999999999999999")
+    print(f"9999999999999999999999999999999999999")
+    print(
+        f"matching_dihedral_types_by_atom_type_list = {matching_dihedral_types_by_atom_type_list}"
+    )
+    print(f"m dih_phi_iter_list = { dih_phi_iter_list}")
+    print(
+        f"all_sum_opls_const_1_plus_or_minus_cos_n_list = {all_sum_opls_const_1_plus_or_minus_cos_n_list}"
+    )
+    print(f"9999999999999999999999999999999999999")
+    print(f"9999999999999999999999999999999999999")
+    print(f"9999999999999999999999999999999999999")
 
     return [
         matching_dihedral_types_by_atom_numbers_list,
