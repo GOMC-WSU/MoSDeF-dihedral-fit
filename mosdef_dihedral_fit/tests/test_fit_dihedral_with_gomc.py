@@ -9829,7 +9829,9 @@ class TestFitDihedralWithGomc(BaseTest):
                                 rtol=0.08,
                             )
 
-    def test_gaussian_log_file_fit_butane_HC_CT_CT_HC_check_all_summed_same_angles_working(self):
+    def test_gaussian_log_file_fit_butane_HC_CT_CT_HC_check_all_summed_same_angles_working(
+        self,
+    ):
         fit_dihedral_with_gomc(
             ["HC", "CT", "CT", "HC"],
             self.get_fn(
