@@ -7388,7 +7388,6 @@ class TestFitDihedralWithGomc(BaseTest):
                     for j in range(0, len(correct_line_values[i])):
                         # check the string listing what cosin powers are used
                         if j == 0:
-                            print
                             assert str(split_line_i[j]) == str(
                                 correct_line_values[i][j]
                             )
@@ -9802,6 +9801,319 @@ class TestFitDihedralWithGomc(BaseTest):
                         0.489877706752,
                         0,
                         0.999580885743,
+                    ],
+                ]
+
+                if i == 0:
+                    assert split_line_i == correct_line_values[i]
+
+                else:
+                    assert len(split_line_i) == len(correct_line_values[i])
+                    for j in range(0, len(correct_line_values[i])):
+                        # check the string listing what cosin powers are used
+                        if j == 0:
+                            assert str(split_line_i[j]) == str(
+                                correct_line_values[i][j]
+                            )
+
+                        # check the k-values and the r-squared fit
+                        else:
+                            assert np.isclose(
+                                mdf_math.round_to_sig_figs(
+                                    float(split_line_i[j]), number_sig_i
+                                ),
+                                mdf_math.round_to_sig_figs(
+                                    correct_line_values[i][j], number_sig_i
+                                ),
+                                atol=0.02,
+                                rtol=0.08,
+                            )
+
+    def test_gaussian_log_file_fit_butane_HC_CT_CT_HC_check_all_summed_same_angles_working(self):
+        fit_dihedral_with_gomc(
+            ["HC", "CT", "CT", "HC"],
+            self.get_fn(
+                "gaussian_style_output_files/HC_CT_CT_HC_butane/input/starting_coords/HC_CT_CT_HC_butane.mol2"
+            ),
+            self.get_fn("amber_aa_butane_CT_CT_CT_CT_gmso.xml"),
+            298.15 * u.Kelvin,
+            gomc_binary_directory,
+            {
+                self.get_fn(
+                    "gaussian_style_output_files/HC_CT_CT_HC_butane/output"
+                ): [],
+            },
+            manual_dihedral_atom_numbers_list=[6, 1, 2, 9],
+            qm_engine="gaussian_style_final_files",
+            combining_rule=None,
+            atom_type_naming_style="general",
+            gomc_cpu_cores=1,
+            r_squared_min=0.98,
+            r_squared_atol=0.02,
+            opls_force_k0_zero=False,
+        )
+
+        assert (
+            os.path.isfile("all_normalized_energies_in_kcal_per_mol.txt")
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_3_4_in_kcal_per_mol.txt"
+            )
+            is False
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_3_in_kcal_per_mol.txt"
+            )
+            is False
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_2_in_kcal_per_mol.txt"
+            )
+            is False
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_3_in_kcal_per_mol.txt"
+            )
+            is False
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_1_in_kcal_per_mol.txt"
+            )
+            is False
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_2_4_in_kcal_per_mol.txt"
+            )
+            is False
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_2_in_kcal_per_mol.txt"
+            )
+            is False
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_3_4_in_kcal_per_mol.txt"
+            )
+            is False
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_3_in_kcal_per_mol.txt"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile(
+                "all_normalized_energies_OPLS_fit_4_in_kcal_per_mol.txt"
+            )
+            is False
+        )
+        assert os.path.isfile("gomc_raw_energies_in_Kelvin.txt") is True
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_3_4_energies_in_Kelvin.txt")
+            is False
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_3_energies_in_Kelvin.txt")
+            is False
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_2_energies_in_Kelvin.txt")
+            is False
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_3_energies_in_Kelvin.txt")
+            is False
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_1_energies_in_Kelvin.txt")
+            is False
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_2_4_energies_in_Kelvin.txt")
+            is False
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_2_energies_in_Kelvin.txt")
+            is False
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_3_4_energies_in_Kelvin.txt")
+            is False
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_3_energies_in_Kelvin.txt") is True
+        )
+        assert (
+            os.path.isfile("gomc_raw_OPLS_fit_4_energies_in_Kelvin.txt")
+            is False
+        )
+        assert (
+            os.path.isfile(
+                "opls_all_single_fit_dihedral_k_constants_figure.pdf"
+            )
+            is True
+        )
+        assert (
+            os.path.isfile("opls_all_summed_dihedrals_k_constants_figure.pdf")
+            is True
+        )
+        assert (
+            os.path.isfile("opls_dihedral_k_constants_fit_energy.txt") is True
+        )
+        assert (
+            os.path.isfile("periodic_dihedral_k_constants_fit_energy.txt")
+            is True
+        )
+        assert os.path.isfile("RB_torsion_k_constants_fit_energy.txt") is True
+
+        # check the OPLS dihedral file
+        with open("opls_dihedral_k_constants_fit_energy.txt", "r") as fp:
+            number_sig_i = 4
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                split_line_i = line.split()
+                correct_line_values = [
+                    [
+                        "non_zero_k_constants",
+                        "k0_kcal_per_mol",
+                        "k1_kcal_per_mol",
+                        "k2_kcal_per_mol",
+                        "k3_kcal_per_mol",
+                        "k4_kcal_per_mol",
+                        "r_squared",
+                    ],
+                    [str(3), 0, 0, 0, 0.272625771312, 0, 0.995091320332],
+                ]
+
+                if i == 0:
+                    assert split_line_i == correct_line_values[i]
+
+                else:
+                    assert len(split_line_i) == len(correct_line_values[i])
+                    for j in range(0, len(correct_line_values[i])):
+                        # check the string listing what cosin powers are used
+                        if j == 0:
+                            assert str(split_line_i[j]) == str(
+                                correct_line_values[i][j]
+                            )
+
+                        # check the k-values and the r-squared fit
+                        else:
+                            assert mdf_math.round_to_sig_figs(
+                                float(split_line_i[j]), number_sig_i
+                            ) == mdf_math.round_to_sig_figs(
+                                correct_line_values[i][j], number_sig_i
+                            )
+
+        # check the periodic dihedral file
+        with open("periodic_dihedral_k_constants_fit_energy.txt", "r") as fp:
+            number_sig_i = 4
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                split_line_i = line.split()
+                correct_line_values = [
+                    [
+                        "non_zero_k_constants",
+                        "k0_kcal_per_mol",
+                        "k1_kcal_per_mol",
+                        "k2_kcal_per_mol",
+                        "k3_kcal_per_mol",
+                        "k4_kcal_per_mol",
+                        "k5_kcal_per_mol",
+                        "n0_kcal_per_mol",
+                        "n1_kcal_per_mol",
+                        "n2_kcal_per_mol",
+                        "n3_kcal_per_mol",
+                        "n4_kcal_per_mol",
+                        "n5_kcal_per_mol",
+                        "d0_kcal_per_mol",
+                        "d1_kcal_per_mol",
+                        "d2_kcal_per_mol",
+                        "d3_kcal_per_mol",
+                        "d4_kcal_per_mol",
+                        "d5_kcal_per_mol",
+                        "r_squared",
+                    ],
+                    [
+                        str("0_3"),
+                        0.272625771312,
+                        0,
+                        0,
+                        -0.136312885656,
+                        0,
+                        0,
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        90.0,
+                        180.0,
+                        0,
+                        180.0,
+                        0,
+                        180.0,
+                        0.995091320332,
+                    ],
+                ]
+
+                if i == 0:
+                    assert split_line_i == correct_line_values[i]
+
+                else:
+                    assert len(split_line_i) == len(correct_line_values[i])
+                    for j in range(0, len(correct_line_values[i])):
+                        # check the string listing what cosin powers are used
+                        if j == 0:
+                            assert str(split_line_i[j]) == str(
+                                correct_line_values[i][j]
+                            )
+
+                        # check the k-values and the r-squared fit
+                        else:
+                            assert mdf_math.round_to_sig_figs(
+                                float(split_line_i[j]), number_sig_i
+                            ) == mdf_math.round_to_sig_figs(
+                                correct_line_values[i][j], number_sig_i
+                            )
+
+        # check the periodic dihedral file
+        with open("RB_torsion_k_constants_fit_energy.txt", "r") as fp:
+            number_sig_i = 4
+            out_gomc = fp.readlines()
+            for i, line in enumerate(out_gomc):
+                split_line_i = line.split()
+                correct_line_values = [
+                    [
+                        "non_zero_k_constants",
+                        "k0_kcal_per_mol",
+                        "k1_kcal_per_mol",
+                        "k2_kcal_per_mol",
+                        "k3_kcal_per_mol",
+                        "k4_kcal_per_mol",
+                        "k5_kcal_per_mol",
+                        "r_squared",
+                    ],
+                    [
+                        str("0_3"),
+                        0.136312885656,
+                        0.408938656968,
+                        0,
+                        -0.545251542624,
+                        0,
+                        0,
+                        0.995091320332,
                     ],
                 ]
 

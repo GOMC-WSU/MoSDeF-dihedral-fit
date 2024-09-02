@@ -1827,7 +1827,6 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                 dih_coor_iter_list.append(atom_coor_iter_list)
 
                 # get the dihedral phi agles lists for each QM scan
-
                 dih_phi_iter_list.append(
                     mdf_math.dihedral_angle(
                         atom_coor_iter_list[0],
@@ -1836,7 +1835,6 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                         atom_coor_iter_list[3],
                     )
                 )
-            print(f"m dih_phi_iter_list = { dih_phi_iter_list}")
 
             all_matching_dihedral_coordinates_angstroms_added_to_k_values_list.append(
                 dih_coor_iter_list
@@ -1849,19 +1847,6 @@ def get_matching_dihedral_info_and_opls_fitting_data(
                     dih_phi_iter_list
                 )
             )
-    print(f"9999999999999999999999999999999999999")
-    print(f"9999999999999999999999999999999999999")
-    print(f"9999999999999999999999999999999999999")
-    print(
-        f"matching_dihedral_types_by_atom_type_list = {matching_dihedral_types_by_atom_type_list}"
-    )
-    print(f"m dih_phi_iter_list = { dih_phi_iter_list}")
-    print(
-        f"all_sum_opls_const_1_plus_or_minus_cos_n_list = {all_sum_opls_const_1_plus_or_minus_cos_n_list}"
-    )
-    print(f"9999999999999999999999999999999999999")
-    print(f"9999999999999999999999999999999999999")
-    print(f"9999999999999999999999999999999999999")
 
     return [
         matching_dihedral_types_by_atom_numbers_list,
