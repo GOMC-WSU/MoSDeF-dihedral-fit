@@ -31,7 +31,6 @@ jobs:
           - os: macos
             environment-file: environment.yml
             miniforge-variant: Mambaforge-pypy3
-            
     defaults:
       run:
         shell: bash -l {0}
