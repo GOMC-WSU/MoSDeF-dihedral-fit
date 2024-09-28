@@ -37,7 +37,7 @@ jobs:
         shell: bash -l {0}
 
     steps:
-      - name: Mamba build
+      - name: Install Mamba
         - uses: actions/checkout@v2
         - uses: conda-incubator/setup-miniconda@v2
           with:
