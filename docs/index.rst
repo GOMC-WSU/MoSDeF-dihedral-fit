@@ -14,11 +14,11 @@ The **MoSDeF-dihedral-fit** software produces dihedral fits for existing force f
 the `Gaussian 16 <https://gaussian.com>`_ log files, and a **mol2** file.
 
 .. note::
-    Currently, this means that only the fourth (4th) cosine multiple or power is utilized in the dihedral fit.
+    Currently, **MoSDeF-dihedral-fit** only supports up to the fourth (4th) cosine multiple or power in the generated dihedral equations.
 
 .. note::
     If using the **CHARMM** dihedral format, the K0 term (constant term)
-    will have to be disregarded because the **CHARMM** recognizes this as a harmonic dihedral,
+    will have to be disregarded because **CHARMM** recognizes this as a harmonic dihedral,
     not a periodic dihedral.
 
 
