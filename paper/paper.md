@@ -19,7 +19,6 @@ tags:
 authors:
   - name: Brad Crawford
     orcid: 0000-0003-0638-7333
-    equal-contrib: true
     affiliation: "1, 2"
   - name: Co D. Quach
     orcid: 0000-0002-1255-4161
@@ -38,7 +37,6 @@ authors:
     affiliation: "3, 4"
   - name: Jeffrey J. Potoff
     orcid: 0000-0002-4421-8787
-    equal-contrib: true
     affiliation: 2
 
 affiliations:
