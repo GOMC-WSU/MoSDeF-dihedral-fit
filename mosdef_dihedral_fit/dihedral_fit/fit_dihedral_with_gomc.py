@@ -802,8 +802,8 @@ def fit_dihedral_with_gomc(
 
     # Build the methanol liquid box_1
 
-    # liquid_box_0_length_nm must be a value <= 999.8 nm and an interger value in angstroms <= 9998 Ang
-    liquid_box_0_length_nm = 999.8
+    # liquid_box_0_length_nm must be a value <= 99.8 nm and an interger value in angstroms <= 998 Ang
+    liquid_box_0_length_nm = 99.8
 
     # Started building the fragment for the GOMC simulation with dihedral k values = 0
     box_0_liq = mb.fill_box(
@@ -903,7 +903,7 @@ def fit_dihedral_with_gomc(
     total_qm_scans = len(gaussian_raw_degrees_list)
 
     mdf_frw.write_xyz_file_from_gaussian_coordinates(
-        elementpdb_names_list,
+        atom_pdb_names_list,
         qm_parital_coordinate_file_starting_dir_and_name,
         qm_coordinate_file_extension,
         xyz_xsc_coor_files_directory,
