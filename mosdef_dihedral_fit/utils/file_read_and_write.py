@@ -182,6 +182,9 @@ def write_xyz_file_from_gaussian_coordinates(
     atom_names_with_2_spaces_in_front = []
     for j_iter in range(0, len(atom_names_list)):
         atom_names_with_2_spaces_in_front.append(f"  {atom_names_list[j_iter]}")
+        print(f"******************")
+        print(f"  {atom_names_list[j_iter]}")
+        print(f"******************")
 
     for i_iter in range(1, total_qm_scans + 1):
         read_gausian_file_dir_name = f"{qm_parital_coordinate_file_starting_dir_and_name}{i_iter}.{qm_coordinate_file_extension}"
