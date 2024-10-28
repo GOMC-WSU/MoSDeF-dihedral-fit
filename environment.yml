@@ -18,6 +18,7 @@ dependencies:
   - mosdef-gomc>=1.4.0
   - pre-commit
   - sphinx=6.1.1
+  - gsd=3.3.2
   - pip
   - pip:
       - bump2version
