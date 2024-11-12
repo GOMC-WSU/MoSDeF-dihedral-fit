@@ -39,8 +39,7 @@ repository-code: 'https://github.com/GOMC-WSU'
 url: 'https://github.com/GOMC-WSU'
 repository: 'https://github.com/GOMC-WSU/MoSDeF-dihedral-fit'
 repository-artifact: 'https://github.com/GOMC-WSU/MoSDeF-dihedral-fit/releases'
-abstract: >-
-MoSDeF-dihedral-fit
+abstract: MoSDeF-dihedral-fit
 
 keywords:
   - Python
