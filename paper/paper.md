@@ -31,10 +31,10 @@ authors:
     affiliation: "3, 4, 5"
   - name: Clare McCabe
     orcid: 0000-0002-8552-9135
-    affiliation: "3, 4"
+    affiliation: "3, 4, 6"
   - name: Peter T. Cummings
     orcid: 0000-0002-9766-2216
-    affiliation: "3, 4"
+    affiliation: "3, 4, 6"
   - name: Jeffrey J. Potoff
     orcid: 0000-0002-4421-8787
     affiliation: 2
@@ -50,6 +50,8 @@ affiliations:
    index: 4
  - name: Interdisciplinary Material Science Program, Vanderbilt University, Nashville, TN 37235-0106, USA
    index: 5
+ - name: School of Engineering and Physical Sciences, Heriot-Watt University, Edinburgh EH14 4AS, UK
+   index: 6
 
 date: 10 October 2024
 bibliography: paper.bib

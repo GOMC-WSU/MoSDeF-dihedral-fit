@@ -8,7 +8,7 @@ type: software
 authors:
   - given-names: "Brad"
     family-names: Crawford
-    affiliation: "Wayne State University"
+    affiliation: "Atomfold"
     orcid: 'https://orcid.org/0000-0003-0638-7333'
   - given-names: "Co D."
     family-names: Quach
@@ -24,11 +24,11 @@ authors:
     orcid: 'https://orcid.org/0000-0003-0557-0427'
   - given-names: "Clare"
     family-names: McCabe
-    affiliation: "Vanderbilt University"
+    affiliation: "Heriot-Watt University"
     orcid: 'https://orcid.org/0000-0002-8552-9135'
   - given-names: "Peter T."
     family-names: Cummings
-    affiliation: "Vanderbilt University"
+    affiliation: "Heriot-Watt University"
     orcid: 'https://orcid.org/0000-0002-9766-2216'
   - given-names: "Jeffrey"
     family-names: Potoff
@@ -59,11 +59,8 @@ preferred-citation:
   authors:
   - given-names: "Brad"
     family-names: Crawford
-    affiliation: "Wayne State University"
-  - given-names: Umesh
-    family-names: Timalsina
-    affiliation: "Vanderbilt University"
-    orcid: 'https://orcid.org/0000-0002-5430-3993'
+    affiliation: "Atomfold"
+    orcid: 'https://orcid.org/0000-0003-0638-7333'
   - given-names: "Co D."
     family-names: Quach
     affiliation: "Vanderbilt University"
@@ -72,17 +69,17 @@ preferred-citation:
     family-names: Craven
     affiliation: "Vanderbilt University"
     orcid: 'https://orcid.org/0000-0002-4607-4377'
-  - given-names: "Justin B."
-    family-names: Gilmer
+  - given-names: "Christopher R."
+    family-names: Iacovella
     affiliation: "Vanderbilt University"
-    orcid: 'https://orcid.org/0000-0002-6915-5591'
+    orcid: 'https://orcid.org/0000-0003-0557-0427'
+  - given-names: "Clare"
+    family-names: McCabe
+    affiliation: "Heriot-Watt University"
+    orcid: 'https://orcid.org/0000-0002-8552-9135'
   - given-names: "Peter T."
     family-names: Cummings
-    affiliation: "Vanderbilt University"
-    orcid: 'https://orcid.org/0000-0002-9766-2216'
-  - given-names: "Peter T."
-    family-names: Cummings
-    affiliation: "Vanderbilt University"
+    affiliation: "Heriot-Watt University"
     orcid: 'https://orcid.org/0000-0002-9766-2216'
   - given-names: "Jeffrey"
     family-names: Potoff
