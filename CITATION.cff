@@ -2,8 +2,7 @@
 # Visit https://bit.ly/cffinit to generate yours today!
 
 cff-version: 1.0.0
-title: >-
-  MoSDeF-dihedral-fit"
+title: "MoSDeF-dihedral-fit"
 message: "Please cite this software using these metadata and the preferred citation."
 type: software
 authors:
