@@ -10,7 +10,7 @@ from setuptools import find_packages, setup
 
 #########################################
 NAME = "MoSDeF-dihedral-fit"
-VERSION = "0.1.7"
+VERSION = "0.1.8"
 ISRELEASED = True
 if ISRELEASED:
     __version__ = VERSION
