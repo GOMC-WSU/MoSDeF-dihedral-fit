@@ -82,12 +82,12 @@ This research was partially supported by the National Science Foundation (grants
 
 <u>OPLS-dihedral</u>:
 
-$$ U_{OPLS} = \frac{k_0}{2} $$ 
+$$ U_{OPLS} = \frac{k_0}{2} $$
 
 $$+ \frac{k_1}{2} * (1 + cos(\theta)) + \frac{k_2}{2} * (1-cos(2 * \theta))$$
 
-\begin{equation} 
-+ \frac{k_3}{2} * (1 + cos(3 * \theta)) + \frac{k_4}{2}  *(1-cos(4 * \theta)) 
+\begin{equation}
++ \frac{k_3}{2} * (1 + cos(3 * \theta)) + \frac{k_4}{2}  *(1-cos(4 * \theta))
 \label{eqn:oplseqn}
 \end{equation}
 
@@ -99,7 +99,7 @@ $$+ C_1 * cos(\psi) + C_2 * cos(\psi)^2$$
 
 $$+ C_3 * cos(\psi)^3 + C_4 * cos(\psi)^4$$
 
-\begin{equation} 
+\begin{equation}
 \psi = \theta - 180^o
 \label{eqn:RBeqn}
 \end{equation}
@@ -114,7 +114,7 @@ $$+  K_3 * (1 + cos(n_3*\theta - d_3)) +  K_4 * (1 + cos(n_4*\theta) - d_4)$$
 
 $$where:  n_0 = 0  ;  n_1 = 1  ;  n_2 = 2  ;  n_3 = 3  ;  n_4 = 4 $$
 
-\begin{equation} 
-d_0 = 90^o  ;  d_1 = 180^o  ;  d_2 = 0^o  ;  d_3 = 180^o  ;  d_4 = 0^o 
+\begin{equation}
+d_0 = 90^o  ;  d_1 = 180^o  ;  d_2 = 0^o  ;  d_3 = 180^o  ;  d_4 = 0^o
 \label{eqn:periodiceqn}
 \end{equation}
