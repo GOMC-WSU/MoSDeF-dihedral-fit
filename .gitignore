@@ -6,7 +6,7 @@ test-output.xml
 # C extensions
 *.so
 
-# github
+# github items
 **/.DS_Store
 
 # Packages
