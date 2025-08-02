@@ -7,7 +7,6 @@ dependencies:
   - vmd-python
   - ipython
   - numpydoc
-  - numpy>=2.0,<2.3
   - mock
   - sphinx_rtd_theme
   - nbsphinx
