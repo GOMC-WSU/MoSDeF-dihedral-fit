@@ -4,7 +4,7 @@ channels:
   - defaults
 dependencies:
   - python>=3.12,<3.14
-  - vmd-python
+  - vmd-python>=3.17
   - ipython
   - numpydoc
   - numpy>=2.0,<2.3
