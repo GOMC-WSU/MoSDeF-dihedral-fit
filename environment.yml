@@ -3,10 +3,11 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python>=3.10,<3.12
-  - vmd-python
+  - python>=3.12,<3.14
+  - vmd-python>=3.1.6
   - ipython
   - numpydoc
+  - numpy>=2.0,<2.3
   - mock
   - sphinx_rtd_theme
   - nbsphinx
@@ -15,7 +16,7 @@ dependencies:
   - pytest
   - pytest-cov
   - coverage
-  - mosdef-gomc>=1.4.0
+  - mosdef-gomc>=1.5.0
   - pre-commit
   - sphinx=6.1.1
   - pip

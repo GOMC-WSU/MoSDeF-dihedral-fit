@@ -67,7 +67,7 @@ To check all the files using pre-commit, run::
 Supported Python Versions
 -------------------------
 
-``Python 3.10 and 3.11`` are currently the only officially supported and tested version during the
+``Python 3.12 and 3.13`` are currently the only officially supported and tested version during the
 software development. Older versions of ``Python`` may work, but they are not guaranteed to work.
 
 Testing your installation
