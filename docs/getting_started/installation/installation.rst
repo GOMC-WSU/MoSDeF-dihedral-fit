@@ -4,7 +4,7 @@ Installation
 
 .. note::
     The GOMC >= v2.75 software need to be installed manually, outside of this Python install,
-    with it's directory/path specified in the dihedral fit function. 
+    with it's directory/path specified in the dihedral fit function.
 
 Installation with `mamba <https://github.com/mamba-org/mamba>`_ (Recommended)
 -----------------------------------------------------------------------------
