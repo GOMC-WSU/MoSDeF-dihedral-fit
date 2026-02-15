@@ -824,63 +824,63 @@ class TestFitDihedralWithGomc(BaseTest):
                         "k4_kcal_per_mol",
                         "r_squared",
                     ],
-                    [str("1"), 0, 2.00408568934, 0, 0, 0, -1],
-                    [str("2"), 0, 0, 2.13847194875, 0, 0, 0.264787158812],
-                    [str("3"), 0, 0, 0, 1.79252468736, 0, -1],
-                    [str("4"), 0, 0, 0, 0, 1.71219173182, -1],
+                    [str("1"), 0, 2.0043843779, 0, 0, 0, -1],
+                    [str("2"), 0, 0, 2.13887995673, 0, 0, 0.265058829483],
+                    [str("3"), 0, 0, 0, 1.79266434371, 0, -1],
+                    [str("4"), 0, 0, 0, 0, 1.71251524752, -1],
                     [
                         str("1_3"),
                         0,
-                        1.45632365052,
+                        1.45669370251,
                         0,
-                        0.821642101161,
+                        0.821535056147,
                         0,
-                        0.0570637738537,
+                        0.0566682712428,
                     ],
                     [
                         str("2_4"),
                         0,
                         0,
-                        1.79461740051,
+                        1.79496359399,
                         0,
-                        0.515780222673,
-                        0.433811455157,
+                        0.515872948092,
+                        0.434086151613,
                     ],
                     [
                         str("3_4"),
                         0,
                         0,
                         0,
-                        1.17191599323,
-                        0.930913047097,
+                        1.17177915373,
+                        0.931327790881,
                         -1,
                     ],
                     [
                         str("1_2"),
                         0,
-                        1.04119433442,
-                        1.444342119,
+                        1.04124236441,
+                        1.44471810818,
                         0,
                         0,
-                        0.953575526751,
+                        0.953675473953,
                     ],
                     [
                         str("1_2_3"),
                         0,
-                        0.925047594422,
-                        1.32819621359,
-                        0.290365264694,
+                        0.925218215852,
+                        1.32869479285,
+                        0.29005878853,
                         0,
-                        0.998573206243,
+                        0.998562878637,
                     ],
                     [
                         str("1_2_3_4"),
                         0,
-                        0.914079354784,
-                        1.31722771457,
-                        0.279396891914,
-                        0.0383892606964,
-                        0.999295535579,
+                        0.914195508542,
+                        1.31767182551,
+                        0.279035947504,
+                        0.0385798985516,
+                        0.99929215065,
                     ],
                 ]
 
@@ -935,8 +935,8 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [
                         str("0_1"),
-                        2.00408568934,
-                        -1.00204284467,
+                        2.0043843779,
+                        -1.00219218895,
                         0,
                         0,
                         0,
@@ -957,9 +957,9 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [
                         str("0_2"),
-                        2.13847194875,
+                        2.13887995673 ,
                         0,
-                        -1.06923597438,
+                        -1.06943997836,
                         0,
                         0,
                         0,
@@ -975,14 +975,14 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.264787158812,
+                        0.265058829483,
                     ],
                     [
                         str("0_3"),
-                        1.79252468736,
+                        1.79266434371,
                         0,
                         0,
-                        -0.89626234368,
+                        -0.896332171855,
                         0,
                         0,
                         0,
@@ -1001,11 +1001,11 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [
                         str("0_4"),
-                        1.71219173182,
+                        1.71251524752,
                         0,
                         0,
                         0,
-                        -0.85609586591,
+                        -0.85625762376,
                         0,
                         0,
                         1,
@@ -1023,10 +1023,10 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [
                         str("0_1_3"),
-                        2.27796575168,
-                        -0.72816182526,
+                        2.27822875866,
+                        -0.728346851255,
                         0,
-                        -0.41082105058,
+                        -0.410767528074,
                         0,
                         0,
                         0,
@@ -1041,15 +1041,15 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.0570637738537,
+                        0.0566682712428,
                     ],
                     [
                         str("0_2_4"),
-                        2.31039762318,
+                        2.31083654208,
                         0,
-                        -0.897308700255,
+                        -0.897481796995,
                         0,
-                        -0.257890111337,
+                        -0.257936474046,
                         0,
                         0,
                         1,
@@ -1063,15 +1063,15 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.433811455157,
+                        0.434086151613,
                     ],
                     [
                         str("0_3_4"),
-                        2.10282904033,
+                        2.10310694461,
                         0,
                         0,
-                        -0.585957996615,
-                        -0.46545652354,
+                        -0.585889576865,
+                        -0.46566389544,
                         0,
                         0,
                         1,
@@ -1089,9 +1089,9 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [
                         str("0_1_2"),
-                        2.48553645342,
-                        -0.52059716721,
-                        -0.7221710595,
+                        2.48596047259,
+                        -0.520621182205,
+                        -0.72235905409,
                         0,
                         0,
                         0,
@@ -1107,14 +1107,14 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.953575526751,
+                        0.953675473953,
                     ],
                     [
                         str("0_1_2_3"),
-                        2.54360907271,
-                        -0.462523797211,
-                        -0.664098106795,
-                        -0.145182632347,
+                        2.54397179723,
+                        -0.462609107926,
+                        -0.664347396425,
+                        -0.145029394265,
                         0,
                         0,
                         0,
@@ -1129,15 +1129,15 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.998573206243,
+                        0.998562878637,
                     ],
                     [
                         str("0_1_2_3_4"),
-                        2.54909322196,
-                        -0.457039677392,
-                        -0.658613857285,
-                        -0.139698445957,
-                        -0.0191946303482,
+                        2.54948318011,
+                        -0.457097754271,
+                        -0.658835912755,
+                        -0.139517973752,
+                        -0.0192899492758,
                         0,
                         0,
                         1,
@@ -1151,7 +1151,7 @@ class TestFitDihedralWithGomc(BaseTest):
                         180.0,
                         0,
                         180.0,
-                        0.999295535579,
+                        0.99929215065,
                     ],
                 ]
 
@@ -1194,8 +1194,8 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [
                         str("0_1"),
-                        1.0020428444,
-                        -1.0020428444,
+                        1.00219218895,
+                        -1.00219218895,
                         0,
                         0,
                         0,
@@ -1204,20 +1204,20 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [
                         str("0_2"),
-                        2.13847194795,
+                        2.13887995673,
                         0,
-                        -2.13847194795,
+                        -2.13887995673,
                         0,
                         0,
                         0,
-                        0.264787158812,
+                        0.265058829483,
                     ],
                     [
                         str("0_3"),
-                        0.896262343155,
-                        2.68878702946,
+                        0.896332171855,
+                        2.68899651556,
                         0,
-                        -3.58504937262,
+                        -3.58532868742,
                         0,
                         0,
                         -1,
@@ -1226,71 +1226,71 @@ class TestFitDihedralWithGomc(BaseTest):
                         str("0_4"),
                         0,
                         0,
-                        6.84876692728,
+                        6.85006099008,
                         0,
-                        -6.84876692728,
+                        -6.85006099008,
                         0,
                         -1,
                     ],
                     [
                         str("0_1_3"),
-                        1.13898287652,
-                        0.504301323446,
+                        1.13911437933,
+                        0.503955732966,
                         0,
-                        -1.64328419996,
+                        -1.64307011229,
                         0,
                         0,
-                        0.0570637738537,
+                        0.0566682712428,
                     ],
                     [
                         str("0_2_4"),
-                        1.79461739534,
+                        1.79496359399,
                         0,
-                        0.26850352834,
+                        0.268528198378,
                         0,
-                        -2.06312092368,
+                        -2.06349179237,
                         0,
-                        0.433811455157,
+                        0.434086151613,
                     ],
                     [
                         str("0_3_4"),
-                        0.585957999835,
-                        1.7578739995,
-                        3.72365217288,
-                        -2.34383199934,
-                        -3.72365217288,
+                        0.585889576865,
+                        1.75766873059,
+                        3.72531116352,
+                        -2.34355830746,
+                        -3.72531116352,
                         0,
                         -1,
                     ],
                     [
                         str("0_1_2"),
-                        1.96493928638,
-                        -0.520597166825,
-                        -1.44434211955,
+                        1.96533929038,
+                        -0.520621182205,
+                        -1.44471810818,
                         0,
                         0,
                         0,
-                        0.953575526751,
+                        0.953675473953,
                     ],
                     [
                         str("0_1_2_3"),
-                        1.93590264307,
-                        -0.026975900098,
-                        -1.32819621337,
-                        -0.580730529606,
+                        1.93633329504,
+                        -0.027520925131,
+                        -1.32869479285,
+                        -0.58011757706,
                         0,
                         0,
-                        0.998573206243,
+                        0.998562878637,
                     ],
                     [
                         str("0_1_2_3_4"),
-                        1.91396583919,
-                        -0.037944339811,
-                        -1.1636706807,
-                        -0.558793783876,
-                        -0.153557034803,
+                        1.91428755353,
+                        -0.038543833015,
+                        -1.1633522313,
+                        -0.558071895008,
+                        -0.154319594206,
                         0,
-                        0.999295535579,
+                        0.99929215065,
                     ],
                 ]
 
@@ -4885,7 +4885,7 @@ class TestFitDihedralWithGomc(BaseTest):
     def test_r_squared_min_not_a_float(self):
         with pytest.raises(
             TypeError,
-            match=f"ERROR: The 'r_squared_min' is a {type(2)}, "
+            match=f"ERROR: The 'r_squared_min' is a {type(1)}, "
             f"but it must be a 0<float<1.",
         ):
             fit_dihedral_with_gomc(
@@ -4913,7 +4913,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 combining_rule="geometric",
                 atom_type_naming_style="general",
                 gomc_cpu_cores=1,
-                r_squared_min=2,
+                r_squared_min=1,
                 r_squared_atol=0.02,
                 opls_force_k0_zero=True,
             )
@@ -4922,7 +4922,7 @@ class TestFitDihedralWithGomc(BaseTest):
         with pytest.raises(
             ValueError,
             match=f"ERROR: The 'r_squared_atol' = {0.00}, "
-            f"but it must be a 0<float<2.",
+            f"but it must be a 0<float<1.",
         ):
             fit_dihedral_with_gomc(
                 ["CT", "CT", "C", "OH"],
@@ -4957,43 +4957,7 @@ class TestFitDihedralWithGomc(BaseTest):
     def test_r_squared_atol_not_correct_value_is_1(self):
         with pytest.raises(
             ValueError,
-            match=f"ERROR: The 'r_squared_atol' = {2.00}, "
-            f"but it must be a 0<float<2.",
-        ):
-            fit_dihedral_with_gomc(
-                ["CT", "CT", "C", "OH"],
-                self.get_fn(
-                    "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
-                ),
-                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
-                298.15 * u.Kelvin,
-                gomc_binary_directory,
-                {
-                    self.get_fn(
-                        "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
-                    ): [],
-                    self.get_fn(
-                        "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
-                    ): [0],
-                },
-                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
-                zero_dihedral_atom_types=[
-                    ["CT", "CT", "C", "O_3"],
-                    ["HC", "CT", "CT", "C"],
-                ],
-                qm_engine="gaussian_style_final_files",
-                combining_rule="geometric",
-                atom_type_naming_style="general",
-                gomc_cpu_cores=1,
-                r_squared_min=0.99,
-                r_squared_atol=2.00,
-                opls_force_k0_zero=True,
-            )
-
-    def test_r_squared_atol_not_a_float(self):
-        with pytest.raises(
-            TypeError,
-            match=f"ERROR: The 'r_squared_atol' is a {type(2)}, "
+            match=f"ERROR: The 'r_squared_atol' = {1.00}, "
             f"but it must be a 0<float<1.",
         ):
             fit_dihedral_with_gomc(
@@ -5022,7 +4986,43 @@ class TestFitDihedralWithGomc(BaseTest):
                 atom_type_naming_style="general",
                 gomc_cpu_cores=1,
                 r_squared_min=0.99,
-                r_squared_atol=2,
+                r_squared_atol=1.00,
+                opls_force_k0_zero=True,
+            )
+
+    def test_r_squared_atol_not_a_float(self):
+        with pytest.raises(
+            TypeError,
+            match=f"ERROR: The 'r_squared_atol' is a {type(1)}, "
+            f"but it must be a 0<float<1.",
+        ):
+            fit_dihedral_with_gomc(
+                ["CT", "CT", "C", "OH"],
+                self.get_fn(
+                    "gaussian_style_output_files/CT_CT_C_OH/input/starting_coords/CT_CT_C_3_OH.mol2"
+                ),
+                self.get_fn("gmso_oplsaa_CT_CT_C_OH_in_COOH.xml"),
+                298.15 * u.Kelvin,
+                gomc_binary_directory,
+                {
+                    self.get_fn(
+                        "gaussian_style_output_files/CT_CT_C_OH_split_part_2/output"
+                    ): [],
+                    self.get_fn(
+                        "gaussian_style_output_files/CT_CT_C_OH_split_part_1/output"
+                    ): [0],
+                },
+                manual_dihedral_atom_numbers_list=[3, 2, 1, 4],
+                zero_dihedral_atom_types=[
+                    ["CT", "CT", "C", "O_3"],
+                    ["HC", "CT", "CT", "C"],
+                ],
+                qm_engine="gaussian_style_final_files",
+                combining_rule="geometric",
+                atom_type_naming_style="general",
+                gomc_cpu_cores=1,
+                r_squared_min=0.99,
+                r_squared_atol=1,
                 opls_force_k0_zero=True,
             )
 
@@ -5043,15 +5043,15 @@ class TestFitDihedralWithGomc(BaseTest):
             f"- The fits for all are shown here for all the dihedral combinations \n"
             f"\[opls_constants_used, R-squared_fitted, R-squared_new_dihedral, Abs\(delta\)\] \n"
             f"\[\['1', -1.0, -1.0, 0\], "
-            f"\['2', 0.44842113, -1.0, 1.4484211\], "
+            f"\['2', 0.44851424, -1.0, 1.4485142\], "
             f"\['3', -1.0, -1.0, 0\], "
             f"\['4', -1.0, -1.0, 0\], "
             f"\['1_3', -1.0, -1.0, 0\], "
-            f"\['2_4', 0.55194616, -1.0, 1.5519462\], "
+            f"\['2_4', 0.55202043, -1.0, 1.5520204\], "
             f"\['3_4', -1.0, -1.0, 0\], "
-            f"\['1_2', 0.98674311, 0.96220003, 0.02454308\], "
-            f"\['1_2_3', 0.99792638, 0.98639998, 0.0115264\], "
-            f"\['1_2_3_4', 0.99810376, 0.98631901, 0.01178475\]\], \n"
+            f"\['1_2', 0.98683182, 0.96185841, 0.02497341\], "
+            f"\['1_2_3', 0.99796071, 0.9861541, 0.01180661\], "
+            f"\['1_2_3_4', 0.99813699, 0.98663398, 0.01150301\]\], \n"
             f"The 'r_squared_min' and 'r_squared_atol' "
             f"variables may need to be adjusted, \n"
             f"there is likely something wrong with the fitting procedure, the "
@@ -5086,6 +5086,7 @@ class TestFitDihedralWithGomc(BaseTest):
                 r_squared_atol=0.0000001,
             )
 
+    
     def test_warning_r_squared_min_and_r_squared_atol_need_adjusted(
         self,
     ):
@@ -5102,7 +5103,7 @@ class TestFitDihedralWithGomc(BaseTest):
             f"Abs\(delta\) = Abs\(R-squared_fitted - R-squared_new_dihedral\). \n"
             f"- The fits for all are shown here for all the dihedral combinations \n"
             f"\[opls_constants_used, R-squared_fitted, R-squared_new_dihedral, Abs\(delta\)\] \n"
-            f"\[\['1_2', 0.98674311, 0.96220003, 0.02454308\]\]. \n"
+            f"\[\['1_2', 0.98683182, 0.96185841, 0.02497341\]\]. \n"
             f"The 'r_squared_min' and 'r_squared_atol' "
             f"variables may need to be adjusted, \n"
             f"there is likely something wrong with the fitting procedure, the "

@@ -31,8 +31,14 @@ ensure all of the dependencies are installed::
     $ conda env create -f environment.yml
     $ conda activate mosdef_dihedral_fit
     $ pip install -e .
-
+    
+    
 .. note::
+    
+    If you update the conda package, you may have to redo the pip install.  Without doing this, it may allow incompatable versions of the dependencies to be installed, etc.
+    
+.. note::
+
     The installation instructions are for ``Unix`` and ``OSX``.
     If ``Windows`` is being used, you need to use a virtual machine or the ``Linux`` subsystem,
     since some parts of this software or its dependencies could not be compatible with ``Windows``.
@@ -44,7 +50,7 @@ Install `GOMC <https://gomc-wsu.org/>`_
     $ pip install cmake
     $ conda activate mosdef_dihedral_fit # make sure this has been installed above
     $ cd $CONDA_PREFIX
-    $ git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a
+    $ git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.80
     $ cd GOMC
     $ chmod u+x metamake.sh
     $ ./metamake.sh NVT
