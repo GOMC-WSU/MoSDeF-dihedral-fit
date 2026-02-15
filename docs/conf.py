@@ -15,9 +15,6 @@
 import os
 import pathlib
 import sys
-
-import gmso
-import gsd
 import mock
 
 # If extensions (or modules to document with autodoc) are in another directory,
