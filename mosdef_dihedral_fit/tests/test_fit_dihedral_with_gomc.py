@@ -358,7 +358,6 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-                           
 
     def test_gaussian_log_file_fit_oplsaa_fit_ethane_HC_CT_CT_HC_with_2_log_files(
         self,
@@ -687,7 +686,6 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-                            
 
     def test_gaussian_log_file_fit_oplsaa_protonated_fragment_CT_CT_C_OH_in_COOH(
         self,
@@ -935,7 +933,6 @@ class TestFitDihedralWithGomc(BaseTest):
                                 atol=0.02,
                                 rtol=0.08,
                             )
-                        
 
         # check the periodic dihedral file
         with open("periodic_dihedral_k_constants_fit_energy.txt", "r") as fp:
