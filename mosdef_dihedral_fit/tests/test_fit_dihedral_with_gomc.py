@@ -957,7 +957,7 @@ class TestFitDihedralWithGomc(BaseTest):
                     ],
                     [
                         str("0_2"),
-                        2.13887995673 ,
+                        2.13887995673,
                         0,
                         -1.06943997836,
                         0,
@@ -5086,7 +5086,6 @@ class TestFitDihedralWithGomc(BaseTest):
                 r_squared_atol=0.0000001,
             )
 
-    
     def test_warning_r_squared_min_and_r_squared_atol_need_adjusted(
         self,
     ):
