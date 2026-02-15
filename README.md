@@ -44,10 +44,10 @@ os.system("cat periodic_torsion_k_constants_fit_energy.txt")
 mamba install -c conda-forge mosdef-dihedral-fit
 conda activate mosdef-dihedral-fit
 cd $CONDA_PREFIX
-git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a
+git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.80
 cd GOMC
-chmod u+x metamake.sh NVT
-./metamake.sh
+chmod u+x metamake.sh
+./metamake.sh NVT
 ln -s $CONDA_PREFIX/GOMC/bin/GOMC_CPU_NVT $CONDA_PREFIX/bin
 ```
 

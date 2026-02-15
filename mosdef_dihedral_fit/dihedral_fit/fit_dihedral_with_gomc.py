@@ -20,8 +20,6 @@ from unyt.dimensions import angle, energy, length, temperature
 import mosdef_dihedral_fit.utils.file_read_and_write as mdf_frw
 import mosdef_dihedral_fit.utils.math_operations as mdf_math
 
-warnings.filterwarnings("ignore")
-
 
 def fit_dihedral_with_gomc(
     fit_dihedral_atom_types,
@@ -319,7 +317,7 @@ def fit_dihedral_with_gomc(
         dihedral energies are set to zero.
 
         NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
-    r_squared_atol: float (0 < r_squared_min < 2), default=2.5e-02
+    r_squared_atol: float (0 < r_squared_min < 1), default=2.5e-02
         Where the QM data is defined as the actual data; this is the absolute difference
         of the dihedral's calculated R-squared values between:
         * The QM-MM fitting process, where the fit MM dihedral k-values are zero (0).
@@ -327,7 +325,6 @@ def fit_dihedral_with_gomc(
         compared to the QM data.
 
         NOTE: This value may need adjusted to get the dihedral fit to solve correctly.
-        NOTE: The max is 2 as the min R**2 is -1, if the fit it is worse than the data average.
     opls_force_k0_zero: bool, default=False
         The k0 constant is from the equation listed above.
         If True, this is force sets the k0 constant in the opls equation to zero (0),
@@ -699,10 +696,10 @@ def fit_dihedral_with_gomc(
 
     # test the 'r_squared_atol' input
     if isinstance(r_squared_atol, float):
-        if not (r_squared_atol > 0 and r_squared_atol < 2):
+        if not (r_squared_atol > 0 and r_squared_atol < 1):
             raise ValueError(
                 f"ERROR: The 'r_squared_atol' = {r_squared_atol}, "
-                f"but it must be a 0<float<2."
+                f"but it must be a 0<float<1."
             )
 
     else:

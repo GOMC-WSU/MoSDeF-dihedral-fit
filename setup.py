@@ -44,8 +44,8 @@ def proto_procedure():
 def compile_proto(protoc):
     protoc_command = [
         protoc,
-        "-I=mosdef_dihedral_fit/dihedral_fit/",
-        "--python_out=mosdef_dihedral_fit/dihedral_fit/",
+        "-I=dihedral_fit/",
+        "--python_out=/dihedral_fit/",
         "compound.proto",
     ]
     subprocess.call(protoc_command)

@@ -22,7 +22,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu-latest", "macOs-latest"]
-        python-version: ["3.10", "3.11"]
+        python-version: ["3.11"]
 
     defaults:
       run:
@@ -32,8 +32,8 @@ jobs:
       - name: create dir
         run: sudo mkdir /opt/gomc_build
 
-      - name: clone the GOMC repositrory version 2.75a
-        run: sudo git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.75a /opt/gomc_build/GOMC
+      - name: clone the GOMC repositrory version 2.80
+        run: sudo git clone https://github.com/GOMC-WSU/GOMC.git --branch v2.80 /opt/gomc_build/GOMC
 
       - name: install cmake
         run: pip install cmake
