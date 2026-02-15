@@ -1,26 +1,31 @@
 name: mosdef_dihedral_fit
 channels:
   - conda-forge
-  - defaults
 dependencies:
-  - python>=3.10,<3.12
+  - python>=3.10.*,<3.12
   - vmd-python
   - ipython
-  - numpydoc
   - mock
-  - sphinx_rtd_theme
-  - nbsphinx
-  - sphinxcontrib
   - pycifrw
   - pytest
   - pytest-cov
   - coverage
+  - numpy<2
   - mosdef-gomc=1.4.0
+  - foyer=0.12.1
+  - forcefield-utilities=0.3.0
+  - gmso=0.12.4
+  - mbuild=0.17.1
+  - setuptools<82
   - pre-commit
-  - sphinx=6.1.1
+  - numpydoc
+  - sphinx
+  - nbsphinx
+  - nbconvert
   - pip
   - pip:
       - bump2version
+      - sphinxcontrib-packages
       - sphinxcontrib-svg2pdfconverter
       - sphinxcontrib-video
       - sphinxcontrib-serializinghtml

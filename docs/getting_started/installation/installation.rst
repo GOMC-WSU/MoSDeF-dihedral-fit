@@ -31,8 +31,14 @@ ensure all of the dependencies are installed::
     $ conda env create -f environment.yml
     $ conda activate mosdef_dihedral_fit
     $ pip install -e .
-
+    
+    
 .. note::
+    
+    If you update the conda package, you may have to redo the pip install.  Without doing this, it may allow incompatable versions of the dependencies to be installed, etc.
+    
+.. note::
+
     The installation instructions are for ``Unix`` and ``OSX``.
     If ``Windows`` is being used, you need to use a virtual machine or the ``Linux`` subsystem,
     since some parts of this software or its dependencies could not be compatible with ``Windows``.
